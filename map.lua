@@ -1,12 +1,11 @@
 require "objects.countries"
-require "assets.intmap"
 
 function initMap()
     local widthLimit = the.screen.width / the.cell.width    -- Width and height limit are used 
     local heightLimit = the.screen.height / the.cell.height -- to limit the generation of cells.
 
     local tiledMap = require "assets.maps.default.mapData" -- Returns a table created by Tiled.
-    mapData = tiledMap.layers[3].data -- tiledMap has lots of unneeded stuff, so we choose the needed data, the map itself.
+    mapData = tiledMap.layers[2].data -- tiledMap has lots of unneeded stuff, so we choose the needed data, the map itself.
     
     map = {}
     

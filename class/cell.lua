@@ -9,7 +9,7 @@ function Cell:initialize(id, color)
 end
 
 function Cell:draw(x, y)
-    self.color[4] = 64 -- Sets an alpha channel.
+    self.color[4] = 64 -- Sets the alpha channel. Makes cell transparent.
     love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
     love.graphics.setColor(255,255,255)
