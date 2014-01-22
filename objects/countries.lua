@@ -4,7 +4,7 @@ require "class.country"
 -- Second item and id of 2 and so on.
 
 -- Images in tileset must appear in the SAME EXACT order as they appear here.
--- That means that the first tile in tileset.png MUST be "us". And the second one "ua".
+-- That means that the first tile in tileset.png MUST be "ua". And the second one "us", and so on.
 
 -- WARNING! The name of miniature and ball image should be the same as Country's name!
 -- Example: If we have an instance of Country with name "Ukraine",
