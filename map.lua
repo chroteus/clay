@@ -29,7 +29,7 @@ function initMap()
     ----------------------------------------------------------------------
     
     mapCam = Camera(the.screen.width/2, the.screen.height/2)
-    mapImg = love.graphics.newImage("assets/image/map2.png")
+    mapImg = love.graphics.newImage("assets/image/map.png")
     gridImg = love.graphics.newImage("assets/image/grid.png")
 end
 
