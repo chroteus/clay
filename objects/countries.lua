@@ -1,8 +1,5 @@
 require "class.country"
 
--- NOTE: Countries' id should be put in order. First item in the table should have and id of 1. 
--- Second item and id of 2 and so on.
-
 -- Images in tileset must appear in the SAME EXACT order as they appear here.
 -- That means that the first tile in tileset.png MUST be "ua". And the second one "us", and so on.
 
@@ -15,7 +12,22 @@ require "class.country"
 -- Where countries are instantiated.
 
 countries = {
-    -- Country(id, color, name, attack, defense)
-    Ukraine = Country(1, {255,255,0}, "Ukraine", 10, 5),
-    UnitedStates = Country(2, {0,0,255}, "United States", 20, 20)
+    -- Country(name, color, attack, defense)
+    Country("Ukraine", {255,255,0}, 10, 5),
+    Country("United States", {0,0,255}, 20, 20)
 }
+
+for i=1, #countries do
+    countries[i].id = i
+end
+
+function funcCountry(countryName, func)
+    assert(type(countryName) == "string", "funcCountry function needs string as its first argument.")
+    assert(type(func) == "function", "funcCountry function needs function as its second argument.")
+    for _,country in pairs(countries) do
+        if country.name == countryName then
+            func()
+        end
+    end
+end
+

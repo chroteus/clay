@@ -26,8 +26,6 @@ THE SOFTWARE.
 
 local function __NULL__() end
 
-require("globals")
-
  -- default gamestate produces error on every callback
 local state_init = setmetatable({leave = __NULL__},
 		{__index = function() error("Gamestate not initialized. Use Gamestate.switch()") end})
@@ -37,7 +35,6 @@ local GS = {}
 function GS.new(t) return t or {} end -- constructor - deprecated!
 
 function GS.switch(to, ...)
-    msgList = {} -- Empty msgList before entering another state.
 	assert(to, "Missing argument: Gamestate to switch to")
 	local pre = stack[#stack]
 	;(pre.leave or __NULL__)(pre)

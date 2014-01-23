@@ -1,10 +1,8 @@
 -- Small GUI lib.
 
 require("lib.middleclass")
-require("class.entity")
-require("globals")
 
-Button = Entity:subclass("Button")
+Button = class("Button")
 -- Button class: Base class for other buttons.
 -- Not to be used by itself.
 
@@ -14,6 +12,10 @@ guiColors = {
 }
 
 function Button:initialize(x, y, width, height, text, action)
+    self.x = x
+    self.y = y
+    self.width = width
+    self.height = height
     self.action = assert(action) -- Action to be executed when button is clicked.
     self.state = "idle" -- Default state is idle. State is used to change colors of button.
     self.text = text -- Text to be displayed.
@@ -41,13 +43,10 @@ function Button:initialize(x, y, width, height, text, action)
             fg = {guiColors.fg[1] + 20, guiColors.fg[2] + 20, guiColors.fg[3] + 20, 1120}
         }
     }
-    
-    -- Initialize super class.
-    Entity.initialize(self, x, y, width, height)
 end
 
 function Button:update(dt)
-    if self:overlapsWith(the.mouse) then    -- Check if mouse and button overlap.
+    if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
         self.state = "active"
     else
         self.state = "idle"
@@ -57,7 +56,7 @@ end
 function Button:mousepressed(x, y, button)
     -- To be used in mousepressed callback functions.
     
-    if self:overlapsWith(the.mouse) then -- Check if mouse and button overlap.
+    if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
         self.state = "clicked" -- Change state to "clicked" to change button's color.
     end
 end
@@ -65,7 +64,7 @@ end
 function Button:mousereleased(x, y, button)
     -- To be used in mousereleased callback functions.
     
-    if self:overlapsWith(the.mouse) then -- Check if mouse and button overlap.
+    if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
         self.action() -- Executes action of the button.
     end
 end
