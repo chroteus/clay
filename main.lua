@@ -19,8 +19,6 @@ require "misc.map"
 function love.load()
     love.window.setMode(800, 576)
     --love.window.setFullscreen(true)
-    --love.mouse.setVisible(false)
-    --slove.mouse.setGrabbed(true)
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()

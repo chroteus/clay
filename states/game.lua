@@ -1,6 +1,9 @@
 game = {}
 
 function game:init()
+    love.mouse.setVisible(false)
+    love.mouse.setGrabbed(true)
+    
     initMap()
 end
 
