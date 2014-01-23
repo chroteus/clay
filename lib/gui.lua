@@ -90,7 +90,8 @@ function Button:draw()
     end
     
     love.graphics.setColor(self.colors.idle.fg)
-    love.graphics.printf(self.text, self.x, self.y + 10, self.width, "center")
+    local fontHeight = (love.graphics.getFont():getHeight())/2
+    love.graphics.printf(self.text, self.x, self.y + self.height/2 - fontHeight, self.width, "center")
     love.graphics.setColor(255, 255, 255)
 end
 
