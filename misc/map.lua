@@ -13,11 +13,7 @@ function initMap()
     --Convert tiled map into a 2D array--
     -------------------------------------
     
-    -- NOTE: This code has been written with "hack and run" method and this is why it's a VERY bad code.
-    -- Don't try to read and understand it. Your brain may be permamently damaged.
-    -- If you could understand the following code and still alive, you are more than welcome to correct the code.
-    
-    local rowNumber = #mapData/100
+    local rowNumber = #mapData/tiledMap.width
     for i=1,rowNumber do map[i] = {} end
     
     local columnIndex, rowIndex = 1,1
@@ -25,14 +21,15 @@ function initMap()
     for i,num in pairs(mapData) do
         map[columnIndex][rowIndex] = num
         rowIndex = rowIndex + 1
-        if i % 100 == 0 then
+        if i % tiledMap.width == 0 then
             columnIndex = columnIndex + 1
             rowIndex = 1
         end
     end 
-    ---------------------------------------------------
-    --Insert cells according to number and country id--
-    ---------------------------------------------------
+    
+    -------------------------------------------------------
+    --Insert countries according to number and country id--
+    -------------------------------------------------------
     for columnIndex,column in pairs(map) do
         for rowIndex,num in pairs(column) do
             table.remove(column, rowIndex)
@@ -91,6 +88,10 @@ function updateMap(dt)
 end
 
 function mousepressedMap(x, y, button)
+    --------------
+    --Zooming in--
+    --------------
+       
     if button == "wu" then
         Timer.tween(0.3, mapCam, {scale = mapCam.scale + 0.1}, "out-quad")
     elseif button == "wd" then
@@ -101,7 +102,8 @@ function mousepressedMap(x, y, button)
 end
 
 function drawMap()
-    mapCam:attach()
+    -- Attaches a camera. Everything from now on will be drawn from camera's perspective.
+    mapCam:attach() 
     
     love.graphics.draw(mapImg, 0,0)
     love.graphics.draw(gridImg, 0,0)
@@ -126,5 +128,6 @@ function drawMap()
         end
     end
     
+    -- Detaches the camera. Things drawn after this will not be from camera's perspective.
     mapCam:detach()
 end
