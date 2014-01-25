@@ -9,24 +9,37 @@ function initMap()
     
     map = {}
     
-    ---------------------------------------------------------------------
-    --Code to make tiled maps nested and compatible with drawing system--
-    ---------------------------------------------------------------------
+    -------------------------------------
+    --Convert tiled map into a 2D array--
+    -------------------------------------
+    
+    -- NOTE: This code has been written with "hack and run" method and this is why it's a VERY bad code.
+    -- Don't try to read and understand it. Your brain may be permamently damaged.
+    -- If you could understand the following code and still alive, you are more than welcome to correct the code.
     
     local rowNumber = #mapData/100
     for i=1,rowNumber do map[i] = {} end
     
     local columnIndex, rowIndex = 1,1
     
-    for i,char in pairs(mapData) do
-        map[columnIndex][rowIndex] = char
+    for i,num in pairs(mapData) do
+        map[columnIndex][rowIndex] = num
         rowIndex = rowIndex + 1
         if i % 100 == 0 then
             columnIndex = columnIndex + 1
             rowIndex = 1
         end
+    end 
+    ---------------------------------------------------
+    --Insert cells according to number and country id--
+    ---------------------------------------------------
+    for columnIndex,column in pairs(map) do
+        for rowIndex,num in pairs(column) do
+            table.remove(column, rowIndex)
+            table.insert(column, rowIndex, countries[num])
+        end
     end
-    ----------------------------------------------------------------------
+    
     
     mapCam = Camera(the.screen.width/2, the.screen.height/2)
     mapImg = love.graphics.newImage("assets/image/map.png")
@@ -94,13 +107,13 @@ function drawMap()
     love.graphics.draw(gridImg, 0,0)
     
     for columnIndex,column in pairs(map) do
-        for rowIndex,row in pairs(column) do
+        for rowIndex,cell in pairs(column) do
             for _,country in pairs(countries) do
-            
-                local x = (rowIndex-1)*the.cell.width
-                local y = (columnIndex-1)*the.cell.height
-            
-                if row == country.id then
+
+                local x = (rowIndex-1)*the.cell.width -- Cell's x value
+                local y = (columnIndex-1)*the.cell.height -- Y value
+                
+                if cell.id == country.id then
                     country:draw(x, y)
                 end
                 
