@@ -33,11 +33,37 @@ function initMap()
     for columnIndex,column in pairs(map) do
         for rowIndex,num in pairs(column) do
             table.remove(column, rowIndex)
-            table.insert(column, rowIndex, countries[num])
+            table.insert(column, rowIndex, countries[num]:clone())
         end
     end
     
-    
+    -------------------------------------------
+    --Generate adjacent cells table for cells--
+    -------------------------------------------
+    map[0] = {}
+    for i=0,tiledMap.width do map[0][i] = countries[1] end
+    for i=0,tiledMap.height do map[i][0] = countries[1] end
+            
+    for columnIndex,column in pairs(map) do
+        for rowIndex,cell in pairs(column) do
+            if columnIndex ~= 0 then
+                if rowIndex ~= 0 then    
+                    for t=1,3 do
+                        for i=1,3 do
+                            for c=-1,1 do
+                                if rowIndex+c < 101 then
+                                    if columnIndex+c < 73 then
+                                        cell.adjCells[t][i] = map[columnIndex+c][rowIndex+c]
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
     mapCam = Camera(the.screen.width/2, the.screen.height/2)
     mapImg = love.graphics.newImage("assets/image/map.png")
     gridImg = love.graphics.newImage("assets/image/grid.png")
@@ -99,6 +125,19 @@ function mousepressedMap(x, y, button)
             Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1}, "out-quad")
         end
     end
+    
+    if button == "l" then
+        for columnIndex,column in pairs(map) do
+            for rowIndex,cell in pairs(column) do
+                local cellX = (rowIndex-1)*the.cell.width -- Cell's x value
+                local cellY = (columnIndex-1)*the.cell.height -- Y value
+                cell.isSelected = false
+                if checkCollision(x,y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
+                    cell.isSelected = true
+                end
+            end
+        end
+    end
 end
 
 function drawMap()
@@ -110,24 +149,21 @@ function drawMap()
     
     for columnIndex,column in pairs(map) do
         for rowIndex,cell in pairs(column) do
-            for _,country in pairs(countries) do
-
-                local x = (rowIndex-1)*the.cell.width -- Cell's x value
-                local y = (columnIndex-1)*the.cell.height -- Y value
-                
-                if cell.id == country.id then
-                    country:draw(x, y)
-                end
-                
-                if checkCollision(x, y, the.cell.width, the.cell.height, the.mouse.x, the.mouse.y, 1,1) then
-                    love.graphics.setColor(255,255,255)
-                    love.graphics.rectangle("line", x, y, the.cell.width, the.cell.height)
-                end
-            end
+            local x = (rowIndex-1)*the.cell.width -- Cell's x value
+            local y = (columnIndex-1)*the.cell.height -- Y value
+               
+            cell:draw(x,y)
             
+            if checkCollision(x, y, the.cell.width, the.cell.height, the.mouse.x, the.mouse.y, 1,1) then
+                love.graphics.setColor(255,255,255,16)
+                love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
+                love.graphics.setColor(255,255,255)
+                love.graphics.rectangle("line", x, y, the.cell.width, the.cell.height)
+            end
         end
     end
     
     -- Detaches the camera. Things drawn after this will not be from camera's perspective.
+    -- GUI should be drawn after this function is called.
     mapCam:detach()
 end
