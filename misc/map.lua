@@ -132,8 +132,11 @@ function mousepressedMap(x, y, button)
                 local cellX = (rowIndex-1)*the.cell.width -- Cell's x value
                 local cellY = (columnIndex-1)*the.cell.height -- Y value
                 cell.isSelected = false
-                if checkCollision(x,y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
-                    cell.isSelected = true
+                
+                if Player.country == cell.name then
+                    if checkCollision(x,y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
+                        cell.isSelected = true
+                    end
                 end
             end
         end

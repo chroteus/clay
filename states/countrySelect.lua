@@ -3,13 +3,15 @@ countrySelect = {}
 function countrySelect:init()
     countrySelectBtn = {}
     for i, country in ipairs(countries) do
-        table.insert(countrySelectBtn,
-            GenericButton(i, country.name, 
-                function() 
-                    Player.country = country.name 
-                    Gamestate.switch(game)
-                end)
-        )
+        if country.name ~= "Sea" then
+            table.insert(countrySelectBtn,
+                GenericButton(i-1, country.name, 
+                    function() 
+                        Player.country = country.name 
+                        Gamestate.switch(game)
+                    end)
+            )
+        end
     end
     
     countryCam = Camera(the.screen.width/2, the.screen.height/2)

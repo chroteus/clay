@@ -25,7 +25,7 @@ function love.load()
     
     Player:initialize()
     Gamestate.registerEvents()
-    Gamestate.switch(game)
+    Gamestate.switch(menu)
 end
 
 function love.update(dt)
