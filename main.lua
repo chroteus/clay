@@ -1,3 +1,5 @@
+DEBUG = false -- Skips directly to game state if true.
+
 -- Libraries
 Timer = require "lib.hump.timer"
 Camera = require "lib.hump.camera"
@@ -11,6 +13,7 @@ require "lib.gui" -- GUI lib. Has Buttons only so far.
 require "states.menu"
 require "states.countrySelect"
 require "states.game"
+require "states.tutorial"
 
 -- Misc
 require "class.player"
@@ -25,7 +28,13 @@ function love.load()
     
     Player:initialize()
     Gamestate.registerEvents()
-    Gamestate.switch(menu)
+    
+    if DEBUG then
+        Gamestate.switch(game)
+        Player.country = "United States"
+    else
+        Gamestate.switch(menu)
+    end
 end
 
 function love.update(dt)

@@ -8,7 +8,7 @@ function countrySelect:init()
                 GenericButton(i-1, country.name, 
                     function() 
                         Player.country = country.name 
-                        Gamestate.switch(game)
+                        Gamestate.switch(tutorial)
                     end)
             )
         end

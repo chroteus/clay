@@ -37,32 +37,15 @@ function initMap()
         end
     end
     
-    -------------------------------------------
-    --Generate adjacent cells table for cells--
-    -------------------------------------------
+    -------------------------------------------------------
+    
     map[0] = {}
     for i=0,tiledMap.width do map[0][i] = countries[1] end
     for i=0,tiledMap.height do map[i][0] = countries[1] end
             
-    for columnIndex,column in pairs(map) do
-        for rowIndex,cell in pairs(column) do
-            if columnIndex ~= 0 then
-                if rowIndex ~= 0 then    
-                    for t=1,3 do
-                        for i=1,3 do
-                            for c=-1,1 do
-                                if rowIndex+c < 101 then
-                                    if columnIndex+c < 73 then
-                                        cell.adjCells[t][i] = map[columnIndex+c][rowIndex+c]
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
+    
+    currAdjCells = {} -- adjacent cells of the selected cell.
+    
 
     mapCam = Camera(the.screen.width/2, the.screen.height/2)
     mapImg = love.graphics.newImage("assets/image/map.png")
@@ -126,18 +109,66 @@ function mousepressedMap(x, y, button)
         end
     end
     
-    if button == "l" then
+    if button == "l" then    
         for columnIndex,column in pairs(map) do
             for rowIndex,cell in pairs(column) do
                 local cellX = (rowIndex-1)*the.cell.width -- Cell's x value
-                local cellY = (columnIndex-1)*the.cell.height -- Y value
-                cell.isSelected = false
+                local cellY = (columnIndex-1)*the.cell.height -- Y value.
                 
+                -- We make all cells non-selected first so that Player won't be able to select more than one cell.
+                cell.isSelected = false
+                    
+                
+                -------------------------------------------------------
+                --Generate adjacent cells table for the selected cell--
+                -------------------------------------------------------
                 if Player.country == cell.name then
                     if checkCollision(x,y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
                         cell.isSelected = true
+                        currAdjCells = {{0,0,0},
+                                        {0,0,0},
+                                        {0,0,0}}
+                        
+                        local c = currAdjCells
+                        
+                        c[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
+                        c[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
+                        c[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
+           
+                        c[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
+                        c[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
+                        c[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
+            
+                        c[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
+                        c[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
+                        c[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
+                        
                     end
                 end
+                ---------------------------------------------------------
+                
+                ------------------------------
+                --Invasion of neighbor cells--
+                ------------------------------
+                
+                for _,adjCellColumn in pairs(currAdjCells) do
+                    for _,adjCell in pairs(adjCellColumn) do
+                        if Player.country ~= map[adjCell.columnIndex][adjCell.rowIndex].name then
+                            for _,country in pairs(countries) do
+                                if Player.country == country.name then
+                                    local adjCellX = (adjCell.rowIndex-1)*the.cell.width
+                                    local adjCellY = (adjCell.columnIndex-1)*the.cell.height
+                                    
+                                    if checkCollision(the.mouse.x,the.mouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
+                                        map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                ------------------------------
+                
             end
         end
     end
@@ -163,6 +194,21 @@ function drawMap()
                 love.graphics.setColor(255,255,255)
                 love.graphics.rectangle("line", x, y, the.cell.width, the.cell.height)
             end
+        end
+    end
+    
+    for _,adjCellColumn in pairs(currAdjCells) do
+        for _,adjCell in pairs(adjCellColumn) do
+            local adjCellX = (adjCell.rowIndex-1)*the.cell.width
+            local adjCellY = (adjCell.columnIndex-1)*the.cell.height
+                   
+            local cell = map[adjCell.columnIndex][adjCell.rowIndex]
+            
+            cell.color[4] = 128
+            
+            love.graphics.setColor(cell.color)
+            love.graphics.rectangle("line", adjCellX, adjCellY, the.cell.width, the.cell.height)
+            love.graphics.setColor(255,255,255)
         end
     end
     
