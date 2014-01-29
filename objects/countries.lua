@@ -15,7 +15,8 @@ countries = {
     -- Country(name, color, attack, defense)
     Country("Sea", {255, 255, 255}, 0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
     Country("Ukraine", {255,255,0}, 10, 5),
-    Country("United States", {0,0,255}, 20, 20)
+    Country("United States", {0,0,255}, 20, 20),
+    Country("Canada", {255,0,0}, 10,10),
 }
 
 for i=1, #countries do

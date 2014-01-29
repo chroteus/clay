@@ -1,11 +1,22 @@
 menu = {}
 
 function menu:init()
+    local function debugBtnFunc()
+        if DEBUG then
+            DEBUG = false
+            menuButtons.debugBtn.text = "Dev Mode: OFF"
+        else
+            DEBUG = true
+            menuButtons.debugBtn.text = "Dev Mode: ON"
+        end
+    end
+    
     menuButtons = {
         -- GenericButton(order, text, action)
         start = GenericButton(1, "Start", function() Gamestate.switch(countrySelect) end),
-        quit = GenericButton(2, "Exit", function() love.event.quit() end)
-}
+        quit = GenericButton(2, "Exit", function() love.event.quit() end),
+        debugBtn = GenericButton(5.5, "Dev Mode: OFF", function() debugBtnFunc() end),
+    }
 end
 
 function menu:update(dt)

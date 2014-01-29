@@ -19,7 +19,7 @@ end
 
 function Cell:draw(x, y)
 
-    self.color[4] = 64 -- Sets the alpha channel. Makes cell transparent.
+    self.color[4] = 64 -- Set the alpha channel. Makes cell transparent.
 
     if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it drops FPS.
         if self.isSelected then self.color[4] = 128 end

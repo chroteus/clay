@@ -14,6 +14,8 @@ require "states.menu"
 require "states.countrySelect"
 require "states.game"
 require "states.tutorial"
+require "states.battle"
+require "states.selection"
 
 -- Misc
 require "class.player"
@@ -31,7 +33,7 @@ function love.load()
     
     if DEBUG then
         Gamestate.switch(game)
-        Player.country = "United States"
+        Player.country = "Canada"
     else
         Gamestate.switch(menu)
     end

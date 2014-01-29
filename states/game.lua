@@ -1,10 +1,12 @@
 game = {}
 
-function game:init()
+function game:init()    
+    initMap()
+end
+
+function game:enter()
     love.mouse.setVisible(false)
     love.mouse.setGrabbed(true)
-    
-    initMap()
 end
 
 function game:update(dt)
@@ -17,4 +19,22 @@ end
 
 function game:mousepressed(x, y, button)
     mousepressedMap(x, y, button)
+end
+
+function game:keyreleased(key)
+    if DEBUG then
+        if key == "e" then
+            if editMode.enabled then
+                editMode.enabled = false
+            else
+                editMode.enabled = true
+            end
+        end
+        
+        if editMode.enabled then
+            if key == "t" then
+                Gamestate.switch(selection)
+            end
+        end
+    end
 end

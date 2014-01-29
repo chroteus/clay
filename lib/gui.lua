@@ -89,10 +89,22 @@ function Button:draw()
         love.graphics.rectangle("line", self.x, self.y, self.width, self.height)       
     end
     
-    love.graphics.setColor(self.colors.idle.fg)
-    local fontHeight = (love.graphics.getFont():getHeight())/2
-    love.graphics.printf(self.text, self.x, self.y + self.height/2 - fontHeight, self.width, "center")
+
     love.graphics.setColor(255, 255, 255)
+
+    if not self:isInstanceOf(CountryBtn) then
+        love.graphics.setColor(self.colors.idle.fg)
+        local fontHeight = (love.graphics.getFont():getHeight())/2
+        love.graphics.printf(self.text, self.x, self.y + self.height/2 - fontHeight, self.width, "center")
+    else
+        local imageX = self.x + 4
+        local imageY = self.y + 5
+        
+        love.graphics.draw(self.image, imageX, imageY)
+    end
+    
+    love.graphics.setColor(255,255,255)
+    
 end
 
 
