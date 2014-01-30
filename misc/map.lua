@@ -1,33 +1,34 @@
 require "objects.countries"
 
-function initMap()
-    local widthLimit = the.screen.width / the.cell.width    -- Width and height limit are used 
-    local heightLimit = the.screen.height / the.cell.height -- to limit the generation of cells.
+function createMap() -- Fresh map. Used to load map at first play.
+    love.filesystem.remove("map.lua")
+    local mapFile = love.filesystem.newFile("assets/map.lua")
+    mapFile:open("r")
+    local mapString = mapFile:read()
 
-    local tiledMap = require "assets.maps.default.mapData" -- Returns a table created by Tiled.
-    mapData = tiledMap.layers[2].data -- tiledMap has lots of unneeded stuff, so we choose the needed data, the map itself.
+    map = assert(loadstring(mapString))()
+    mapFile:close()
+end
+
+function loadMap() -- Load an existing map.
+    local mapFile = love.filesystem.load("map.lua")
+    -- mapTable's first item is the map itself, and second items is the Player's country.
+    local mapTable = mapFile() -- Call the return of mapFile
     
-    map = {}
+    map = mapTable[1]
     
-    -------------------------------------
-    --Convert tiled map into a 2D array--
+    Player.country = mapTable[2]
+end
+
+function initMap()
+    if love.filesystem.exists("map.lua") then
+        loadMap()
+    else
+        createMap()
+    end
     
-    local rowNumber = #mapData/tiledMap.width
-    for i=1,rowNumber do map[i] = {} end
-    
-    local columnIndex, rowIndex = 1,1
-    
-    for i,num in pairs(mapData) do
-        map[columnIndex][rowIndex] = num
-        rowIndex = rowIndex + 1
-        if i % tiledMap.width == 0 then
-            columnIndex = columnIndex + 1
-            rowIndex = 1
-        end
-    end 
-    
-    -------------------------------------------------------
-    --Insert countries according to number and country id--
+    -------------------------------------------------------------------
+    --Insert countries in the place of numbers representing countries--
 
     for columnIndex,column in pairs(map) do
         for rowIndex,num in pairs(column) do
@@ -36,20 +37,42 @@ function initMap()
         end
     end
     
-    
+    -- Create 0th row and column so that even cell on 1st column or row will have proper adjacent cells table.
     map[0] = {}
-    for i=0,tiledMap.width do map[0][i] = countries[1] end
-    for i=0,tiledMap.height do map[i][0] = countries[1] end
+    for i=0,100 do map[0][i] = countries[1] end
+    for i=0,72  do map[i][0] = countries[1] end
             
     
     currAdjCells = {} -- adjacent cells of the selected cell.
     
+    
+    function saveMap(name)
+        -- Turn the map into a table of numbers which represent countries.
+        local numMap = {}
+        name = name or "map.lua" -- An optional name for map.
+        -- Create rows
+        for i=0,100 do numMap[i] = {} end 
+        
+        for columnIndex, column in pairs(map) do
+            for rowIndex, cell in pairs(column) do
+                numMap[columnIndex][rowIndex] = cell.id
+            end
+        end
+        
+        local mapString = serialize(numMap) -- numMap converted into a string.
+        love.filesystem.write(name, "return {")
+        love.filesystem.append(name, mapString)
+        love.filesystem.append(name, ","..'"'..Player.country..'" '.."}")
+    end
     -----------------------
     --Edit Mode variables--
+    
     editMode = {
         enabled = false,
         selection = false, -- True if Country Selection screen is present.
-        country = "Ukraine" -- Selected country. Paints this country on map.
+        country = "Ukraine", -- Selected country. Paints this country on map.
+        buttons = {}
+            
     }
 
     -- Camera
@@ -105,6 +128,7 @@ function updateMap(dt)
     
     ------------------------
     --Edit Mode "painting"--
+    
     if editMode.enabled then
         if love.mouse.isDown("l") then
             for columnIndex, column in pairs(map) do
@@ -252,7 +276,8 @@ function drawMap()
 
 
     if editMode.enabled then
-        love.graphics.printf("Edit Mode: T - Select Country, E - Exit out of edit mode.", 0, 0, the.screen.width, "left")
+        love.graphics.printf("Edit Mode: Q - Select Country, E - Exit out of edit mode.", 0, 0, the.screen.width, "left")
+        love.graphics.printf("Current chosen country: "..editMode.country, 0, 20, the.screen.width, "left")
     else
         if DEBUG then
             love.graphics.printf("E - Enter edit mode.", 0, 0, the.screen.width, "left")

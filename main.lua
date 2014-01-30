@@ -1,4 +1,4 @@
-DEBUG = false -- Skips directly to game state if true.
+DEBUG = false
 
 -- Libraries
 Timer = require "lib.hump.timer"
@@ -16,6 +16,7 @@ require "states.game"
 require "states.tutorial"
 require "states.battle"
 require "states.selection"
+require "states.pause"
 
 -- Misc
 require "class.player"
@@ -68,4 +69,17 @@ function checkCol(a, b) -- Short version of checkCollision. To be used if both o
          b.x < a.x+a.width and
          a.y < b.y+b.height and
          b.y < a.y+a.height
+end
+
+-- Convert a table into a string. Used to save map.
+-- Written by Kikito.
+function serialize(t)
+  local serializedValues = {}
+  local value, serializedValue
+  for i=1,#t do
+    value = t[i]
+    serializedValue = type(value)=='table' and serialize(value) or value
+    table.insert(serializedValues, serializedValue)
+  end
+  return string.format("{ %s }", table.concat(serializedValues, ', ') )
 end

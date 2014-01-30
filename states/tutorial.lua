@@ -3,8 +3,8 @@ tutorial = {}
 function tutorial:init()
     tutText = [[
     WASD/Mouse - Move camera
+    ESC = Menu
     Mouse wheel - Zoom in/out
-    You can invade neighbouring cells only.
      ]]
     
     tutGameBtn = GenericButton(2, "Start >>", function() Gamestate.switch(game) end)

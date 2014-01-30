@@ -53,3 +53,10 @@ function selection:mousereleased(x,y,button)
         btn:mousereleased(x,y,button)
     end
 end
+
+
+function selection:keyreleased(key)
+    if key == "q" then
+        Gamestate.switch(game)
+    end
+end
