@@ -14,7 +14,9 @@ function selection:init()
         self.height = 25
         self.text = " "
         self.action = function() 
+                        initMap()
                         editMode.country = self.country.name
+                        editMode.enabled = true
                         Gamestate.switch(game)
                       end
         

@@ -8,8 +8,9 @@ function createMap() -- Fresh map. Used to load map at first play.
     local mapFile = love.filesystem.newFile("assets/map.lua")
     mapFile:open("r")
     local mapString = mapFile:read()
-
-    map = assert(loadstring(mapString))()
+    local mapTable = assert(loadstring(mapString))()
+    
+    map = mapTable[1]
     mapFile:close()
 end
 
@@ -19,18 +20,13 @@ function loadMap() -- Load an existing map.
     local mapTable = mapFile() -- Call the return of mapFile
     
     map = mapTable[1]
-    
     Player.country = mapTable[2]
 end
 
-function initMap()
-    if shouldLoad then
-        loadMap()
-    elseif shouldCreate then
-        createMap()
-    end
+function enteredMap()
+-- enterMap: Things to do every time game changes to "game" gamestate.
+-- This is done to prevent bugs when going from menu state to game state for example.
 
-    
     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
 
@@ -41,11 +37,21 @@ function initMap()
         end
     end
     
-    -- Create 0th row and column so that even cell on 1st column or row will have proper adjacent cells table.
+    -- Create 0th row and column so that cell on 1st column or row will have proper adjacent cells table.
     map[0] = {}
     for i=0,100 do map[0][i] = countries[1] end
     for i=0,72  do map[i][0] = countries[1] end
-            
+    
+    -- Clear up current adjacent cells table so that none of the cells would be selected.
+    currAdjCells = {}
+end
+
+function initMap()
+    if love.filesystem.exists("map.lua") then
+        loadMap()
+    else
+        createMap()
+    end
     
     currAdjCells = {} -- adjacent cells of the selected cell.
     
@@ -73,7 +79,6 @@ function initMap()
     
     editMode = {
         enabled = false,
-        selection = false, -- True if Country Selection screen is present.
         country = "Ukraine", -- Selected country. Paints this country on map.
         buttons = {}
             

@@ -5,6 +5,8 @@ function game:init()
 end
 
 function game:enter()
+    enteredMap()
+
     love.mouse.setVisible(false)
     love.mouse.setGrabbed(true)
 end

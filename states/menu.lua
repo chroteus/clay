@@ -12,13 +12,8 @@ function menu:init()
     end
     
     local function newGame()
-        shouldCreate = true
+        createMap()
         Gamestate.switch(countrySelect)
-    end
-    
-    local function continueGame()
-        shouldLoad = true
-        Gamestate.switch(game)
     end
     
     menuButtons = {
@@ -30,13 +25,15 @@ function menu:init()
 end
 
 function menu:enter()
-    shouldLoad = false
-    shouldCreate = false
-
-
     if love.filesystem.exists("map.lua") then
         menuButtons.quit.y = 3*45*2 -- Puts the button below continue button if save file exists.
         menuButtons.start.y = 2*45*2
+    
+        local function continueGame()
+            loadMap()
+            Gamestate.switch(game)
+        end
+    
     
         table.insert(menuButtons, GenericButton(1, "Continue", function() continueGame() end))
     end
