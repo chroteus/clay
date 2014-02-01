@@ -23,11 +23,11 @@ function battle:init()
     right = rightCountry
     
     left.image = left.rightImage
-    left.x = 20
+    left.x = 10
     left.y = 100
     
     right.image = right.leftImage
-    right.x = the.screen.width - (20 + right.image:getWidth())
+    right.x = the.screen.width - right.image:getWidth()
     right.y = 100
     
     battleCam = Camera(the.screen.width/2, the.screen.height/2)
@@ -36,6 +36,7 @@ end
 function battle:update(dt)
 
 end
+
 
 function battle:draw()
     battleCam:attach()

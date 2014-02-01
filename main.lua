@@ -35,6 +35,7 @@ function love.load()
     if DEBUG then
         Gamestate.switch(game)
         Player.country = "Canada"
+        --startBattle("Ukraine", "United States")
     else
         Gamestate.switch(menu)
     end

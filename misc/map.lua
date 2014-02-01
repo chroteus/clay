@@ -1,5 +1,8 @@
 require "objects.countries"
 
+shouldCreate = false
+shouldLoad = false
+
 function createMap() -- Fresh map. Used to load map at first play.
     love.filesystem.remove("map.lua")
     local mapFile = love.filesystem.newFile("assets/map.lua")
@@ -21,11 +24,12 @@ function loadMap() -- Load an existing map.
 end
 
 function initMap()
-    if love.filesystem.exists("map.lua") then
+    if shouldLoad then
         loadMap()
-    else
+    elseif shouldCreate then
         createMap()
     end
+
     
     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
@@ -229,7 +233,11 @@ function drawMap()
     -- Attaches a camera. Everything from now on will be drawn from camera's perspective.
     mapCam:attach() 
     
+    love.graphics.push()
+    love.graphics.scale(0.5)
     love.graphics.draw(mapImg, 0,0)
+    love.graphics.pop()
+    
     love.graphics.draw(gridImg, 0,0)
     
     for columnIndex,column in pairs(map) do

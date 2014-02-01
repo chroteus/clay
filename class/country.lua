@@ -8,7 +8,7 @@ Country = Cell:subclass("Country")
 
 local lg = love.graphics
 
-function Country:initialize(name, color, attack, defense)
+function Country:initialize(name, color, attack, defense, hp)
     self.id = nil -- Id is defined in for-loop in coutries.lua
     self.name = name
     self.color = color
@@ -28,4 +28,7 @@ function Country:initialize(name, color, attack, defense)
     self.defense = defense
     
     Cell.initialize(self, self.id, self.color)
+end
+
+function Country:addAbility(func)
 end
