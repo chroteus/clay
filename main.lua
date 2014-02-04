@@ -1,4 +1,4 @@
-DEBUG = false
+DEBUG = true
 
 -- Libraries
 Timer = require "lib.hump.timer"
@@ -20,6 +20,8 @@ require "states.pause"
 
 -- Misc
 require "class.player"
+require "class.skill"
+require "objects.skills"
 require "misc.map"
 
 function love.load()
@@ -34,8 +36,11 @@ function love.load()
     
     if DEBUG then
         Gamestate.switch(game)
-        Player.country = "Canada"
-        --startBattle("Ukraine", "United States")
+        
+        --Player.country = "Canada"
+        countries[2]:addSkill(skills.attack)
+        startBattle("Ukraine", "United States")
+        
     else
         Gamestate.switch(menu)
     end

@@ -40,8 +40,13 @@ function Cell:clone()
         t[k] = v
     end
       
-    -- For loop above clones variables only. We also need draw method.
+    -- For loop above clones variables only. We also need other methods.
     t.draw = function(self,x,y) Cell.draw(self,x,y) end 
+    
+    if self:isInstanceOf(Country) then
+        t.loseHP = function(self, damage) Country.loseHP(self, damage) end
+        t.loseEnergy = function(self, amount) Country.loseEnergy(self, amount) end
+    end
     
     return t
 end

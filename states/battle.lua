@@ -17,32 +17,128 @@ end
 
 battle = {}
 
-function battle:init()
+function battle:enter() 
+    love.mouse.setGrabbed(false)
+    love.mouse.setVisible(true)
     -- Shortcuts
-    left = leftCountry 
-    right = rightCountry
+    player = leftCountry:clone()
+    enemy = rightCountry:clone()
     
-    left.image = left.rightImage
-    left.x = 10
-    left.y = 100
+    player.image = player.rightImage
+    player.x = 30
+    player.y = 50
+    player.buttons = {}
+    player.maxHp = player.hp
     
-    right.image = right.leftImage
-    right.x = the.screen.width - right.image:getWidth()
-    right.y = 100
+    local btnW = 100
+    local btnH = 30
+    local btnX = ((player.x + player.image:getWidth()) / 2) - btnW/2
+    local btnY = player.y + player.image:getHeight() + 70
+    for i,skill in ipairs(player.skills) do
+        table.insert(player.buttons, 
+            Button(btnX, btnY*i, btnW, btnH, skill.name, 
+            function()
+                if player.energy - skill.energy >= 0 then
+                    skill:exec(player, enemy)
+                    player.energy = player.energy - skill.energy
+                end
+            end
+            )
+        )
+    end
     
+    enemy.image = enemy.leftImage
+    enemy.x = the.screen.width - enemy.image:getWidth() - 60
+    enemy.y = 50
+    enemy.maxHp = enemy.hp
+    
+    barWidth = 150
+    barHeight = 20
+    player.hpBar = {
+        x = ((player.x + player.image:getWidth()) / 2) - barWidth/2,
+        y = barHeight,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth/ player.maxHp) * player.hp
+    } 
+    
+    player.energyBar = {
+        x = player.hpBar.x,
+        y = 300,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth / 100) * player.energy
+    }
+
+    enemy.hpBar = {
+        x = enemy.x + barWidth/2,
+        y = barHeight,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth / enemy.maxHp) * enemy.hp
+    }
+    
+    enemy.energyBar = {
+        x = enemy.hpBar.x,
+        y = 300,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth / 100) * enemy.energy
+    }
+        
+        
     battleCam = Camera(the.screen.width/2, the.screen.height/2)
 end
 
 function battle:update(dt)
-
+    for _,btn in pairs(player.buttons) do
+        btn:update()
+    end
+    
+    player.hpBar.fillWidth = (barWidth/ player.maxHp) * player.hp
+    enemy.hpBar.fillWidth = (barWidth / enemy.maxHp) * enemy.hp
+    player.energyBar.fillWidth = (barWidth / 100) * player.energy
+    enemy.energyBar.fillWidth = (barWidth / 100) * enemy.energy
 end
 
+function battle:mousereleased(x,y,button)
+    for _,btn in pairs(player.buttons) do
+        btn:mousereleased(x,y,button)
+    end
+end
 
 function battle:draw()
     battleCam:attach()
+
+    local playerScale = 250/player.image:getWidth()
+    local enemyScale = 250/enemy.image:getWidth()
     
-    love.graphics.draw(left.image, left.x, left.y)
-    love.graphics.draw(right.image, right.x, right.y)
+    love.graphics.push()
+    love.graphics.scale(playerScale)
+    love.graphics.draw(player.image, player.x, player.y)
+    love.graphics.pop()
+    
+    love.graphics.rectangle("line", player.hpBar.x, player.hpBar.y, player.hpBar.width, player.hpBar.height)
+    love.graphics.rectangle("fill", player.hpBar.x, player.hpBar.y, player.hpBar.fillWidth, player.hpBar.height)
+    love.graphics.rectangle("line", player.energyBar.x, player.energyBar.y, player.energyBar.width, player.energyBar.height)
+    love.graphics.rectangle("fill", player.energyBar.x, player.energyBar.y, player.energyBar.fillWidth, player.energyBar.height)
+    
+    love.graphics.push()
+    love.graphics.scale(enemyScale)
+    love.graphics.draw(enemy.image, enemy.x, enemy.y)
+    love.graphics.pop()
+    
+    love.graphics.rectangle("line", enemy.hpBar.x, enemy.hpBar.y, enemy.hpBar.width, enemy.hpBar.height)
+    love.graphics.rectangle("fill", enemy.hpBar.x, enemy.hpBar.y, enemy.hpBar.fillWidth, enemy.hpBar.height)
+    love.graphics.rectangle("line", enemy.energyBar.x, enemy.energyBar.y, enemy.energyBar.width, enemy.energyBar.height)
+    love.graphics.rectangle("fill", enemy.energyBar.x, enemy.energyBar.y, enemy.energyBar.fillWidth, enemy.energyBar.height)
+    
+    for _,btn in pairs(player.buttons) do
+        btn:draw()
+    end
     
     battleCam:detach()
+end
+
+function battle:leave()
 end

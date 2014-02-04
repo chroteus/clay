@@ -12,11 +12,11 @@ require "class.country"
 -- Where countries are instantiated.
 
 countries = {
-    -- Country(name, color, attack, defense)
-    Country("Sea", {255, 255, 255}, 0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
-    Country("Ukraine", {255,255,0}, 10, 5),
-    Country("United States", {0,0,255}, 20, 20),
-    Country("Canada", {255,0,0}, 10,10),
+    -- Country(name, color, attack, defense, hp)
+    Country("Sea", {255, 255, 255}, 0,0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
+    Country("Ukraine", {255,255,0}, 15,5, 50),
+    Country("United States", {0,0,255}, 10,10, 100),
+    Country("Canada", {255,0,0}, 10,5, 50),
 }
 
 for i=1, #countries do
