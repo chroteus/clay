@@ -17,7 +17,7 @@ end
 
 battle = {}
 
-function battle:enter() 
+function battle:enter()
     love.mouse.setGrabbed(false)
     love.mouse.setVisible(true)
     -- Shortcuts
@@ -32,7 +32,7 @@ function battle:enter()
     
     local btnW = 100
     local btnH = 30
-    local btnX = ((player.x + player.image:getWidth()) / 2) - btnW/2
+    local btnX = ((player.x + 250) / 2) - btnW/2
     local btnY = player.y + player.image:getHeight() + 70
     for i,skill in ipairs(player.skills) do
         table.insert(player.buttons, 
@@ -48,14 +48,14 @@ function battle:enter()
     end
     
     enemy.image = enemy.leftImage
-    enemy.x = the.screen.width - enemy.image:getWidth() - 60
+    enemy.x = the.screen.width - 250 - 60
     enemy.y = 50
     enemy.maxHp = enemy.hp
     
     barWidth = 150
     barHeight = 20
     player.hpBar = {
-        x = ((player.x + player.image:getWidth()) / 2) - barWidth/2,
+        x = ((player.x + 250) / 2) - barWidth/2,
         y = barHeight,
         width = barWidth,
         height = barHeight,
@@ -64,15 +64,15 @@ function battle:enter()
     
     player.energyBar = {
         x = player.hpBar.x,
-        y = 300,
+        y = 330,
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth / 100) * player.energy
     }
 
     enemy.hpBar = {
-        x = enemy.x + barWidth/2,
-        y = barHeight,
+        x = enemy.x + 250/2 - barWidth/2,
+        y = 20,
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth / enemy.maxHp) * enemy.hp
@@ -80,7 +80,7 @@ function battle:enter()
     
     enemy.energyBar = {
         x = enemy.hpBar.x,
-        y = 300,
+        y = 330,
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth / 100) * enemy.energy
@@ -93,6 +93,10 @@ end
 function battle:update(dt)
     for _,btn in pairs(player.buttons) do
         btn:update()
+    end
+    
+    if player.hp <= 0 or enemy.hp <= 0 then
+        Gamestate.switch(game)
     end
     
     player.hpBar.fillWidth = (barWidth/ player.maxHp) * player.hp
@@ -141,4 +145,20 @@ function battle:draw()
 end
 
 function battle:leave()
+    if enemy.hp <= 0 then
+        for _,adjCellColumn in pairs(currAdjCells) do
+            for _,adjCell in pairs(adjCellColumn) do
+                for _,country in pairs(countries) do
+                    if Player.country == country.name then
+                        map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                    end
+                end
+            end
+        end
+    end
+    
+    -- We want to save map AFTER claiming the cell, but only if enemy is defeated.
+    if enemy.hp <= 0 then
+        saveMap() 
+    end
 end

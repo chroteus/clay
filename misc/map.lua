@@ -1,7 +1,6 @@
 require "objects.countries"
 
-shouldCreate = false
-shouldLoad = false
+map = {}
 
 function createMap() -- Fresh map. Used to load map at first play.
     love.filesystem.remove("map.lua")
@@ -23,9 +22,35 @@ function loadMap() -- Load an existing map.
     Player.country = mapTable[2]
 end
 
+function saveMap(name)
+        -- Turn the map into a table of numbers which represent countries.
+        local numMap = {}
+        name = name or "map.lua" -- An optional name for map.
+        -- Create rows
+        for i=0,100 do numMap[i] = {} end 
+        
+        for columnIndex, column in pairs(map) do
+            for rowIndex, cell in pairs(column) do
+                numMap[columnIndex][rowIndex] = cell.id
+            end
+        end
+        
+        local mapString = serialize(numMap) -- numMap converted into a string.
+        love.filesystem.write(name, "return {")
+        string.gsub(mapString, ",", "")
+        love.filesystem.append(name, mapString)
+        love.filesystem.append(name, ","..'"'..Player.country..'" '.."}")
+    end
+
 function enteredMap()
 -- enterMap: Things to do every time game changes to "game" gamestate.
 -- This is done to prevent bugs when going from menu state to game state for example.
+
+    if love.filesystem.exists("map.lua") then
+        loadMap()
+    else
+        createMap()
+    end
 
     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
@@ -46,34 +71,9 @@ function enteredMap()
     currAdjCells = {}
 end
 
-function initMap()
-    if love.filesystem.exists("map.lua") then
-        loadMap()
-    else
-        createMap()
-    end
-    
+function initMap()    
     currAdjCells = {} -- adjacent cells of the selected cell.
-    
-    
-    function saveMap(name)
-        -- Turn the map into a table of numbers which represent countries.
-        local numMap = {}
-        name = name or "map.lua" -- An optional name for map.
-        -- Create rows
-        for i=0,100 do numMap[i] = {} end 
-        
-        for columnIndex, column in pairs(map) do
-            for rowIndex, cell in pairs(column) do
-                numMap[columnIndex][rowIndex] = cell.id
-            end
-        end
-        
-        local mapString = serialize(numMap) -- numMap converted into a string.
-        love.filesystem.write(name, "return {")
-        love.filesystem.append(name, mapString)
-        love.filesystem.append(name, ","..'"'..Player.country..'" '.."}")
-    end
+
     -----------------------
     --Edit Mode variables--
     
@@ -84,6 +84,11 @@ function initMap()
             
     }
 
+    -- Variables to determine if player has won the battle.
+    -- If so, the cell player invaded becomes his own. Else, it stays like it was.
+    --playerWonBattle = false
+    --enemyWonBattle = false
+    
     -- Camera
     mapCam = Camera(the.screen.width/2, the.screen.height/2)
     
@@ -220,9 +225,14 @@ function mousepressedMap(x, y, button)
                                 if Player.country == country.name then
                                     local adjCellX = (adjCell.rowIndex-1)*the.cell.width
                                     local adjCellY = (adjCell.columnIndex-1)*the.cell.height
+                                    local adjCellCountry = map[adjCell.columnIndex][adjCell.rowIndex].name
                                     
                                     if checkCollision(the.mouse.x,the.mouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
-                                        map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                                        if adjCellCountry == "Sea" or playerWonBattle then
+                                            map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                                        else
+                                            startBattle(Player.country, map[adjCell.columnIndex][adjCell.rowIndex].name)
+                                        end
                                     end
                                 end
                             end

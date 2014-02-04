@@ -48,3 +48,7 @@ function game:keyreleased(key)
         end
     end
 end
+
+function game:leave()
+    saveMap()
+end

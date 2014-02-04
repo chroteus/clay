@@ -30,7 +30,9 @@ function Country:initialize(name, color, attack, defense, hp)
     self.energy = 100
     
     -- A table which holds all skills a country might have. A country cannot have more than 3 skills.
-    self.skills = {} 
+    self.skills = {
+        skills.attack,
+    } 
     
     Cell.initialize(self, self.id, self.color)
 end

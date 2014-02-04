@@ -37,9 +37,8 @@ function love.load()
     if DEBUG then
         Gamestate.switch(game)
         
-        --Player.country = "Canada"
-        countries[2]:addSkill(skills.attack)
-        startBattle("Ukraine", "United States")
+        Player.country = "Canada"
+        --startBattle("Ukraine", "Canada")
         
     else
         Gamestate.switch(menu)
