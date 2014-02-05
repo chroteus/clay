@@ -4,7 +4,7 @@ require "class.skill"
 skills = {
     attack = Skill("Attack", 2,
                 function(self, target) 
-                    target:loseHP(self.attack) 
+                    target:loseHP(math.random(target.defense+1, self.attack+5))
                 end),
 }
                 

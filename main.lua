@@ -1,4 +1,4 @@
-DEBUG = true
+DEBUG = false
 
 -- Libraries
 Timer = require "lib.hump.timer"

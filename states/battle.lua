@@ -33,10 +33,10 @@ function battle:enter()
     local btnW = 100
     local btnH = 30
     local btnX = ((player.x + 250) / 2) - btnW/2
-    local btnY = player.y + player.image:getHeight() + 70
+    local btnY = player.y + player.image:getHeight() + 130
     for i,skill in ipairs(player.skills) do
         table.insert(player.buttons, 
-            Button(btnX, btnY*i, btnW, btnH, skill.name, 
+            Button(btnX, btnY*i, btnW, btnH, skill.name.." ("..-skill.energy..")", 
             function()
                 if player.energy - skill.energy >= 0 then
                     skill:exec(player, enemy)
@@ -84,9 +84,12 @@ function battle:enter()
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth / 100) * enemy.energy
-    }
+    } 
         
-        
+    -- fighers: A table which holds both player and enemy. Used to reduce 
+    -- duplicate code in update and draw functions.
+    fighters = {player, enemy}
+    
     battleCam = Camera(the.screen.width/2, the.screen.height/2)
 end
 
@@ -99,10 +102,10 @@ function battle:update(dt)
         Gamestate.switch(game)
     end
     
-    player.hpBar.fillWidth = (barWidth/ player.maxHp) * player.hp
-    enemy.hpBar.fillWidth = (barWidth / enemy.maxHp) * enemy.hp
-    player.energyBar.fillWidth = (barWidth / 100) * player.energy
-    enemy.energyBar.fillWidth = (barWidth / 100) * enemy.energy
+    for _,fighter in pairs(fighters) do
+        fighter.hpBar.fillWidth = (barWidth/ fighter.maxHp) * fighter.hp
+        fighter.energyBar.fillWidth = (barWidth / 100) * fighter.energy
+    end
 end
 
 function battle:mousereleased(x,y,button)
@@ -113,29 +116,31 @@ end
 
 function battle:draw()
     battleCam:attach()
-
-    local playerScale = 250/player.image:getWidth()
-    local enemyScale = 250/enemy.image:getWidth()
     
-    love.graphics.push()
-    love.graphics.scale(playerScale)
-    love.graphics.draw(player.image, player.x, player.y)
-    love.graphics.pop()
+    for _,fighter in pairs(fighters) do
+        local fighterScale = 250/fighter.image:getWidth()
+        love.graphics.push()
+        love.graphics.scale(fighterScale)
+        love.graphics.draw(fighter.image, fighter.x, fighter.y)
+        love.graphics.pop()
+        
+        love.graphics.setColor(190,30,30)
+        love.graphics.rectangle("line", fighter.hpBar.x, fighter.hpBar.y, fighter.hpBar.width, fighter.hpBar.height)
+        love.graphics.rectangle("fill", fighter.hpBar.x, fighter.hpBar.y, fighter.hpBar.fillWidth, fighter.hpBar.height)
+        
+        love.graphics.setColor(0,150,200)
+        love.graphics.rectangle("line", fighter.energyBar.x, fighter.energyBar.y, fighter.energyBar.width, fighter.energyBar.height)
+        love.graphics.rectangle("fill", fighter.energyBar.x, fighter.energyBar.y, fighter.energyBar.fillWidth, fighter.energyBar.height)
     
-    love.graphics.rectangle("line", player.hpBar.x, player.hpBar.y, player.hpBar.width, player.hpBar.height)
-    love.graphics.rectangle("fill", player.hpBar.x, player.hpBar.y, player.hpBar.fillWidth, player.hpBar.height)
-    love.graphics.rectangle("line", player.energyBar.x, player.energyBar.y, player.energyBar.width, player.energyBar.height)
-    love.graphics.rectangle("fill", player.energyBar.x, player.energyBar.y, player.energyBar.fillWidth, player.energyBar.height)
-    
-    love.graphics.push()
-    love.graphics.scale(enemyScale)
-    love.graphics.draw(enemy.image, enemy.x, enemy.y)
-    love.graphics.pop()
-    
-    love.graphics.rectangle("line", enemy.hpBar.x, enemy.hpBar.y, enemy.hpBar.width, enemy.hpBar.height)
-    love.graphics.rectangle("fill", enemy.hpBar.x, enemy.hpBar.y, enemy.hpBar.fillWidth, enemy.hpBar.height)
-    love.graphics.rectangle("line", enemy.energyBar.x, enemy.energyBar.y, enemy.energyBar.width, enemy.energyBar.height)
-    love.graphics.rectangle("fill", enemy.energyBar.x, enemy.energyBar.y, enemy.energyBar.fillWidth, enemy.energyBar.height)
+        love.graphics.setColor(255,255,255)
+        
+        local fontHeight = (love.graphics.getFont():getHeight())/2
+        love.graphics.printf("Energy: "..fighter.energy.."/100", fighter.energyBar.x+5, fighter.energyBar.y + barHeight/2 - fontHeight, barWidth, "left")
+        love.graphics.printf("Health "..fighter.hp.."/"..fighter.maxHp, fighter.hpBar.x+5, fighter.hpBar.y + barHeight/2 - fontHeight, barWidth, "left")
+        
+        love.graphics.printf("Attack: "..fighter.attack, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "left")
+        love.graphics.printf("Defense: "..fighter.defense, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "right")
+    end
     
     for _,btn in pairs(player.buttons) do
         btn:draw()
@@ -157,7 +162,7 @@ function battle:leave()
         end
     end
     
-    -- We want to save map AFTER claiming the cell, but only if enemy is defeated.
+    -- We want to save map AFTER claiming the cell, but only if the enemy is defeated.
     if enemy.hp <= 0 then
         saveMap() 
     end
