@@ -26,6 +26,7 @@ require "misc.map"
 
 function love.load()
     love.window.setMode(800, 576)
+    love.window.setTitle("Clay")
     --love.window.setFullscreen(true)
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 

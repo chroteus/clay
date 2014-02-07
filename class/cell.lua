@@ -22,7 +22,7 @@ function Cell:draw(x, y)
     self.color[4] = 80 -- Set the alpha channel. Makes cell transparent.
 
     if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it drops FPS.
-        if self.isSelected then self.color[4] = 160 end
+        if self.isSelected then self.color[4] = 180 end
         love.graphics.setColor(self.color)
         love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
         love.graphics.setColor(255,255,255)
@@ -40,7 +40,7 @@ function Cell:clone()
         t[k] = v
     end
       
-    -- For loop above clones variables only. We also need other methods.
+    -- For loop above clones variables only. We also need other methods for clones to work properly.
     t.draw = function(self,x,y) Cell.draw(self,x,y) end 
     
     if self:isInstanceOf(Country) then

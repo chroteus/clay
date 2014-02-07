@@ -39,8 +39,8 @@ function Button:initialize(x, y, width, height, text, action)
         
         -- clicked = Mouse clicked the button.
         clicked = {
-            bg = {guiColors.bg[1] + 20, guiColors.bg[2] + 20, guiColors.bg[3] + 20, 1120},
-            fg = {guiColors.fg[1] + 20, guiColors.fg[2] + 20, guiColors.fg[3] + 20, 1120}
+            bg = {guiColors.bg[1] + 20, guiColors.bg[2] + 20, guiColors.bg[3] + 20, 255},
+            fg = {guiColors.fg[1] + 20, guiColors.fg[2] + 20, guiColors.fg[3] + 20, 255}
         }
     }
 end
@@ -66,6 +66,15 @@ function Button:mousereleased(x, y, button)
     
     if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
         self.action() -- Executes action of the button.
+        
+        if self:isInstanceOf(SkillBtn) then
+            for _,skill in pairs(player.skills) do
+                if self.fillWidth >= self.width-0.01 then -- Checking for equality doesn't work properly for some reason.
+                    self.fillWidth = 0
+                    Timer.tween(skill.cooldownReset, self, {fillWidth = self.width}, "out-quad")
+                end
+            end
+        end
     end
 end
 
@@ -74,12 +83,21 @@ function Button:draw()
 
     if self.state == "idle" then
         love.graphics.setColor(self.colors.idle.bg)
-        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+        if self:isInstanceOf(SkillBtn) then
+            love.graphics.rectangle("fill", self.x, self.y, self.fillWidth, self.height)
+        else
+            love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+        end
+        
         love.graphics.setColor(self.colors.idle.fg)
         love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
     elseif self.state == "active" then
         love.graphics.setColor(self.colors.active.bg)
-        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+        if self:isInstanceOf(SkillBtn) then
+            love.graphics.rectangle("fill", self.x, self.y, self.fillWidth, self.height)
+        else
+            love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+        end
         love.graphics.setColor(self.colors.active.fg)
         love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
     elseif self.state == "clicked" then
@@ -165,7 +183,7 @@ function ShopButton:drawIcon()
     love.graphics.print(self.variable, self.x - (23*scaleFactor), self.y)
 end
     
-    
+
     
     
     

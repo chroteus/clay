@@ -34,6 +34,7 @@ end
 
 function selection:enter()
     love.mouse.setVisible(true)
+    love.mouse.setGrabbed(false)
 end
 
 function selection:update(dt)

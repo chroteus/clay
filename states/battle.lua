@@ -30,20 +30,23 @@ function battle:enter()
     player.buttons = {}
     player.maxHp = player.hp
     
-    local btnW = 100
-    local btnH = 30
-    local btnX = ((player.x + 250) / 2) - btnW/2
-    local btnY = player.y + player.image:getHeight() + 130
+    SkillBtn = Button:subclass("SkillBtn")
+    
+    function SkillBtn:initialize(fighter, text, func)
+        self.x = ((fighter.x + 250) / 2) - 50
+        self.y = fighter.y + fighter.image:getHeight() + 130
+        self.width = 100
+        self.fillWidth = 100
+        self.height = 30
+        self.text = text
+        self.func = func
+        
+        Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
+    end
+    
     for i,skill in ipairs(player.skills) do
         table.insert(player.buttons, 
-            Button(btnX, btnY*i, btnW, btnH, skill.name.." ("..-skill.energy..")", 
-            function()
-                if player.energy - skill.energy >= 0 then
-                    skill:exec(player, enemy)
-                    player.energy = player.energy - skill.energy
-                end
-            end
-            )
+            SkillBtn(player, skill.name.." ("..-skill.energy..")",  function() skill:exec(player, enemy) end)
         )
     end
     
@@ -105,6 +108,10 @@ function battle:update(dt)
     for _,fighter in pairs(fighters) do
         fighter.hpBar.fillWidth = (barWidth/ fighter.maxHp) * fighter.hp
         fighter.energyBar.fillWidth = (barWidth / 100) * fighter.energy
+    end
+    
+    for _,skill in pairs(player.skills) do
+        skill:update(dt)
     end
 end
 
