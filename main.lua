@@ -39,7 +39,7 @@ function love.load()
         Gamestate.switch(game)
         
         Player.country = "Canada"
-        --startBattle("Ukraine", "Canada")
+        startBattle("Ukraine", "Canada")
         
     else
         Gamestate.switch(menu)

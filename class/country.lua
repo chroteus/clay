@@ -29,7 +29,6 @@ function Country:initialize(name, color, attack, defense, hp)
     self.hp = hp
     self.energy = 100
     
-    -- A table which holds all skills a country might have. A country cannot have more than 3 skills.
     self.skills = {
         skills.attack,
     } 
@@ -45,11 +44,16 @@ function Country:loseHP(damage)
     self.hp = self.hp - netDamage
 end
 
+function Country:gainHP(amount)
+    self.hp = self.hp + amount
+end
+
 function Country:loseEnergy(amount)
     self.energy = self.energy - amount
 end
 
 
-function Country:addSkill(skill)
-    table.insert(self.skills, skill)
+function Country:addSkill(argSkill)
+    local n = #self.skills
+    self.skills[n+1] = skills[argSkill]
 end

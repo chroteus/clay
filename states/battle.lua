@@ -28,32 +28,36 @@ function battle:enter()
     player.x = 30
     player.y = 50
     player.buttons = {}
-    player.maxHp = player.hp
+    player.maxHP = player.hp
+    
+    player:addSkill("heal")
     
     SkillBtn = Button:subclass("SkillBtn")
     
-    function SkillBtn:initialize(fighter, text, func)
-        self.x = ((fighter.x + 250) / 2) - 50
-        self.y = fighter.y + fighter.image:getHeight() + 130
+    function SkillBtn:initialize(yOrder, skill, func)
+        self.x = (player.x + 250) / 2 - 50
+        self.y = (player.y + player.image:getHeight()+40) + 40*yOrder
         self.width = 100
         self.fillWidth = 100
         self.height = 30
-        self.text = text
         self.func = func
+        self.text = skill.name.." ("..-skill.energy..")"
+        
         
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
     end
     
     for i,skill in ipairs(player.skills) do
-        table.insert(player.buttons, 
-            SkillBtn(player, skill.name.." ("..-skill.energy..")",  function() skill:exec(player, enemy) end)
-        )
+        table.insert(player.buttons, SkillBtn(i, skill, function() skill:exec(player, enemy) end))
+        
+        -- Fills the button depending on this variable.
+        player.buttons[i].cooldown = skill.cooldownReset
     end
     
     enemy.image = enemy.leftImage
     enemy.x = the.screen.width - 250 - 60
     enemy.y = 50
-    enemy.maxHp = enemy.hp
+    enemy.maxHP = enemy.hp
     
     barWidth = 150
     barHeight = 20
@@ -62,7 +66,7 @@ function battle:enter()
         y = barHeight,
         width = barWidth,
         height = barHeight,
-        fillWidth = (barWidth/ player.maxHp) * player.hp
+        fillWidth = (barWidth/ player.maxHP) * player.hp
     } 
     
     player.energyBar = {
@@ -78,7 +82,7 @@ function battle:enter()
         y = 20,
         width = barWidth,
         height = barHeight,
-        fillWidth = (barWidth / enemy.maxHp) * enemy.hp
+        fillWidth = (barWidth / enemy.maxHP) * enemy.hp
     }
     
     enemy.energyBar = {
@@ -106,8 +110,10 @@ function battle:update(dt)
     end
     
     for _,fighter in pairs(fighters) do
-        fighter.hpBar.fillWidth = (barWidth/ fighter.maxHp) * fighter.hp
+        fighter.hpBar.fillWidth = (barWidth/ fighter.maxHP) * fighter.hp
         fighter.energyBar.fillWidth = (barWidth / 100) * fighter.energy
+        
+        if fighter.hp > fighter.maxHP then fighter.hp = fighter.maxHP end
     end
     
     for _,skill in pairs(player.skills) do
@@ -143,7 +149,7 @@ function battle:draw()
         
         local fontHeight = (love.graphics.getFont():getHeight())/2
         love.graphics.printf("Energy: "..fighter.energy.."/100", fighter.energyBar.x+5, fighter.energyBar.y + barHeight/2 - fontHeight, barWidth, "left")
-        love.graphics.printf("Health "..fighter.hp.."/"..fighter.maxHp, fighter.hpBar.x+5, fighter.hpBar.y + barHeight/2 - fontHeight, barWidth, "left")
+        love.graphics.printf("Health "..fighter.hp.."/"..fighter.maxHP, fighter.hpBar.x+5, fighter.hpBar.y + barHeight/2 - fontHeight, barWidth, "left")
         
         love.graphics.printf("Attack: "..fighter.attack, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "left")
         love.graphics.printf("Defense: "..fighter.defense, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "right")
@@ -173,4 +179,6 @@ function battle:leave()
     if enemy.hp <= 0 then
         saveMap() 
     end
+    
+    startedBattle = false
 end

@@ -68,11 +68,9 @@ function Button:mousereleased(x, y, button)
         self.action() -- Executes action of the button.
         
         if self:isInstanceOf(SkillBtn) then
-            for _,skill in pairs(player.skills) do
-                if self.fillWidth >= self.width-0.01 then -- Checking for equality doesn't work properly for some reason.
-                    self.fillWidth = 0
-                    Timer.tween(skill.cooldownReset, self, {fillWidth = self.width}, "out-quad")
-                end
+            if self.fillWidth >= self.width-0.0001 then -- Checking for equality doesn't work properly for some reason.
+                self.fillWidth = 0
+                Timer.tween(self.cooldown, self, {fillWidth = self.width}, "out-quad")
             end
         end
     end
@@ -146,7 +144,7 @@ end
 
 
 ShopButton = Button:subclass("ShopButton")
--- Shop Button: Has icons, values of variables of something. ex: Player.maxHp
+-- Shop Button: Has icons, values of variables of something. ex: Player.maxHP
 -- Used solely in shop.
 
 function ShopButton:initialize(order, icon, variable, price, amount, text)

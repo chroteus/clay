@@ -46,6 +46,8 @@ function Cell:clone()
     if self:isInstanceOf(Country) then
         t.loseHP = function(self, damage) Country.loseHP(self, damage) end
         t.loseEnergy = function(self, amount) Country.loseEnergy(self, amount) end
+        t.gainHP = function(self, amount) Country.gainHP(self, amount) end
+        t.addSkill = function(self, argSkill) Country.addSkill(self, argSkill) end
     end
     
     return t

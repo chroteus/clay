@@ -230,8 +230,10 @@ function mousepressedMap(x, y, button)
                                     if checkCollision(the.mouse.x,the.mouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
                                         if adjCellCountry == "Sea" or playerWonBattle then
                                             map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
-                                        else
+                                        elseif not startedBattle then
+                                            -- Prevent switching to battle more than once.
                                             startBattle(Player.country, map[adjCell.columnIndex][adjCell.rowIndex].name)
+                                            startedBattle = true
                                         end
                                     end
                                 end
