@@ -11,12 +11,12 @@ guiColors = {
     fg = {50, 50, 50, 200}
 }
 
-function Button:initialize(x, y, width, height, text, action)
+function Button:initialize(x, y, width, height, text, func)
     self.x = x
     self.y = y
     self.width = width
     self.height = height
-    self.action = assert(action) -- Action to be executed when button is clicked.
+    self.func = assert(func) -- Function to be executed when button is clicked.
     self.state = "idle" -- Default state is idle. State is used to change colors of button.
     self.text = text -- Text to be displayed.
     
@@ -45,6 +45,10 @@ function Button:initialize(x, y, width, height, text, action)
     }
 end
 
+function Button:action()
+    self.func()
+end
+
 function Button:update(dt)
     if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
         self.state = "active"
@@ -65,14 +69,7 @@ function Button:mousereleased(x, y, button)
     -- To be used in mousereleased callback functions.
     
     if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
-        self.action() -- Executes action of the button.
-        
-        if self:isInstanceOf(SkillBtn) then
-            if self.fillWidth >= self.width-0.0001 then -- Checking for equality doesn't work properly for some reason.
-                self.fillWidth = 0
-                Timer.tween(self.cooldown, self, {fillWidth = self.width}, "out-quad")
-            end
-        end
+        self:action() -- Executes action of the button.
     end
 end
 
