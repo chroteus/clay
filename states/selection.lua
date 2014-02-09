@@ -13,14 +13,14 @@ function selection:init()
         self.width = 25
         self.height = 25
         self.text = " "
-        self.action = function() 
+        self.func = function() 
                         initMap()
                         editMode.country = self.country.name
                         editMode.enabled = true
                         Gamestate.switch(game)
                       end
         
-        Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.action)
+        Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
     end
     
     countryButtons = {}

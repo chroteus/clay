@@ -38,10 +38,26 @@ function battle:enter()
         self.fillWidth = 100
         self.height = 30
         self.func = func
-        self.text = skill.name.." ("..-skill.energy..")"
+        self.text = skill.name.." ["..-skill.energy.."]"
+        self.hotkey = string.lower(string.match(skill.name, "%((.?)%)"))
         
         
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
+
+    end
+
+    function SkillBtn:action()
+        Button.action(self)
+        if self.fillWidth >= self.width-0.0001 then -- Checking for equality doesn't work properly for some reason.
+            self.fillWidth = 0
+            Timer.tween(self.cooldown, self, {fillWidth = self.width}, "out-quad")
+        end
+    end
+
+    function SkillBtn:keypressed(key)
+        if self.hotkey and string.lower(key) == self.hotkey then
+            self:action()
+        end
     end
     
     for i,skill in ipairs(player.skills) do
@@ -129,6 +145,12 @@ end
 function battle:mousereleased(x,y,button)
     for _,btn in pairs(player.buttons) do
         btn:mousereleased(x,y,button)
+    end
+end
+
+function battle:keypressed(key)
+    for _,btn in pairs(player.buttons) do
+        btn:keypressed(key)
     end
 end
 
