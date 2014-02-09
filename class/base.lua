@@ -1,0 +1,29 @@
+Base = class("Base")
+
+function Base:intialize()
+end
+
+function Base:clone()
+    -- Clone method: A method which takes an instance and clones it.
+    -- Used in cases where we want multiple clones (like Cells).
+    -- Used to separate the data, so that change in one clone won't affect another one.
+    local t = {}
+    for k,v in pairs(self) do
+        t[k] = v
+    end
+      
+    -- For loop above clones variables only. We also need other methods for clones to work properly.
+    t.draw = function(self,x,y) Cell.draw(self,x,y) end 
+    
+    if self:isInstanceOf(Country) then
+        t.loseHP = function(self, damage) Country.loseHP(self, damage) end
+        t.loseEnergy = function(self, amount) Country.loseEnergy(self, amount) end
+        t.gainHP = function(self, amount) Country.gainHP(self, amount) end
+        t.addSkill = function(self, argSkill) Country.addSkill(self, argSkill) end
+    elseif self:isInstanceOf(Skill) then
+        t.update = function(self, dt) Skill.update(self, dt) end
+        t.exec = function(self, fighter, target) Skill.exec(self, fighter, target) end
+    end
+    
+    return t
+end

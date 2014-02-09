@@ -4,8 +4,8 @@ require "class.skill"
 skills = {
     -- Skill(name, energy, cooldown, func)
     
-    attack = Skill("Attack", 2, 1, function(self, target) target:loseHP(math.random(target.defense+1, self.attack+5)) end),
-    heal = Skill("Heal", 5, 10, function(self) self:gainHP(math.random(5,15)) end),
+    attack = Skill("Attack", 2, 1, function(fighter, target) target:loseHP(math.random(target.defense+1, fighter.attack+5)) end),
+    heal = Skill("Heal", 5, 5, function(fighter) fighter:gainHP(math.random(5,15)) end),
 }
                 
 

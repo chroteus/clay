@@ -20,6 +20,7 @@ require "states.pause"
 
 -- Misc
 require "class.player"
+require "class.base"
 require "class.skill"
 require "objects.skills"
 require "misc.map"

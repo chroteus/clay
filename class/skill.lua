@@ -1,4 +1,4 @@
-Skill = class("Skill")
+Skill = Base:subclass("Skill")
 
 function Skill:initialize(name, energy, cooldown, func)
     self.name = name
@@ -19,12 +19,11 @@ function Skill:update(dt)
     end
 end
 
-function Skill:exec(...)
+function Skill:exec(fighter, target)
     if self.isReady then
-        -- <player> is the <player> table which is initialized in battle gamestate.
-        if player.energy - self.energy >= 0 then
-            player.energy = player.energy - self.energy
-            self.func(...)
+        if fighter.energy - fighter.energy >= 0 then
+            fighter.energy = fighter.energy - self.energy
+            self.func(fighter, target)
         end
     
         self.isReady = false

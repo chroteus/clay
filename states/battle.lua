@@ -28,9 +28,6 @@ function battle:enter()
     player.x = 30
     player.y = 50
     player.buttons = {}
-    player.maxHP = player.hp
-    
-    player:addSkill("heal")
     
     SkillBtn = Button:subclass("SkillBtn")
     
@@ -57,7 +54,6 @@ function battle:enter()
     enemy.image = enemy.leftImage
     enemy.x = the.screen.width - 250 - 60
     enemy.y = 50
-    enemy.maxHP = enemy.hp
     
     barWidth = 150
     barHeight = 20
@@ -97,6 +93,17 @@ function battle:enter()
     -- duplicate code in update and draw functions.
     fighters = {player, enemy}
     
+    
+    -- Simple AI
+    -- Execute any possible skill (if cooldown is over) every second.
+    enemyFightTimerHandle = Timer.addPeriodic(1,
+        function()
+            for _,skill in pairs(enemy.skills) do
+                skill:exec(enemy, player)
+            end
+        end
+    )
+    
     battleCam = Camera(the.screen.width/2, the.screen.height/2)
 end
 
@@ -112,12 +119,10 @@ function battle:update(dt)
     for _,fighter in pairs(fighters) do
         fighter.hpBar.fillWidth = (barWidth/ fighter.maxHP) * fighter.hp
         fighter.energyBar.fillWidth = (barWidth / 100) * fighter.energy
-        
-        if fighter.hp > fighter.maxHP then fighter.hp = fighter.maxHP end
-    end
     
-    for _,skill in pairs(player.skills) do
-        skill:update(dt)
+        for _,skill in pairs(fighter.skills) do
+            skill:update(dt)
+        end
     end
 end
 
@@ -163,6 +168,7 @@ function battle:draw()
 end
 
 function battle:leave()
+    -- Claim the cell that we wanted to claim.
     if enemy.hp <= 0 then
         for _,adjCellColumn in pairs(currAdjCells) do
             for _,adjCell in pairs(adjCellColumn) do
@@ -181,4 +187,7 @@ function battle:leave()
     end
     
     startedBattle = false
+    
+    -- stop executing enemy skills.
+    Timer.cancel(enemyFightTimerHandle)
 end

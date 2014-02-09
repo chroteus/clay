@@ -27,10 +27,12 @@ function Country:initialize(name, color, attack, defense, hp)
     self.attack = attack
     self.defense = defense
     self.hp = hp
+    self.maxHP = self.hp
     self.energy = 100
     
     self.skills = {
-        skills.attack,
+        skills.attack:clone(),
+        skills.heal:clone(),
     } 
     
     Cell.initialize(self, self.id, self.color)
@@ -46,6 +48,9 @@ end
 
 function Country:gainHP(amount)
     self.hp = self.hp + amount
+    if self.hp > self.maxHP then
+        self.hp = self.maxHP
+    end
 end
 
 function Country:loseEnergy(amount)
@@ -55,5 +60,5 @@ end
 
 function Country:addSkill(argSkill)
     local n = #self.skills
-    self.skills[n+1] = skills[argSkill]
+    self.skills[n+1] = skills[argSkill]:clone()
 end

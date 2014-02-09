@@ -83,11 +83,6 @@ function initMap()
         buttons = {}
             
     }
-
-    -- Variables to determine if player has won the battle.
-    -- If so, the cell player invaded becomes his own. Else, it stays like it was.
-    --playerWonBattle = false
-    --enemyWonBattle = false
     
     -- Camera
     mapCam = Camera(the.screen.width/2, the.screen.height/2)

@@ -1,4 +1,4 @@
-Cell = class("Cell")
+Cell = Base:subclass("Cell")
 
 function Cell:initialize(id, color)
     -- id [String or Number]: A single character representing a cell. Used for drawing cells on map.
@@ -30,25 +30,4 @@ function Cell:draw(x, y)
             love.graphics.rectangle("line", x, y, the.cell.width, the.cell.height)
         end
     end
-end
-
-function Cell:clone()
-    -- Since we will edit individual cells, cells will be cloned and then edited,
-    -- so that changes applied to one cell, won't be seen in another.
-    local t = {}
-    for k,v in pairs(self) do
-        t[k] = v
-    end
-      
-    -- For loop above clones variables only. We also need other methods for clones to work properly.
-    t.draw = function(self,x,y) Cell.draw(self,x,y) end 
-    
-    if self:isInstanceOf(Country) then
-        t.loseHP = function(self, damage) Country.loseHP(self, damage) end
-        t.loseEnergy = function(self, amount) Country.loseEnergy(self, amount) end
-        t.gainHP = function(self, amount) Country.gainHP(self, amount) end
-        t.addSkill = function(self, argSkill) Country.addSkill(self, argSkill) end
-    end
-    
-    return t
 end
