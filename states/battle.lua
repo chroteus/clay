@@ -39,8 +39,8 @@ function battle:enter()
         self.height = 30
         self.func = func
         self.text = skill.name.." ["..-skill.energy.."]"
-        self.hotkey = string.lower(string.match(skill.name, "%((.?)%)"))
-        
+        self.hotkey = string.match(skill.name, "%((.?)%)")
+        if self.hotkey then self.hotkey = string.lower(self.hotkey) end
         
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
 
