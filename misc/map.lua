@@ -235,9 +235,9 @@ function mousepressedMap(x, y, button)
                                     local adjCellCountry = map[adjCell.columnIndex][adjCell.rowIndex].name
                                     
                                     if checkCollision(the.mouse.x,the.mouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
-                                        if playerWonBattle then
-                                            map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
-                                        elseif adjCellCountry == "Sea" then
+                                        -- Note: Conquering the cell is done in battle's leave function.
+                                        map[adjCell.columnIndex][adjCell.rowIndex].isSelected = true
+                                        if adjCellCountry == "Sea" then
                                             map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
                                             map[adjCell.columnIndex][adjCell.rowIndex].isFaintClone = true
                                         elseif not startedBattle then

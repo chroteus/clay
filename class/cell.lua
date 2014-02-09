@@ -7,7 +7,7 @@ function Cell:initialize(id, color)
     -- color [Table]: Color of a cell. (Captain Obvious to the rescue! :3)
     self.color = color
     
-    -- isSelected [Bool]: If a cell is selected, it has a line around it and is more opaque.
+    -- isSelected [Bool]: If a cell is selected, it is more opaque.
     self.isSelected = false
     
     -- isFaintCloe [Bool]: Cells which turn into "Sea" cell after a mouse click.

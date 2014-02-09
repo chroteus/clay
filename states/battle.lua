@@ -196,7 +196,9 @@ function battle:leave()
             for _,adjCell in pairs(adjCellColumn) do
                 for _,country in pairs(countries) do
                     if Player.country == country.name then
-                        map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                        if map[adjCell.columnIndex][adjCell.rowIndex].name ~= "Sea" and map[adjCell.columnIndex][adjCell.rowIndex].isSelected then
+                            map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                        end
                     end
                 end
             end
