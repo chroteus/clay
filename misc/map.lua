@@ -69,6 +69,9 @@ function enteredMap()
     
     -- Clear up current adjacent cells table so that none of the cells would be selected.
     currAdjCells = {}
+    
+    -- Clean up "faint" clones of cells which are left when player conquers sea cells.
+    -- <cleanupControl> variable is used to stop cleaning up upon leaving game state.
 end
 
 function initMap()    
@@ -93,6 +96,16 @@ function initMap()
 end
 
 function updateMap(dt)
+    ---------------------------
+    --Clean up "faint clones"--
+    for columnIndex, column in pairs(map) do
+        for rowIndex, cell in pairs(column) do
+            if cell.isFaintClone then
+                map[columnIndex][rowIndex] = countries[1]:clone()
+            end
+        end
+    end
+
     ---------------------
     --Moving the camera--
     
@@ -181,7 +194,6 @@ function mousepressedMap(x, y, button)
                     -- We make all cells non-selected first so that Player won't be able to select more than one cell.
                     cell.isSelected = false
                     
-                
                     -------------------------------------------------------
                     --Generate adjacent cells table for the selected cell--
 
@@ -223,8 +235,11 @@ function mousepressedMap(x, y, button)
                                     local adjCellCountry = map[adjCell.columnIndex][adjCell.rowIndex].name
                                     
                                     if checkCollision(the.mouse.x,the.mouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
-                                        if adjCellCountry == "Sea" or playerWonBattle then
+                                        if playerWonBattle then
                                             map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                                        elseif adjCellCountry == "Sea" then
+                                            map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                                            map[adjCell.columnIndex][adjCell.rowIndex].isFaintClone = true
                                         elseif not startedBattle then
                                             -- Prevent switching to battle more than once.
                                             startBattle(Player.country, map[adjCell.columnIndex][adjCell.rowIndex].name)

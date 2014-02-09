@@ -10,6 +10,9 @@ function Cell:initialize(id, color)
     -- isSelected [Bool]: If a cell is selected, it has a line around it and is more opaque.
     self.isSelected = false
     
+    -- isFaintCloe [Bool]: Cells which turn into "Sea" cell after a mouse click.
+    self.isFaintClone = false
+    
     -- adjCells [Table]: A table with information about adjacent cells.
     -- This table will store information about adjacent cells which will be generated in initMap() function in /misc/map.lua
     self.adjCells = {{0,0,0}, 
@@ -23,6 +26,7 @@ function Cell:draw(x, y)
 
     if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it drops FPS.
         if self.isSelected then self.color[4] = 180 end
+        
         love.graphics.setColor(self.color)
         love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
         love.graphics.setColor(255,255,255)

@@ -21,7 +21,7 @@ end
 
 function Skill:exec(fighter, target)
     if self.isReady then
-        if fighter.energy - fighter.energy >= 0 then
+        if fighter.energy - self.energy >= 0 then
             fighter.energy = fighter.energy - self.energy
             self.func(fighter, target)
         end
