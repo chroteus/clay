@@ -48,7 +48,7 @@ function selection:draw()
         btn:draw()
     end
     
-    love.graphics.printf('Sea: A placeholder "country" to be placed in the place of countries which are not created yet or in the place of sea.', 20, 540, the.screen.width, "left")
+    love.graphics.printf('Sea: A placeholder "country" to be placed in the place of countries which are not created yet or in the place of sea.', 20, the.screen.height - 30, the.screen.width, "left")
 end
 
 function selection:mousereleased(x,y,button)

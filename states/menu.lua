@@ -20,7 +20,7 @@ function menu:init()
         -- GenericButton(order, text, action)
         start = GenericButton(1, "New Game", function() newGame() end),
         quit = GenericButton(2, "Exit", function() love.event.quit() end),
-        debugBtn = GenericButton(5.5, "Dev Mode: OFF", function() debugBtnFunc() end),
+        debugBtn = GenericButton(4, "Dev Mode: OFF", function() debugBtnFunc() end),
     }
 end
 
@@ -51,6 +51,7 @@ function menu:draw()
     end
     
     love.graphics.printf("Clay", 0, 50, the.screen.width, "center")
+    love.graphics.printf("F11 - Change to windowed/fullscreen mode", 0, the.screen.height - 30, the.screen.width, "center")
 end
 
 function menu:mousereleased(x,y,button)

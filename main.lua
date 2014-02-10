@@ -26,7 +26,7 @@ require "objects.skills"
 require "misc.map"
 
 function love.load()
-    love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", resizable=false,vsync=false})
+    love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", vsync=true})
     love.window.setTitle("Clay")
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
@@ -57,6 +57,17 @@ end
 
 function love.mousepressed(x, y, button)
 
+end
+
+function love.keypressed(key)
+    local fscreen = love.window.getFullscreen()
+    if key == "f11" then
+        if fscreen then
+            love.window.setMode(800, 576, {fullscreen=false, fullscreentype="normal", vsync=true})
+        else
+            love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", vsync=true})
+        end
+    end
 end
 
 -- Collision detection function.
