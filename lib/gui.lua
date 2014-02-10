@@ -55,10 +55,6 @@ function Button:update(dt)
     else
         self.state = "idle"
     end
-    
-    if self:isInstanceOf(GenericButton) then
-        self.x = the.screen.width/2 - self.width/2
-    end
 end
 
 function Button:mousepressed(x, y, button)

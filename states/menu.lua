@@ -51,7 +51,6 @@ function menu:draw()
     end
     
     love.graphics.printf("Clay", 0, 50, the.screen.width, "center")
-    love.graphics.printf("F11 - Change to windowed/fullscreen mode", 0, the.screen.height - 30, the.screen.width, "center")
 end
 
 function menu:mousereleased(x,y,button)

@@ -58,18 +58,6 @@ end
 function love.mousepressed(x, y, button)
 
 end
-
-function love.keypressed(key)
-    local fscreen = love.window.getFullscreen()
-    if key == "f11" then
-        if fscreen then
-            love.window.setMode(800, 576, {fullscreen=false, fullscreentype="normal", vsync=true})
-        else
-            love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", vsync=true})
-        end
-    end
-end
-
 -- Collision detection function.
 -- Returns true if two boxes overlap, false if they don't
 -- x1,y1 are the left-top coords of the first box, while w1,h1 are its width and height
