@@ -280,7 +280,7 @@ function drawMap()
     
     love.graphics.push()
     love.graphics.scale(0.25)
-    --love.graphics.draw(gridImg, 0,0)
+    love.graphics.draw(gridImg, -1*mapCam.scale, -1*mapCam.scale)
     love.graphics.pop()
     for columnIndex,column in pairs(map) do
         for rowIndex,cell in pairs(column) do
