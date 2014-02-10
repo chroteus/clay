@@ -93,6 +93,15 @@ function initMap()
     -- Map and grid images.
     mapImg = love.graphics.newImage("assets/image/map.png")
     gridImg = love.graphics.newImage("assets/image/grid.png")
+    
+    screenScale = {
+        x = the.screen.width/800,
+        y = the.screen.height/576
+    }
+    
+    mapCam.scale = 2
+    mapCam.x = 400
+    mapCam.y = 240
 end
 
 function updateMap(dt)
@@ -111,13 +120,13 @@ function updateMap(dt)
     
     local cameraSpeed = 200
     
-    if the.mouse.x == 799 or love.keyboard.isDown("d") then 
+    if the.mouse.x > 799 or love.keyboard.isDown("d") then 
         mapCam.x = mapCam.x + cameraSpeed*dt
     elseif the.mouse.x == 0 or love.keyboard.isDown("a") then
         mapCam.x = mapCam.x - cameraSpeed*dt
     end
     
-    if the.mouse.y == 575 or love.keyboard.isDown("s") then 
+    if the.mouse.y > 575 or love.keyboard.isDown("s") then 
         mapCam.y = mapCam.y + cameraSpeed*dt
     elseif the.mouse.y == 0 or love.keyboard.isDown("w") then
         mapCam.y = mapCam.y - cameraSpeed*dt
@@ -142,8 +151,8 @@ function updateMap(dt)
     -----------------
     --Lımiting zoom--
 
-    if mapCam.scale < 1 then
-        mapCam.scale = 1
+    if mapCam.scale < 2 then
+        mapCam.scale = 2
     elseif mapCam.scale > 2.5 then
         mapCam.scale = 2.5
     end
@@ -183,7 +192,7 @@ function mousepressedMap(x, y, button)
             Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1}, "out-quad")
         end
     end
-    
+
     if not editMode.enabled then
         if button == "l" then    
             for columnIndex,column in pairs(map) do
@@ -236,6 +245,8 @@ function mousepressedMap(x, y, button)
                                     
                                     if checkCollision(the.mouse.x,the.mouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
                                         -- Note: Conquering the cell is done in battle's leave function.
+                                        
+                                        -- Marking the selected as selected so that neighbor cells won't be claimed.
                                         map[adjCell.columnIndex][adjCell.rowIndex].isSelected = true
                                         if adjCellCountry == "Sea" then
                                             map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
@@ -257,6 +268,8 @@ function mousepressedMap(x, y, button)
 end
 
 function drawMap()
+    love.graphics.setBackgroundColor(110, 175, 177)
+
     -- Attaches a camera. Everything from now on will be drawn from camera's perspective.
     mapCam:attach() 
     
@@ -265,8 +278,10 @@ function drawMap()
     love.graphics.draw(mapImg, 0,0)
     love.graphics.pop()
     
-    love.graphics.draw(gridImg, 0,0)
-    
+    love.graphics.push()
+    love.graphics.scale(0.25)
+    --love.graphics.draw(gridImg, 0,0)
+    love.graphics.pop()
     for columnIndex,column in pairs(map) do
         for rowIndex,cell in pairs(column) do
             local x = (rowIndex-1)*the.cell.width -- Cell's x value

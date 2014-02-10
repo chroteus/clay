@@ -26,9 +26,8 @@ require "objects.skills"
 require "misc.map"
 
 function love.load()
-    love.window.setMode(800, 576)
+    love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", resizable=false,vsync=false})
     love.window.setTitle("Clay")
-    --love.window.setFullscreen(true)
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
@@ -48,7 +47,7 @@ function love.load()
 end
 
 function love.update(dt)
-    updateThe()
+    updateThe()    
     Timer.update(dt)
 end
 
