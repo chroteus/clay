@@ -24,28 +24,39 @@ function battle:enter()
     player = leftCountry:clone()
     enemy = rightCountry:clone()
     
-    player.x = 30
-    player.y = 50
+    player.x = 100
+    player.y = 80
+    player.isLeft = true
     player.buttons = {}
     
     player.image = {
         data = player.rightImage,
-        x = player.x,
-        y = player.y
+        x = player.x-20,
+        y = player.y-30
     }
+    
+    
+    enemy.x = the.screen.width - 330
+    enemy.y = 50
+    enemy.isRight = true
+    enemy.image = {
+        data = enemy.leftImage,
+        y = enemy.y
+    }
+    
+    enemy.image.x = enemy.x + enemy.image.data:getWidth()/2 - 30
     
     SkillBtn = Button:subclass("SkillBtn")
     
     function SkillBtn:initialize(yOrder, skill, func)
-        self.x = (player.x + 250) / 2 - 50
+        self.x = (player.x + 250) / 3 - 50
         self.y = (player.y + player.image.data:getHeight()+40) + 40*yOrder
-        self.width = 100
-        self.fillWidth = 100
+        self.width = 200
+        self.fillWidth = 200
         self.height = 30
         self.func = func
         self.text = skill.name.." ["..-skill.energy.."]"
         self.hotkey = string.match(skill.name, "%((.?)%)")
-        print(self.hotkey)
         if self.hotkey then self.hotkey = string.lower(self.hotkey) end
         
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
@@ -73,18 +84,8 @@ function battle:enter()
         -- Fills the button depending on this variable.
         player.buttons[i].cooldown = skill.cooldownReset
     end
-    
-    
-    enemy.x = the.screen.width - 280
-    enemy.y = 50
-    enemy.image = {
-        data = enemy.leftImage,
-        y = enemy.y
-    }
-    
-    enemy.image.x = enemy.x + enemy.image.data:getWidth()/2 - 30
           
-    barWidth = 150
+    barWidth = 300
     barHeight = 20
     player.hpBar = {
         x = ((player.x + 250) / 2) - barWidth/2,
@@ -99,7 +100,8 @@ function battle:enter()
         y = 330,
         width = barWidth,
         height = barHeight,
-        fillWidth = (barWidth / 100) * player.energy
+        fillWidth = (barWidth / 100) * player.energy,
+        
     }
 
     enemy.hpBar = {
@@ -118,10 +120,8 @@ function battle:enter()
         fillWidth = (barWidth / 100) * enemy.energy
     } 
         
-    -- fighers: A table which holds both player and enemy. Used to reduce 
-    -- duplicate code in update and draw functions.
+    -- fighers: A table which is used to reduce duplicate code.
     fighters = {player, enemy}
-    
     
     -- Simple AI
     -- Execute any possible skill (if cooldown is over) every second.

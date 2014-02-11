@@ -6,9 +6,6 @@ Don't forget to call updateThe() function in love.update and loadThe() in love.l
 Note: You can just call loadThe() in both places. But calling updateThe in update function looks better.
 ]]--
 
-oldX, oldY = love.mouse.getPosition()
-slow = 2 -- half as fast
-
 function loadThe()
     the = {
         screen = {

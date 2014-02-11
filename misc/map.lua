@@ -62,10 +62,16 @@ function enteredMap()
         end
     end
     
-    -- Create 0th row and column so that cell on 1st column or row will have proper adjacent cells table.
+    --[[
+    -- Creating "extra" border cells so that the land on the border of map could be claimed.
     map[0] = {}
     for i=0,100 do map[0][i] = countries[1] end
     for i=0,72  do map[i][0] = countries[1] end
+    
+    map[#map+1] = {}
+    for i=0,100 do map[#map][i] = countries[1] end
+    for i=0,72  do map[#map][0] = countries[1] end
+    ]]--
     
     -- Clear up current adjacent cells table so that none of the cells would be selected.
     currAdjCells = {}
@@ -84,7 +90,6 @@ function initMap()
         enabled = false,
         country = "Ukraine", -- Selected country. Paints this country on map.
         buttons = {}
-            
     }
     
     -- Camera
@@ -117,17 +122,17 @@ function updateMap(dt)
     ---------------------
     --Moving the camera--
     
-    local cameraSpeed = 200
-    
-    if love.keyboard.isDown("d") then 
+    local cameraSpeed = 500/mapCam.scale
+    local borderSize = 10
+    if love.keyboard.isDown("d") or the.mouse.x > the.screen.width-borderSize then 
         mapCam.x = mapCam.x + cameraSpeed*dt
-    elseif  love.keyboard.isDown("a") then
+    elseif  love.keyboard.isDown("a") or the.mouse.x < borderSize then
         mapCam.x = mapCam.x - cameraSpeed*dt
     end
     
-    if love.keyboard.isDown("s") then 
+    if love.keyboard.isDown("s") or the.mouse.y > the.screen.height-borderSize then 
         mapCam.y = mapCam.y + cameraSpeed*dt
-    elseif love.keyboard.isDown("w") then
+    elseif love.keyboard.isDown("w") or the.mouse.y < borderSize then
         mapCam.y = mapCam.y - cameraSpeed*dt
     end
     
@@ -152,8 +157,8 @@ function updateMap(dt)
 
     if mapCam.scale < 2 then
         mapCam.scale = 2
-    elseif mapCam.scale > 2.5 then
-        mapCam.scale = 2.5
+    elseif mapCam.scale > 3 then
+        mapCam.scale = 3
     end
     
     ------------------------
@@ -211,18 +216,21 @@ function mousepressedMap(x, y, button)
                         
                             local c = currAdjCells
                         
-                            c[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
-                            c[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
-                            c[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
+                            if cellX > 0  and cellY > 0 then
+                                if cellX < 792 and cellY < 568 then
+                                    c[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
+                                    c[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
+                                    c[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
            
-                            c[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
-                            c[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
-                            c[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
+                                    c[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
+                                    c[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
+                                    c[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
             
-                            c[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
-                            c[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
-                            c[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
-                        
+                                    c[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
+                                    c[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
+                                    c[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
+                                end
+                            end
                         end
                     end
                 end
@@ -239,19 +247,23 @@ function mousepressedMap(x, y, button)
                                     local adjCellY = (adjCell.columnIndex-1)*the.cell.height
                                     local adjCellCountry = map[adjCell.columnIndex][adjCell.rowIndex].name
                                     
-                                    if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
-
-                                        -- Note: Conquering the cell is done in battle's leave function.
+                                    if adjCellX > 0 and adjCellY > 0 then
+                                        if adjCellX < 792 and adjCellY < 568 then
+                                            if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
+                                
+                                                -- Note: Conquering the cell is done in battle's leave function.
                                         
-                                        -- Marking the selected as selected so that neighbor cells won't be claimed.
-                                        map[adjCell.columnIndex][adjCell.rowIndex].isSelected = true
-                                        if adjCellCountry == "Sea" then
-                                            map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
-                                            map[adjCell.columnIndex][adjCell.rowIndex].isFaintClone = true
-                                        elseif not startedBattle then
-                                            -- Prevent switching to battle more than once.
-                                            startBattle(Player.country, map[adjCell.columnIndex][adjCell.rowIndex].name)
-                                            startedBattle = true
+                                                -- Marking the selected as selected so that neighbor cells won't be claimed.
+                                                map[adjCell.columnIndex][adjCell.rowIndex].isSelected = true
+                                                if adjCellCountry == "Sea" then
+                                                    map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
+                                                    map[adjCell.columnIndex][adjCell.rowIndex].isFaintClone = true
+                                                elseif not startedBattle then
+                                                    -- Prevent switching to battle more than once.
+                                                    startBattle(Player.country, map[adjCell.columnIndex][adjCell.rowIndex].name)
+                                                    startedBattle = true
+                                                end
+                                            end
                                         end
                                     end
                                 end
@@ -290,13 +302,9 @@ function drawMap()
             cell.color[4] = 128
             
             love.graphics.setColor(cell.color)
-            love.graphics.rectangle("fill", adjCellX, adjCellY, the.cell.width, the.cell.height)
-            
-            
-            if adjCell == currAdjCells[1][1] then
-                love.graphics.rectangle("line", adjCellX, adjCellY, the.cell.width*3, the.cell.height*3)
-            end
-            
+            love.graphics.rectangle("fill", adjCellX, adjCellY, the.cell.width-1, the.cell.height-1)
+            love.graphics.setColor(255,255,255,128)
+            love.graphics.rectangle("fill", adjCellX, adjCellY, the.cell.width-1, the.cell.height-1)
             love.graphics.setColor(255,255,255)
         
         end
@@ -309,11 +317,13 @@ function drawMap()
                
             cell:draw(cellX,cellY)
             
-            if checkCollision(cellX, cellY, the.cell.width-0.5, the.cell.height-0.5, mapMouse.x, mapMouse.y, 1,1) then
-                love.graphics.setColor(255,255,255,16)
-                love.graphics.rectangle("fill", cellX, cellY, the.cell.width, the.cell.height)
+            if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
+                love.graphics.setLineWidth(0.5)
+                love.graphics.setColor(255,255,255,64)
+                love.graphics.rectangle("fill", cellX, cellY, the.cell.width-1, the.cell.height-1)
                 love.graphics.setColor(255,255,255)
-                love.graphics.rectangle("line", cellX, cellY, the.cell.width, the.cell.height)
+                love.graphics.rectangle("line", cellX, cellY, the.cell.width-1, the.cell.height-1)
+                love.graphics.setLineWidth(1)
             end
         end
     end
