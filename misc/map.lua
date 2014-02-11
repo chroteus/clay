@@ -94,17 +94,16 @@ function initMap()
     mapImg = love.graphics.newImage("assets/image/map.png")
     gridImg = love.graphics.newImage("assets/image/grid.png")
     
-    screenScale = {
-        x = the.screen.width/800,
-        y = the.screen.height/576
-    }
-    
     mapCam.scale = 2
     mapCam.x = 400
     mapCam.y = 240
 end
 
 function updateMap(dt)
+    -- Converting camera to mouse coordinates.
+    mapMouse = {}
+    mapMouse.x, mapMouse.y = mapCam:mousepos()
+    
     ---------------------------
     --Clean up "faint clones"--
     for columnIndex, column in pairs(map) do
@@ -120,15 +119,15 @@ function updateMap(dt)
     
     local cameraSpeed = 200
     
-    if the.mouse.x > 799 or love.keyboard.isDown("d") then 
+    if love.keyboard.isDown("d") then 
         mapCam.x = mapCam.x + cameraSpeed*dt
-    elseif the.mouse.x == 0 or love.keyboard.isDown("a") then
+    elseif  love.keyboard.isDown("a") then
         mapCam.x = mapCam.x - cameraSpeed*dt
     end
     
-    if the.mouse.y > 575 or love.keyboard.isDown("s") then 
+    if love.keyboard.isDown("s") then 
         mapCam.y = mapCam.y + cameraSpeed*dt
-    elseif the.mouse.y == 0 or love.keyboard.isDown("w") then
+    elseif love.keyboard.isDown("w") then
         mapCam.y = mapCam.y - cameraSpeed*dt
     end
     
@@ -164,12 +163,10 @@ function updateMap(dt)
         if love.mouse.isDown("l") then
             for columnIndex, column in pairs(map) do
                 for rowIndex, cell in pairs(column) do
+                    local cellX = (rowIndex-1)*the.cell.width
+                    local cellY = (columnIndex-1)*the.cell.height
                     for _,country in pairs(countries) do
-                    
-                        local cellX = (rowIndex-1)*the.cell.width -- Cell's x value
-                        local cellY = (columnIndex-1)*the.cell.height -- Y value.
-                    
-                        if checkCollision(the.mouse.x,the.mouse.y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
+                        if checkCollision(mapMouse.x,mapMouse.y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
                             if editMode.country == country.name then
                                 map[columnIndex][rowIndex] = country:clone()
                             end
@@ -194,12 +191,11 @@ function mousepressedMap(x, y, button)
     end
 
     if not editMode.enabled then
-        if button == "l" then    
+        if button == "l" then
             for columnIndex,column in pairs(map) do
                 for rowIndex,cell in pairs(column) do
-                    local cellX = (rowIndex-1)*the.cell.width -- Cell's x value
-                    local cellY = (columnIndex-1)*the.cell.height -- Y value.
-                
+                    local cellX = (rowIndex-1)*the.cell.width
+                    local cellY = (columnIndex-1)*the.cell.height
                     -- We make all cells non-selected first so that Player won't be able to select more than one cell.
                     cell.isSelected = false
                     
@@ -207,7 +203,7 @@ function mousepressedMap(x, y, button)
                     --Generate adjacent cells table for the selected cell--
 
                     if Player.country == cell.name then
-                        if checkCollision(x,y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
+                        if checkCollision(mapMouse.x, mapMouse.y, 1,1, cellX,cellY,the.cell.width-1,the.cell.height-1) then
                             cell.isSelected = true
                             currAdjCells = {{0,0,0},
                                             {0,0,0},
@@ -239,11 +235,12 @@ function mousepressedMap(x, y, button)
                         if Player.country ~= map[adjCell.columnIndex][adjCell.rowIndex].name then
                             for _,country in pairs(countries) do
                                 if Player.country == country.name then
-                                    local adjCellX = (adjCell.rowIndex-1)*the.cell.width
+                                    local adjCellX = (adjCell.rowIndex-1)*the.cell.width 
                                     local adjCellY = (adjCell.columnIndex-1)*the.cell.height
                                     local adjCellCountry = map[adjCell.columnIndex][adjCell.rowIndex].name
                                     
-                                    if checkCollision(the.mouse.x,the.mouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
+                                    if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
+
                                         -- Note: Conquering the cell is done in battle's leave function.
                                         
                                         -- Marking the selected as selected so that neighbor cells won't be claimed.
@@ -282,21 +279,6 @@ function drawMap()
     love.graphics.scale(0.25)
     love.graphics.draw(gridImg, -1*mapCam.scale, -1*mapCam.scale)
     love.graphics.pop()
-    for columnIndex,column in pairs(map) do
-        for rowIndex,cell in pairs(column) do
-            local x = (rowIndex-1)*the.cell.width -- Cell's x value
-            local y = (columnIndex-1)*the.cell.height -- Y value
-               
-            cell:draw(x,y)
-            
-            if checkCollision(x, y, the.cell.width, the.cell.height, the.mouse.x, the.mouse.y, 1,1) then
-                love.graphics.setColor(255,255,255,16)
-                love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
-                love.graphics.setColor(255,255,255)
-                love.graphics.rectangle("line", x, y, the.cell.width, the.cell.height)
-            end
-        end
-    end
     
     for _,adjCellColumn in pairs(currAdjCells) do
         for _,adjCell in pairs(adjCellColumn) do
@@ -317,6 +299,22 @@ function drawMap()
             
             love.graphics.setColor(255,255,255)
         
+        end
+    end
+    
+    for columnIndex,column in pairs(map) do
+        for rowIndex,cell in pairs(column) do
+            local cellX = (rowIndex-1)*the.cell.width
+            local cellY = (columnIndex-1)*the.cell.height
+               
+            cell:draw(cellX,cellY)
+            
+            if checkCollision(cellX, cellY, the.cell.width-0.5, the.cell.height-0.5, mapMouse.x, mapMouse.y, 1,1) then
+                love.graphics.setColor(255,255,255,16)
+                love.graphics.rectangle("fill", cellX, cellY, the.cell.width, the.cell.height)
+                love.graphics.setColor(255,255,255)
+                love.graphics.rectangle("line", cellX, cellY, the.cell.width, the.cell.height)
+            end
         end
     end
     

@@ -45,6 +45,7 @@ function battle:enter()
         self.func = func
         self.text = skill.name.." ["..-skill.energy.."]"
         self.hotkey = string.match(skill.name, "%((.?)%)")
+        print(self.hotkey)
         if self.hotkey then self.hotkey = string.lower(self.hotkey) end
         
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
@@ -65,6 +66,7 @@ function battle:enter()
         end
     end
     
+    -- Create buttons according to what skills player has.
     for i,skill in ipairs(player.skills) do
         table.insert(player.buttons, SkillBtn(i, skill, function() skill:exec(player, enemy) end))
         
@@ -222,7 +224,4 @@ function battle:leave()
     end
     
     startedBattle = false
-    
-    -- stop executing enemy skills.
-    Timer.cancel(enemyFightTimerHandle)
 end
