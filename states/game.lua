@@ -17,6 +17,16 @@ end
 
 function game:draw()
     drawMap()
+    
+    
+    if editMode.enabled then
+        love.graphics.printf("Edit Mode: Q - Select Country, E - Exit out of edit mode, B - Disable borders", 0, 0, the.screen.width, "left")
+        love.graphics.printf("Current chosen country: "..editMode.country, 0, 20, the.screen.width, "left")
+    else
+        if DEBUG then
+            love.graphics.printf("E - Enter edit mode.", 0, 0, the.screen.width, "left")
+        end
+    end
 end
 
 function game:mousepressed(x, y, button)
@@ -33,6 +43,14 @@ function game:keyreleased(key)
     end
 
     if DEBUG then
+        if key == "b" then
+            if mapBorderCheck then
+                mapBorderCheck = false
+            else
+                mapBorderCheck = true
+            end
+        end
+    
         if key == "e" then
             if editMode.enabled then
                 editMode.enabled = false

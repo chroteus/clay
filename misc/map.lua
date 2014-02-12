@@ -76,8 +76,8 @@ function enteredMap()
     -- Clear up current adjacent cells table so that none of the cells would be selected.
     currAdjCells = {}
     
-    -- Clean up "faint" clones of cells which are left when player conquers sea cells.
-    -- <cleanupControl> variable is used to stop cleaning up upon leaving game state.
+    -- Camera isn't limited by borders if true.
+    mapBorderCheck = true
 end
 
 function initMap()    
@@ -139,21 +139,23 @@ function updateMap(dt)
     
     -----------------------------------
     --Limiting the movement of camera--
-
-    if mapCam.x < 400/mapCam.scale then 
-        mapCam.x = 400/mapCam.scale
-    elseif mapCam.x > 400*mapCam.scale then 
-        mapCam.x = 400*mapCam.scale
+    
+    if mapBorderCheck then
+        if mapCam.x < (the.screen.width/2/mapCam.scale)-1 then
+            mapCam.x = (the.screen.width/2/mapCam.scale)-1
+        elseif mapCam.x > (the.screen.width+470)/2/mapCam.scale then
+            mapCam.x = (the.screen.width+470)/2/mapCam.scale
+        end
+        
+        if mapCam.y < (the.screen.height/2/mapCam.scale)-1 then
+            mapCam.y = (the.screen.height/2/mapCam.scale)-1
+        elseif mapCam.y > (the.screen.height/mapCam.scale)+1 then
+            mapCam.y = (the.screen.height/mapCam.scale)+1
+        end
     end
     
-    if mapCam.y < 288/mapCam.scale then 
-        mapCam.y = 288/mapCam.scale 
-    elseif mapCam.y > 288*mapCam.scale then 
-        mapCam.y = 288*mapCam.scale 
-    end
-
-    -----------------
-    --Lımiting zoom--
+    --------------
+    --Lımit zoom--
 
     if mapCam.scale < 2 then
         mapCam.scale = 2
@@ -279,9 +281,11 @@ end
 function drawMap()
     love.graphics.setBackgroundColor(110, 175, 177)
 
+
+    
     -- Attaches a camera. Everything from now on will be drawn from camera's perspective.
     mapCam:attach() 
-    
+
     love.graphics.push()
     love.graphics.scale(0.5)
     love.graphics.draw(mapImg, 0,0)
@@ -331,14 +335,4 @@ function drawMap()
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
     -- GUI should be drawn after this function is called.
     mapCam:detach()
-
-
-    if editMode.enabled then
-        love.graphics.printf("Edit Mode: Q - Select Country, E - Exit out of edit mode.", 0, 0, the.screen.width, "left")
-        love.graphics.printf("Current chosen country: "..editMode.country, 0, 20, the.screen.width, "left")
-    else
-        if DEBUG then
-            love.graphics.printf("E - Enter edit mode.", 0, 0, the.screen.width, "left")
-        end
-    end
 end
