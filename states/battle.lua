@@ -24,33 +24,36 @@ function battle:enter()
     player = leftCountry:clone()
     enemy = rightCountry:clone()
     
+    barWidth = 300
+    barHeight = 20
+    
     player.x = 100
-    player.y = 80
+    player.y = 50
     player.isLeft = true
     player.buttons = {}
     
     player.image = {
         data = player.rightImage,
-        x = player.x-20,
-        y = player.y-30
+        x = player.x,
+        y = player.y
     }
-    
     
     enemy.x = the.screen.width - 330
     enemy.y = 50
     enemy.isRight = true
     enemy.image = {
         data = enemy.leftImage,
+        x = enemy.x,
         y = enemy.y
     }
     
-    enemy.image.x = enemy.x + enemy.image.data:getWidth()/2 - 30
+    enemy.image.x = enemy.x
     
     SkillBtn = Button:subclass("SkillBtn")
     
     function SkillBtn:initialize(yOrder, skill, func)
         self.x = (player.x + 250) / 3 - 50
-        self.y = (player.y + player.image.data:getHeight()+40) + 40*yOrder
+        self.y = (player.y + 250+40) + 40*yOrder
         self.width = 200
         self.fillWidth = 200
         self.height = 30
@@ -85,8 +88,6 @@ function battle:enter()
         player.buttons[i].cooldown = skill.cooldownReset
     end
           
-    barWidth = 300
-    barHeight = 20
     player.hpBar = {
         x = ((player.x + 250) / 2) - barWidth/2,
         y = barHeight,
@@ -171,11 +172,7 @@ function battle:draw()
     battleCam:attach()
     
     for _,fighter in pairs(fighters) do
-        local fighterScale = 250/fighter.image.data:getWidth()
-        love.graphics.push()
-        love.graphics.scale(fighterScale)
         love.graphics.draw(fighter.image.data, fighter.image.x, fighter.image.y)
-        love.graphics.pop()
         
         love.graphics.setColor(190,30,30)
         love.graphics.rectangle("line", fighter.hpBar.x, fighter.hpBar.y, fighter.hpBar.width, fighter.hpBar.height)

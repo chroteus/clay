@@ -12,19 +12,19 @@ end
 
 skills = {
     -- Skill(name, energy, cooldown, func)
-    quickAttack = Skill("(Q)uick Attack", 1, 1,
+    quickAttack = Skill("(Q)uick Attack", 1, 2,
         function(fighter, target)
             target:loseHP(math.random(target.defense, fighter.attack))
             knockback(target, 1)
         end),
     
-    attack = Skill("(A)ttack", 2, 3, 
+    attack = Skill("(A)ttack", 2, 6, 
         function(fighter, target) 
             target:loseHP(math.random(target.defense+5, fighter.attack+10))
             knockback(target, 0.5)
         end),
     
-    heal = Skill("(H)eal", 5, 8, function(fighter) fighter:gainHP(math.random(5,15)) end),
+    heal = Skill("(H)eal", 5, 16, function(fighter) fighter:gainHP(math.random(5,15)) end),
    
    
 }

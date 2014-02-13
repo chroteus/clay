@@ -15,7 +15,8 @@ countries = {
     Country("United States", {0,0,255}, 12,4, 100),
     Country("Canada", {255,0,0}, 9,2, 50),
     Country("United Kingdom", {255,0,255}, 11, 4, 60),
-    Country("Norway", {95,0,0}, 9, 6, 70)
+    Country("Norway", {95,0,0}, 9, 4, 70),
+    Country("Sweden", {0,0,60}, 10,4, 60)
 }
 
 for i=1, #countries do
