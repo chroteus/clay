@@ -1,8 +1,5 @@
 require "class.country"
 
--- Images in tileset must appear in the SAME EXACT order as they appear here.
--- That means that the first tile in tileset.png MUST be "ua". And the second one "us", and so on.
-
 -- WARNING! The name of miniature and ball image should be the same as Country's name!
 -- Example: If we have an instance of Country with name "Ukraine",
 -- both balls, /balls/left, /balls/right and miniatures folder should have a Ukraine.png image.
@@ -17,6 +14,8 @@ countries = {
     Country("Ukraine", {255,255,0}, 8,2, 50),
     Country("United States", {0,0,255}, 12,4, 100),
     Country("Canada", {255,0,0}, 9,2, 50),
+    Country("United Kingdom", {255,0,255}, 11, 4, 60),
+    Country("Norway", {95,0,0}, 9, 6, 70)
 }
 
 for i=1, #countries do

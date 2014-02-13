@@ -55,6 +55,13 @@ function love.draw()
 
 end
 
+function love.keypressed(key, u)
+    -- Debug
+    if key == "1" then
+        debug.debug()
+    end
+end
+
 function love.mousepressed(x, y, button)
 
 end

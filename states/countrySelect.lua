@@ -18,6 +18,9 @@ function countrySelect:init()
 end
 
 function countrySelect:update(dt)
+    -- Converting camera to mouse coordinates.
+    the.mouse.x, the.mouse.y = countryCam:mousepos()
+
     for _,button in pairs(countrySelectBtn) do
         button:update()
     end
@@ -29,6 +32,7 @@ end
 
 function countrySelect:draw()
     countryCam:attach()
+    love.graphics.printf("Scroll down!", 0, 40, the.screen.width, "center")
     
     for _,button in pairs(countrySelectBtn) do
         button:draw()

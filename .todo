@@ -1,4 +1,7 @@
 Limit camera to map boundaries
+Convert the map's x + width to cameraCoords
+
+
 Improve Battle System
 "Upgrade" system
 Economy
@@ -8,3 +11,4 @@ Refactoring the code
 Improving battle system:
 Adding new types of combat techniques.
 Adding animations. Make game "feel" good.
+

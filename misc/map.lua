@@ -141,16 +141,21 @@ function updateMap(dt)
     --Limiting the movement of camera--
     
     if mapBorderCheck then
+        local mapWidth, mapHeight = mapCam:worldCoords(the.screen.width, the.screen.height)        
+        local mapX, mapY = mapCam:cameraCoords(800, 576)
+
         if mapCam.x < (the.screen.width/2/mapCam.scale)-1 then
             mapCam.x = (the.screen.width/2/mapCam.scale)-1
-        elseif mapCam.x > (the.screen.width+470)/2/mapCam.scale then
-            mapCam.x = (the.screen.width+470)/2/mapCam.scale
+        elseif the.screen.width > mapX then
+            local _ = 0 -- placeholder since we need to convert x only.
+            mapCam.x,_ = mapCam:worldCoords(mapX/2, mapY)
         end
         
         if mapCam.y < (the.screen.height/2/mapCam.scale)-1 then
             mapCam.y = (the.screen.height/2/mapCam.scale)-1
-        elseif mapCam.y > (the.screen.height/mapCam.scale)+1 then
-            mapCam.y = (the.screen.height/mapCam.scale)+1
+        elseif the.screen.height > mapY then
+            local _ = 0 -- placeholder since we need to convert y only.
+            _,mapCam.y = mapCam:worldCoords(mapX, mapY/2)
         end
     end
     
