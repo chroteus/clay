@@ -123,7 +123,8 @@ function updateMap(dt)
     --Moving the camera--
     
     local cameraSpeed = 500/mapCam.scale
-    local borderSize = 10
+    local borderSize = 2
+
     if love.keyboard.isDown("d") or the.mouse.x > the.screen.width-borderSize then 
         mapCam.x = mapCam.x + cameraSpeed*dt
     elseif  love.keyboard.isDown("a") or the.mouse.x < borderSize then
@@ -135,7 +136,7 @@ function updateMap(dt)
     elseif love.keyboard.isDown("w") or the.mouse.y < borderSize then
         mapCam.y = mapCam.y - cameraSpeed*dt
     end
-    
+
     
     -----------------------------------
     --Limiting the movement of camera--
@@ -147,15 +148,15 @@ function updateMap(dt)
         if mapCam.x < (the.screen.width/2/mapCam.scale)-1 then
             mapCam.x = (the.screen.width/2/mapCam.scale)-1
         elseif the.screen.width > mapX then
-            local _ = 0 -- placeholder since we need to convert x only.
             mapCam.x,_ = mapCam:worldCoords(mapX/2, mapY)
+            mapCam.x = mapCam.x - cameraSpeed/2*dt
         end
         
         if mapCam.y < (the.screen.height/2/mapCam.scale)-1 then
             mapCam.y = (the.screen.height/2/mapCam.scale)-1
         elseif the.screen.height > mapY then
-            local _ = 0 -- placeholder since we need to convert y only.
             _,mapCam.y = mapCam:worldCoords(mapX, mapY/2)
+            mapCam.y = mapCam.y - cameraSpeed/2*dt
         end
     end
     
@@ -256,7 +257,7 @@ function mousepressedMap(x, y, button)
                                     
                                     if adjCellX > 0 and adjCellY > 0 then
                                         if adjCellX < 792 and adjCellY < 568 then
-                                            if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width,the.cell.height) then
+                                            if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width-1,the.cell.height-1) then
                                 
                                                 -- Note: Conquering the cell is done in battle's leave function.
                                         
@@ -312,7 +313,7 @@ function drawMap()
             
             love.graphics.setColor(cell.color)
             love.graphics.rectangle("fill", adjCellX, adjCellY, the.cell.width-1, the.cell.height-1)
-            love.graphics.setColor(255,255,255,128)
+            love.graphics.setColor(255,255,255,180)
             love.graphics.rectangle("fill", adjCellX, adjCellY, the.cell.width-1, the.cell.height-1)
             love.graphics.setColor(255,255,255)
         

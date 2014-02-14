@@ -27,7 +27,7 @@ function battle:enter()
     barWidth = 300
     barHeight = 20
     
-    player.x = 100
+    player.x = 130
     player.y = 50
     player.isLeft = true
     player.buttons = {}
