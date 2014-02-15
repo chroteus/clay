@@ -1,20 +1,20 @@
 Cell = Base:subclass("Cell")
 
 function Cell:initialize(id, color)
-    -- id [String or Number]: A single character representing a cell. Used for drawing cells on map.
+    -- id [Number]: A single digit representing a cell. Used for inserting cells into <map> table according to the id.
     self.id = id
     
-    -- color [Table]: Color of a cell. (Captain Obvious to the rescue! :3)
+    -- color [Table]: Color of the cell. (Captain Obvious to the rescue!)
     self.color = color
     
     -- isSelected [Bool]: If a cell is selected, it is more opaque.
     self.isSelected = false
     
-    -- isFaintCloe [Bool]: Cells which turn into "Sea" cell after a mouse click.
+    -- isFaintClone [Bool]: Faint clones turn into "Sea" cells right away in map's update function.
     self.isFaintClone = false
     
     -- adjCells [Table]: A table with information about adjacent cells.
-    -- This table will store information about adjacent cells which will be generated in initMap() function in /misc/map.lua
+    -- This table will store information about adjacent cells which will be generated in /misc/map.lua
     self.adjCells = {{0,0,0}, 
                      {0,0,0},
                      {0,0,0}}
@@ -22,9 +22,9 @@ end
 
 function Cell:draw(x, y)
 
-    self.color[4] = 100 -- Set the alpha channel. Makes cell transparent.
+    self.color[4] = 120 -- Set the alpha channel. Makes cell transparent.
 
-    if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it drops FPS.
+    if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it greatly drops FPS.
         if self.isSelected then
             love.graphics.setColor(self.color) 
             self.color[4] = 180

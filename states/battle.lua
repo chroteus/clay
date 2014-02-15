@@ -52,10 +52,10 @@ function battle:enter()
     SkillBtn = Button:subclass("SkillBtn")
     
     function SkillBtn:initialize(yOrder, skill, func)
-        self.x = (player.x + 250) / 3 - 50
+        self.width = 150
+        self.x = player.x/2 + self.width/3
         self.y = (player.y + 250+40) + 40*yOrder
-        self.width = 200
-        self.fillWidth = 200
+        self.fillWidth = self.width
         self.height = 30
         self.func = func
         self.text = skill.name.." ["..-skill.energy.."]"
