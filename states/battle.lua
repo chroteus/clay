@@ -28,18 +28,18 @@ function battle:enter()
     barHeight = 20
     
     player.x = 130
-    player.y = 50
+    player.y = the.screen.height/2 - 250
     player.isLeft = true
     player.buttons = {}
     
     player.image = {
         data = player.rightImage,
-        x = player.x,
+        x = player.x-250/2,
         y = player.y
     }
     
     enemy.x = the.screen.width - 330
-    enemy.y = 50
+    enemy.y = player.y
     enemy.isRight = true
     enemy.image = {
         data = enemy.leftImage,
@@ -53,8 +53,8 @@ function battle:enter()
     
     function SkillBtn:initialize(yOrder, skill, func)
         self.width = 150
-        self.x = player.x/2 + self.width/3
-        self.y = (player.y + 250+40) + 40*yOrder
+        self.x = player.x + self.width + self.width/2 --player.x/2 + self.width/3
+        self.y = player.y + 40 + 40*yOrder --(player.y + 250+40) + 40*yOrder
         self.fillWidth = self.width
         self.height = 30
         self.func = func
@@ -88,9 +88,10 @@ function battle:enter()
         player.buttons[i].cooldown = skill.cooldownReset
     end
           
+    local padding = 100
     player.hpBar = {
         x = ((player.x + 250) / 2) - barWidth/2,
-        y = barHeight,
+        y = player.y - padding,
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth/ player.maxHP) * player.hp
@@ -98,7 +99,7 @@ function battle:enter()
     
     player.energyBar = {
         x = player.hpBar.x,
-        y = 330,
+        y = player.y+250+padding,
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth / 100) * player.energy,
@@ -107,7 +108,7 @@ function battle:enter()
 
     enemy.hpBar = {
         x = enemy.x + 250/2 - barWidth/2,
-        y = 20,
+        y = enemy.y - padding,
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth / enemy.maxHP) * enemy.hp
@@ -115,7 +116,7 @@ function battle:enter()
     
     enemy.energyBar = {
         x = enemy.hpBar.x,
-        y = 330,
+        y = enemy.y+250+padding,
         width = barWidth,
         height = barHeight,
         fillWidth = (barWidth / 100) * enemy.energy

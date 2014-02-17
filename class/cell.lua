@@ -18,10 +18,10 @@ function Cell:initialize(id, color)
     self.adjCells = {{0,0,0}, 
                      {0,0,0},
                      {0,0,0}}
+        
 end
 
 function Cell:draw(x, y)
-
     self.color[4] = 120 -- Set the alpha channel. Makes cell transparent.
 
     if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it greatly drops FPS.

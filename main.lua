@@ -57,7 +57,7 @@ end
 
 function love.keypressed(key, u)
     -- Debug
-    if key == "1" then
+    if key == "0" then
         debug.debug()
     end
 end

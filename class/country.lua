@@ -31,9 +31,10 @@ function Country:initialize(name, color, attack, defense, hp)
     self.energy = 100
     
     self.skills = {
-        skills.attack:clone(),
         skills.quickAttack:clone(),
-        skills.heal:clone()
+        skills.attack:clone(),
+        skills.slowAttack:clone(),
+        skills.heal:clone(),
     } 
     
     Cell.initialize(self, self.id, self.color)
