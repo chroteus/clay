@@ -31,9 +31,7 @@ function Country:initialize(name, color, attack, defense, hp)
     self.energy = 100
     
     self.skills = {
-        skills.quickAttack:clone(),
-        skills.attack:clone(),
-        skills.slowAttack:clone(),
+     --   skills.attack:clone(),
         skills.heal:clone(),
     } 
     
@@ -60,7 +58,7 @@ function Country:loseEnergy(amount)
 end
 
 
-function Country:addSkill(argSkill)
-    local n = #self.skills
-    self.skills[n+1] = skills[argSkill]:clone()
+function Country:addSkill(argSkill, order)
+    local order = order or 1
+    table.insert(self.skills, order, skills[argSkill])
 end

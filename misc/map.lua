@@ -102,6 +102,8 @@ function initMap()
     mapCam.scale = 2
     mapCam.x = 400
     mapCam.y = 240
+    
+
 end
 
 function updateMap(dt)
@@ -211,7 +213,7 @@ function mousepressedMap(x, y, button)
                     local cellY = (columnIndex-1)*the.cell.height
                     -- We make all cells non-selected first so that Player won't be able to select more than one cell.
                     cell.isSelected = false
-                    
+
                     -----------------------------------------
                     --Generate adjacent cells for all cells--
 
@@ -354,6 +356,8 @@ function drawMap()
             end
         end
     end
+    
+
     
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
     -- GUI should be drawn after this function is called.

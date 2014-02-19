@@ -32,30 +32,34 @@ end
 
 
 AttackSkill = Skill:subclass("AttackSkill")
-function AttackSkill:initialize(barX, barY)
+function AttackSkill:initialize()
     self.name = "Attack"
 
-    -- energy and cooldown are subtracted in self.func.
-    self.energy = 0
-    self.cooldown = 0
+    -- energy is subtracted based on the power of attack.
+    self.energy = 1
+    self.cooldown = 3
 
     self.slider = {
-        x = barX,
-        y = barY,
-        width = 200,
-        height = 60,
+        -- x and y values are set in battle state.
+        x = 0,
+        y = 0,
+        width = 300,
+        height = 20,
         enabled = false,
-        power = 0
+        power = 0,
+        countdown = self.cooldown,
     }
+    
+    self.slider.countdownReset = self.slider.countdown
     
     self.slider.powerRect = {
         x = self.slider.x,
         y = self.slider.y,
-        width = self.slider.width,
+        width = 0,
         height = self.slider.height
     }
 
-    self.func = function(fighter, target)
+    self.func = function()
         self.slider.enabled = true
     end
     
@@ -63,17 +67,43 @@ function AttackSkill:initialize(barX, barY)
 end
 
 function AttackSkill:updateSlider(dt)
+    self.slider.powerRect.x = self.slider.x
+    self.slider.powerRect.y = self.slider.y
+    
     if self.slider.enabled then
-        self.slider.powerRect.width = self.slider.powerRect.width - 10*dt
+        self.slider.powerRect.width = self.slider.powerRect.width - 130*dt
+        
+        if self.slider.powerRect.width <= 0 then
+            self.slider.powerRect.width = 0
+        elseif self.slider.powerRect.width >= self.slider.width then
+            self.slider.powerRect.width = self.slider.width
+        end
+        
+        self.slider.countdown = self.slider.countdown - dt
+        if self.slider.countdown <= 0 then
+            self.slider.enabled = false
+        
+            player.energy = player.energy - math.floor(self.slider.powerRect.width / 30)
+            self.slider.powerRect.width = 0
+        end
     end
 end
 
 function AttackSkill:keypressed(key)
-    if key == " " then
-       self.slider.power = self.slider.power + 1
+    if self.slider.enabled then
+        if key == " " then
+           self.slider.power = self.slider.power + 1
+           self.slider.powerRect.width = self.slider.powerRect.width + 30
+        end
     end
 end
 
-function AttackSkill:draw()
-
+function AttackSkill:drawSlider()
+    if self.slider.enabled then
+        love.graphics.setColor(200,0,0)
+        love.graphics.rectangle("line", self.slider.x, self.slider.y, self.slider.width, self.slider.height)
+        love.graphics.setColor(200,0,0)
+        love.graphics.rectangle("fill", self.slider.powerRect.x, self.slider.powerRect.y, self.slider.powerRect.width, self.slider.powerRect.height)
+        love.graphics.setColor(255,255,255)
+    end
 end

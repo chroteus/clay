@@ -11,7 +11,7 @@ function Base:clone()
     for k,v in pairs(self) do
         t[k] = v
     end
-      
+
     -- For loop above clones variables only. We also need other methods for clones to work properly.
     t.draw = function(self,x,y) Cell.draw(self,x,y) end 
     
@@ -23,7 +23,14 @@ function Base:clone()
     elseif self:isInstanceOf(Skill) then
         t.update = function(self, dt) Skill.update(self, dt) end
         t.exec = function(self, fighter, target) Skill.exec(self, fighter, target) end
+        
+        if self:isInstanceOf(AttackSkill) then
+            t.updateSlider = function(self, dt) AttackSkill.updateSlider(self, dt) end
+            t.keypressed = function(self, key) AttackSkill.keypressed(self, key) end
+            t.drawSlider = function(self) AttackSkill.drawSlider(self) end
+        end
+        
     end
-    
+
     return t
 end

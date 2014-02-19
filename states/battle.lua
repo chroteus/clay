@@ -24,6 +24,8 @@ function battle:enter()
     player = leftCountry:clone()
     enemy = rightCountry:clone()
     
+    player:addSkill("attack", 1)
+    
     barWidth = 300
     barHeight = 20
     
@@ -121,11 +123,18 @@ function battle:enter()
         height = barHeight,
         fillWidth = (barWidth / 100) * enemy.energy
     } 
-        
+    
+    for _,skill in pairs(player.skills) do
+        if skill.name == "Attack" then
+            skill.slider.x = player.hpBar.x
+            skill.slider.y = player.hpBar.y + player.hpBar.height + 5
+        end
+    end
+    
     -- fighers: A table which is used to reduce duplicate code.
     fighters = {player, enemy}
     
-    -- Simple AI
+    -- VERY Simple AI
     -- Execute any possible skill (if cooldown is over) every second.
     enemyFightTimerHandle = Timer.addPeriodic(1,
         function()
@@ -153,6 +162,10 @@ function battle:update(dt)
     
         for _,skill in pairs(fighter.skills) do
             skill:update(dt)
+            
+            if skill.name == "Attack" then
+                skill:updateSlider(dt)
+            end
         end
     end
 end
@@ -166,6 +179,13 @@ end
 function battle:keypressed(key)
     for _,btn in pairs(player.buttons) do
         btn:keypressed(key)
+    end
+    for _,fighter in pairs(fighters) do
+        for _,skill in pairs(fighter.skills) do
+            if skill.name == "Attack" then
+                skill:keypressed(key)
+            end
+        end
     end
 end
 
@@ -195,6 +215,12 @@ function battle:draw()
     
     for _,btn in pairs(player.buttons) do
         btn:draw()
+    end
+    
+    for _,skill in pairs(player.skills) do
+        if skill.name == "Attack" then
+            skill:drawSlider()
+        end
     end
     
     battleCam:detach()
