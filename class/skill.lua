@@ -33,11 +33,11 @@ end
 
 AttackSkill = Skill:subclass("AttackSkill")
 function AttackSkill:initialize()
-    self.name = "Attack"
+    self.name = "( ) Attack"
 
     -- energy is subtracted based on the power of attack.
     self.energy = 1
-    self.cooldown = 3
+    self.cooldown = 5
 
     self.slider = {
         -- x and y values are set in battle state.
@@ -71,7 +71,7 @@ function AttackSkill:updateSlider(dt)
     self.slider.powerRect.y = self.slider.y
     
     if self.slider.enabled then
-        self.slider.powerRect.width = self.slider.powerRect.width - 130*dt
+        self.slider.powerRect.width = self.slider.powerRect.width - 150*dt
         
         if self.slider.powerRect.width <= 0 then
             self.slider.powerRect.width = 0
@@ -84,7 +84,10 @@ function AttackSkill:updateSlider(dt)
             self.slider.enabled = false
         
             player.energy = player.energy - math.floor(self.slider.powerRect.width / 30)
+            enemy:loseHP(math.floor(self.slider.powerRect.width / 15) + player.attack)
             self.slider.powerRect.width = 0
+            
+            self.slider.countdown = self.slider.countdownReset
         end
     end
 end
