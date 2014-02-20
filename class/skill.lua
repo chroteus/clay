@@ -109,8 +109,11 @@ function AttackSkill:drawSlider()
     
     love.graphics.setColor(widthColor,0,0)
     love.graphics.rectangle("line", self.slider.x, self.slider.y, self.slider.width, self.slider.height)
-
-    love.graphics.setColor(widthColor,0,0)
     love.graphics.rectangle("fill", self.slider.powerRect.x, self.slider.powerRect.y, self.slider.powerRect.width, self.slider.powerRect.height)
+
+    love.graphics.setColor(widthColor/2, 0,0)
+    local fontHeight = (love.graphics.getFont():getHeight())/2
+    love.graphics.printf("Attack Power", self.slider.x+5, self.slider.y + self.slider.height/2 - fontHeight, self.slider.width, "left")
+
     love.graphics.setColor(255,255,255)
 end
