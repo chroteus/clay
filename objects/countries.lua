@@ -4,10 +4,8 @@ require "class.country"
 -- Example: If we have an instance of Country with name "Ukraine",
 -- both balls, /balls/left, /balls/right and miniatures folder should have a Ukraine.png image.
 
-
 -- countries [Table]:
 -- Where countries are instantiated.
-
 countries = {
     -- Country(name, color, attack, defense, hp)
     Country("Sea", {255, 255, 255}, 0,0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.

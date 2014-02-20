@@ -25,7 +25,9 @@ function battle:enter()
     enemy = rightCountry:clone()
     
     player:addSkill("attack", 1)
-    globalAttackName = "( ) ( ) Attack"
+    enemy:addSkill("aiAttack", 1)
+    
+    globalAttackName = "Attack"
     barWidth = 300
     barHeight = 20
     
@@ -60,6 +62,7 @@ function battle:enter()
         self.fillWidth = self.width
         self.height = 30
         self.func = func
+        self.name = skill.name
         self.text = skill.name.." ["..-skill.energy.."]"
         self.hotkey = string.match(skill.name, "%((.?)%)")
         if self.hotkey then self.hotkey = string.lower(self.hotkey) end
@@ -88,6 +91,12 @@ function battle:enter()
         
         -- Fills the button depending on this variable.
         player.buttons[i].cooldown = skill.cooldownReset
+    end
+    
+    for i,btn in ipairs(player.buttons) do
+        if btn.name == globalAttackName then
+            btn.hotkey = " "
+        end
     end
           
     local padding = 100
@@ -125,7 +134,7 @@ function battle:enter()
     } 
     
     for _,skill in pairs(player.skills) do
-        if skill.name == "( ) Attack" then
+        if skill.name == globalAttackName then
             skill.slider.x = player.hpBar.x
             skill.slider.y = player.hpBar.y + player.hpBar.height + 5
         end
@@ -163,7 +172,7 @@ function battle:update(dt)
         for _,skill in pairs(fighter.skills) do
             skill:update(dt)
             
-            if skill.name == "( ) Attack" then
+            if skill.name == globalAttackName then
                 skill:updateSlider(dt)
             end
         end
@@ -182,7 +191,7 @@ function battle:keypressed(key)
     end
     for _,fighter in pairs(fighters) do
         for _,skill in pairs(fighter.skills) do
-            if skill.name == "( ) Attack" then
+            if skill.name == globalAttackName then
                 skill:keypressed(key)
             end
         end
@@ -218,7 +227,7 @@ function battle:draw()
     end
     
     for _,skill in pairs(player.skills) do
-        if skill.name == "( ) Attack" then
+        if skill.name == globalAttackName then
             skill:drawSlider()
         end
     end

@@ -32,8 +32,8 @@ end
 
 
 AttackSkill = Skill:subclass("AttackSkill")
-function AttackSkill:initialize()
-    self.name = "( ) Attack"
+function AttackSkill:initialize(extraFunc)
+    self.name = "Attack"
 
     -- energy is subtracted based on the power of attack.
     self.energy = 1
@@ -59,8 +59,9 @@ function AttackSkill:initialize()
         height = self.slider.height
     }
 
-    self.func = function()
+    self.func = function(...)
         self.slider.enabled = true
+        extraFunc(...)
     end
     
     Skill.initialize(self, self.name, self.energy, self.cooldown, self.func)
@@ -85,7 +86,8 @@ function AttackSkill:updateSlider(dt)
         
             player.energy = player.energy - math.floor(self.slider.powerRect.width / 30)
             enemy:loseHP(math.floor(self.slider.powerRect.width / 15) + player.attack)
-            self.slider.powerRect.width = 0
+            
+            Timer.tween(0.5, self.slider.powerRect, {width = 0}, "out-quad")
             
             self.slider.countdown = self.slider.countdownReset
         end
@@ -102,11 +104,13 @@ function AttackSkill:keypressed(key)
 end
 
 function AttackSkill:drawSlider()
-    if self.slider.enabled then
-        love.graphics.setColor(200,0,0)
-        love.graphics.rectangle("line", self.slider.x, self.slider.y, self.slider.width, self.slider.height)
-        love.graphics.setColor(200,0,0)
-        love.graphics.rectangle("fill", self.slider.powerRect.x, self.slider.powerRect.y, self.slider.powerRect.width, self.slider.powerRect.height)
-        love.graphics.setColor(255,255,255)
-    end
+    local widthColor = self.slider.powerRect.width
+    if widthColor > 255 then widthColor = 255 end
+    
+    love.graphics.setColor(widthColor,0,0)
+    love.graphics.rectangle("line", self.slider.x, self.slider.y, self.slider.width, self.slider.height)
+
+    love.graphics.setColor(widthColor,0,0)
+    love.graphics.rectangle("fill", self.slider.powerRect.x, self.slider.powerRect.y, self.slider.powerRect.width, self.slider.powerRect.height)
+    love.graphics.setColor(255,255,255)
 end
