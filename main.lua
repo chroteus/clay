@@ -7,7 +7,8 @@ Gamestate = require "lib.hump.gamestate"
 class = require "lib.middleclass"
 
 require "lib.the" -- Gives easy access info on such things as screen width, height, fps, etc.
-require "lib.gui" -- GUI lib. Has Buttons only so far.
+require "lib.gui" -- GUI lib.
+require "lib.TEsound"
 
 -- States
 require "states.menu"
@@ -44,11 +45,14 @@ function love.load()
     else
         Gamestate.switch(menu)
     end
+    
+    TEsound.playLooping("assets/sounds/music.mp3", "music")
 end
 
 function love.update(dt)
     updateThe()    
     Timer.update(dt)
+    TEsound.cleanup()
 end
 
 function love.draw()

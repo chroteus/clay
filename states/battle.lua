@@ -24,9 +24,10 @@ function battle:enter()
     player = leftCountry:clone()
     enemy = rightCountry:clone()
     
-    player:addSkill("attack", 1)
-    enemy:addSkill("aiAttack", 1)
+    player:addSkill("attack")
+    enemy:addSkill("aiAttack")    
     
+
     globalAttackName = "Attack"
     barWidth = 300
     barHeight = 20
@@ -181,7 +182,9 @@ end
 
 function battle:mousereleased(x,y,button)
     for _,btn in pairs(player.buttons) do
-        btn:mousereleased(x,y,button)
+        if btn.name ~= globalAttackName then
+            btn:mousereleased(x,y,button)
+        end
     end
 end
 
@@ -223,7 +226,9 @@ function battle:draw()
     end
     
     for _,btn in pairs(player.buttons) do
-        btn:draw()
+        if btn.name ~= globalAttackName then
+            btn:draw()
+        end
     end
     
     for _,skill in pairs(player.skills) do

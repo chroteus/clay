@@ -31,18 +31,22 @@ function Country:initialize(name, color, attack, defense, hp)
     self.energy = 100
     
     self.skills = {
-     --   skills.attack:clone(),
         skills.heal:clone(),
     } 
     
     Cell.initialize(self, self.id, self.color)
 end
 
+local soundT = love.filesystem.getDirectoryItems("assets/sounds/attack")
+
 -- Loses HP by subtracting defense variable from the attack.
 function Country:loseHP(damage)
     local netDamage = damage - self.defense
     if netDamage < 0 then netDamage = 0 end
-
+    
+    local randNum = math.random(#soundT)
+    local randSnd = soundT[randNum]
+    TEsound.play("assets/sounds/attack/"..randSnd)
     self.hp = self.hp - netDamage
 end
 
@@ -58,7 +62,7 @@ function Country:loseEnergy(amount)
 end
 
 
-function Country:addSkill(argSkill, order)
+function Country:addSkill(argSkill, order)    
     local order = order or 1
     table.insert(self.skills, order, skills[argSkill])
 end

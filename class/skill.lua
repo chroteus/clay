@@ -72,7 +72,7 @@ function AttackSkill:updateSlider(dt)
     self.slider.powerRect.y = self.slider.y
     
     if self.slider.enabled then
-        self.slider.powerRect.width = self.slider.powerRect.width - 150*dt
+        self.slider.powerRect.width = self.slider.powerRect.width - 160*dt
         
         if self.slider.powerRect.width <= 0 then
             self.slider.powerRect.width = 0
@@ -85,7 +85,7 @@ function AttackSkill:updateSlider(dt)
             self.slider.enabled = false
         
             player.energy = player.energy - math.floor(self.slider.powerRect.width / 30)
-            enemy:loseHP(math.floor(self.slider.powerRect.width / 15) + player.attack)
+            enemy:loseHP(math.floor(self.slider.powerRect.width / 100 * player.attack))
             
             Timer.tween(0.5, self.slider.powerRect, {width = 0}, "out-quad")
             
