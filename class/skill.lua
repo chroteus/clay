@@ -72,7 +72,7 @@ function AttackSkill:updateSlider(dt)
     self.slider.powerRect.y = self.slider.y
     
     if self.slider.enabled then
-        self.slider.powerRect.width = self.slider.powerRect.width - 160*dt
+        self.slider.powerRect.width = self.slider.powerRect.width - 140*dt
         
         if self.slider.powerRect.width <= 0 then
             self.slider.powerRect.width = 0

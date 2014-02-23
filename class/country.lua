@@ -65,4 +65,16 @@ end
 function Country:addSkill(argSkill, order)    
     local order = order or 1
     table.insert(self.skills, order, skills[argSkill])
+    
+    local count = 0
+    
+    for _,skill in pairs(self.skills) do
+        if skill.name == skills[argSkill].name then
+            count = count + 1
+        end
+        
+        if count > 1 then
+            table.remove(self.skills, order) -- Remove last item from table.
+        end
+    end
 end

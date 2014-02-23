@@ -23,24 +23,49 @@ function loadMap() -- Load an existing map.
 end
 
 function saveMap(name)
-        -- Turn the map into a table of numbers which represent countries.
-        local numMap = {}
-        name = name or "map.lua" -- An optional name for map.
-        -- Create rows
-        for i=0,100 do numMap[i] = {} end 
-        
-        for columnIndex, column in pairs(map) do
-            for rowIndex, cell in pairs(column) do
-                numMap[columnIndex][rowIndex] = cell.id
-            end
+    -- Turn the map into a table of numbers which represent countries.
+    local numMap = {}
+    name = name or "map.lua" -- An optional name for map.
+    -- Create rows
+    for i=0,100 do numMap[i] = {} end 
+
+    for columnIndex, column in pairs(map) do
+        for rowIndex, cell in pairs(column) do
+            numMap[columnIndex][rowIndex] = cell.id
         end
-        
-        local mapString = serialize(numMap) -- numMap converted into a string.
-        love.filesystem.write(name, "return {")
-        string.gsub(mapString, ",", "")
-        love.filesystem.append(name, mapString)
-        love.filesystem.append(name, ","..'"'..Player.country..'" '.."}")
     end
+    
+    local mapString = serialize(numMap) -- numMap converted into a string.
+    love.filesystem.write(name, "return {")
+    string.gsub(mapString, ",", "")
+    love.filesystem.append(name, mapString)
+    love.filesystem.append(name, ","..'"'..Player.country..'" '.."}")
+end
+
+function initMap()    
+    currAdjCells = {} -- adjacent cells of the selected cell.
+
+    -----------------------
+    --Edit Mode variables--
+    
+    editMode = {
+        enabled = false,
+        country = "Ukraine", -- Selected country. Paints this country on map.
+        buttons = {}
+    }
+    
+    -- Camera
+    mapCam = Camera(the.screen.width/2, the.screen.height/2)
+    
+    -- Map and grid images.
+    mapImg = love.graphics.newImage("assets/image/map.png")
+    gridImg = love.graphics.newImage("assets/image/grid.png")
+    
+    mapCam.scale = 2
+    mapCam.x = 400
+    mapCam.y = 240
+    
+
 
 function enteredMap()
 -- enterMap: Things to do every time game changes to "game" gamestate.
@@ -79,30 +104,6 @@ function enteredMap()
     -- Camera isn't limited by borders if true.
     mapBorderCheck = true
 end
-
-function initMap()    
-    currAdjCells = {} -- adjacent cells of the selected cell.
-
-    -----------------------
-    --Edit Mode variables--
-    
-    editMode = {
-        enabled = false,
-        country = "Ukraine", -- Selected country. Paints this country on map.
-        buttons = {}
-    }
-    
-    -- Camera
-    mapCam = Camera(the.screen.width/2, the.screen.height/2)
-    
-    -- Map and grid images.
-    mapImg = love.graphics.newImage("assets/image/map.png")
-    gridImg = love.graphics.newImage("assets/image/grid.png")
-    
-    mapCam.scale = 2
-    mapCam.x = 400
-    mapCam.y = 240
-    
 
 end
 

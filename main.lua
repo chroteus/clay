@@ -29,11 +29,10 @@ require "misc.map"
 function love.load()
     love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", vsync=true})
     love.window.setTitle("Clay")
-    --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
+    love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
     
-    Player:initialize()
     Gamestate.registerEvents()
     
     if DEBUG then
@@ -46,7 +45,7 @@ function love.load()
         Gamestate.switch(menu)
     end
     
-    TEsound.playLooping("assets/sounds/music.mp3", "music")
+    TEsound.playLooping("assets/sounds/music.ogg", "music", 0.7)
 end
 
 function love.update(dt)
