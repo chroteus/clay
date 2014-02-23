@@ -162,8 +162,10 @@ function battle:update(dt)
         btn:update()
     end
     
-    if player.hp <= 0 or enemy.hp <= 0 then
-        Gamestate.switch(game)
+    if enemy.hp <= 0 then
+        Gamestate.switch(winState)
+    elseif player.hp <= 0 then
+        Gamestate.switch(loseState)
     end
     
     for _,fighter in pairs(fighters) do

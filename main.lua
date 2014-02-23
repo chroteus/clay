@@ -18,6 +18,8 @@ require "states.tutorial"
 require "states.battle"
 require "states.selection"
 require "states.pause"
+require "states.winState"
+require "states.loseState"
 
 -- Misc
 require "class.player"
@@ -45,7 +47,7 @@ function love.load()
         Gamestate.switch(menu)
     end
     
-    TEsound.playLooping("assets/sounds/music.ogg", "music", 0.7)
+    TEsound.playLooping("assets/sounds/music.ogg", "music")
 end
 
 function love.update(dt)

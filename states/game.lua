@@ -27,6 +27,9 @@ function game:draw()
             love.graphics.printf("E - Enter edit mode.", 0, 0, the.screen.width, "left")
         end
     end
+    
+    -- GUI
+    love.graphics.printf("Level: "..Player.level.." XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-20, the.screen.width, "left")
 end
 
 function game:mousepressed(x, y, button)

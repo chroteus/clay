@@ -127,13 +127,18 @@ GenericButton = Button:subclass("GenericButton")
 
 function GenericButton:initialize(order, text, action)
     -- <order> defines button's y position, in a grid-like system.
-    
+    -- if <order> is too high (>20) order becomes y value.    
     self.width = 120                 
     self.height = 45                   
     self.x = the.screen.width/2 - self.width/2
-    self.y = self.height * (order*2)  -- y value depends on <order>.
     self.text = text
     self.action = action
+    
+    if order > 20 then
+        self.y = order
+    else
+        self.y = self.height * (order*2)
+    end
     
     -- Initialize super class.
     Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.action)
