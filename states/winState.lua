@@ -14,13 +14,12 @@ function winState:init()
     }
 end
 
+
 function winState:enter()
     local xpAmnt = math.random(Player.level*3+math.random(2), Player.level*Player.level+math.random(5))
     
     local winStartXp = Player.xp
-    local winFinXp = Player:gainXP(xpAmnt) -- gainXP returns the final xp value
-
-
+    winFinXp, leveledUp = Player:gainXP(xpAmnt) -- gainXP returns the final xp value, and true if player leveled up
     winResultXp = winFinXp - winStartXp
 end
 
@@ -41,9 +40,18 @@ function winState:draw()
     love.graphics.setColor(50, 50, 50)
     local fontHeight = (love.graphics.getFont():getHeight())/2
     love.graphics.printf("XP: +"..winResultXp, winXpRect.x + 5, winXpRect.y + winXpRect.height/2 - fontHeight, winXpRect.width, "left")
+    
+    if leveledUp then
+        love.graphics.printf("Level up!", winXpRect.x, winXpRect.y - winXpRect.height/2 - fontHeight, winXpRect.width, "left")
+    end
+    
     love.graphics.setColor(255,255,255)
 end
 
 function winState:mousereleased(x, y, button)
     winBtn:mousereleased(x, y, button)
+end
+
+function winState:leave()
+    saveMap()
 end

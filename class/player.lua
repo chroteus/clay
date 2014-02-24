@@ -7,14 +7,17 @@ Player = {
 }
 
 function Player:gainXP(amount)
-    local finXP = self.xp + amount    
+    local leveledUp = false    
+    local finXP = self.xp + amount
     Timer.tween(1, self, {xp = finXP})
     
     if finXP >= self.xpToUp then
         self.level = self.level + 1
+        self.xp = 0
+        leveledUp = true
         self.xpToUp = self.xpToUp * (self.level*2)
     end
     
-    return finXP
+    return finXP, leveledUp
 end
 

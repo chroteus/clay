@@ -64,7 +64,7 @@ end
 
 function Country:addSkill(argSkill, order)    
     local order = order or 1
-    table.insert(self.skills, order, skills[argSkill])
+    table.insert(self.skills, order, skills[argSkill]:clone())
     
     local count = 0
     

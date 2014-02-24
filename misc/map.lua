@@ -19,7 +19,10 @@ function loadMap() -- Load an existing map.
     local mapTable = mapFile() -- Call the return of mapFile
     
     map = mapTable[1]
-    Player.country = mapTable[2]
+    
+    for k,v in pairs(mapTable[2]) do
+        Player[k] = v
+    end
 end
 
 function saveMap(name)
@@ -39,7 +42,20 @@ function saveMap(name)
     love.filesystem.write(name, "return {")
     string.gsub(mapString, ",", "")
     love.filesystem.append(name, mapString)
-    love.filesystem.append(name, ","..'"'..Player.country..'" '.."}")
+    love.filesystem.append(name, ",".."{")
+    for k,v in pairs(Player) do
+        local stringV = ""
+        if type(v) == "string" then
+            stringV = '"'..v..'"'
+        else
+            stringV = tostring(v)
+        end
+        
+        if type(v) ~= "function" then
+            love.filesystem.append(name, tostring(k).."="..stringV..",")
+        end
+    end
+    love.filesystem.append(name, "} }")
 end
 
 function initMap()    
@@ -64,12 +80,7 @@ function initMap()
     mapCam.scale = 2
     mapCam.x = 400
     mapCam.y = 240
-    
 
-
-function enteredMap()
--- enterMap: Things to do every time game changes to "game" gamestate.
--- This is done to prevent bugs when going from menu state to game state for example.
 
     if love.filesystem.exists("map.lua") then
         loadMap()
@@ -86,17 +97,11 @@ function enteredMap()
             table.insert(column, rowIndex, countries[num]:clone())
         end
     end
-    
-    --[[
-    -- Creating "extra" border cells so that the land on the border of map could be claimed.
-    map[0] = {}
-    for i=0,100 do map[0][i] = countries[1] end
-    for i=0,72  do map[i][0] = countries[1] end
-    
-    map[#map+1] = {}
-    for i=0,100 do map[#map][i] = countries[1] end
-    for i=0,72  do map[#map][0] = countries[1] end
-    ]]--
+end
+
+
+function enteredMap()
+-- enterMap: Things to do every time game changes to "game" gamestate.
     
     -- Clear up current adjacent cells table so that none of the cells would be selected.
     currAdjCells = {}
@@ -105,7 +110,6 @@ function enteredMap()
     mapBorderCheck = true
 end
 
-end
 
 function updateMap(dt)
     -- Converting camera to mouse coordinates.
