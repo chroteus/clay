@@ -2,6 +2,8 @@ game = {}
 
 function game:init()    
     initMap()
+    
+    charScrBtn = Button(the.screen.width-123, the.screen.height-69, 120, 40, "(C)haracter", function() Gamestate.switch(charScr) end)
 end
 
 function game:enter()
@@ -13,6 +15,8 @@ end
 
 function game:update(dt)
     updateMap(dt)
+    
+    charScrBtn:update()
 end
 
 function game:draw()
@@ -35,15 +39,17 @@ function game:draw()
     love.graphics.setColor(0,0,0)
     love.graphics.rectangle("line", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
     love.graphics.setColor(255,255,255)
-    love.graphics.printf("Level: "..Player.level.." XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-20, the.screen.width, "left")
+    love.graphics.printf("| Country: "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-20, the.screen.width, "left")
+
+    charScrBtn:draw()
 end
 
 function game:mousepressed(x, y, button)
     mousepressedMap(x, y, button)
 end
 
-function game:keypressed(key)
-
+function game:mousereleased(x,y,button)
+    charScrBtn:mousereleased(x,y,button)
 end
 
 function game:keyreleased(key)

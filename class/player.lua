@@ -2,6 +2,7 @@ Player = {
     country = nil, -- Set in countrySelect.lua
     xp = 0,
     xpToUp = 20,
+    unspentPoints = 0,
     level = 1,
     money = 100
 }
@@ -13,6 +14,7 @@ function Player:gainXP(amount)
     
     if finXP >= self.xpToUp then
         self.level = self.level + 1
+        unspentPoints = unspentPoints + 1
         self.xp = 0
         leveledUp = true
         self.xpToUp = self.xpToUp * (self.level*2)
@@ -21,3 +23,10 @@ function Player:gainXP(amount)
     return finXP, leveledUp
 end
 
+function Player:returnCountry()
+    for _,country in pairs(countries) do
+        if country.name == Player.country then
+            return country:clone()
+        end
+    end
+end

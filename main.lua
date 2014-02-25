@@ -20,6 +20,7 @@ require "states.selection"
 require "states.pause"
 require "states.winState"
 require "states.loseState"
+require "states.charScr"
 
 -- Misc
 require "class.player"
@@ -48,6 +49,7 @@ function love.load()
     end
     
     TEsound.playLooping("assets/sounds/music.ogg", "music")
+    musicPaused = false
 end
 
 function love.update(dt)
@@ -64,12 +66,22 @@ function love.keypressed(key, u)
     -- Debug
     if key == "0" then
         debug.debug()
-    end
+    elseif key == "m" then
+        if not musicPaused then
+            TEsound.pause("music")
+            musicPaused = true
+        else
+            TEsound.resume("music")
+            musicPaused = false
+        end
+    end 
 end
 
 function love.mousepressed(x, y, button)
 
 end
+
+
 -- Collision detection function.
 -- Returns true if two boxes overlap, false if they don't
 -- x1,y1 are the left-top coords of the first box, while w1,h1 are its width and height

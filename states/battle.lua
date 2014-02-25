@@ -243,25 +243,14 @@ function battle:draw()
 end
 
 function battle:leave()
-    -- Claim the cell that we wanted to claim.
+    -- Claim the cell that we wanted to claim but only if the enemy is defeated.
     if enemy.hp <= 0 then
         for _,adjCellColumn in pairs(currAdjCells) do
             for _,adjCell in pairs(adjCellColumn) do
-                for _,country in pairs(countries) do
-                    if Player.country == country.name then
-                        if map[adjCell.columnIndex][adjCell.rowIndex].name ~= "Sea" and map[adjCell.columnIndex][adjCell.rowIndex].isSelected then
-                            map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
-                        end
-                    end
+                if map[adjCell.columnIndex][adjCell.rowIndex].name ~= "Sea" and map[adjCell.columnIndex][adjCell.rowIndex].isSelected then
+                    map[adjCell.columnIndex][adjCell.rowIndex] = Player:returnCountry()
                 end
             end
         end
     end
-    
-    -- We want to save map AFTER claiming the cell, but only if the enemy is defeated.
-    if enemy.hp <= 0 then
-        saveMap() 
-    end
-    
-    startedBattle = false
 end
