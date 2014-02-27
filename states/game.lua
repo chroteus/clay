@@ -39,7 +39,7 @@ function game:draw()
     love.graphics.setColor(0,0,0)
     love.graphics.rectangle("line", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
     love.graphics.setColor(255,255,255)
-    love.graphics.printf("| Country: "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-20, the.screen.width, "left")
+    love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-20, the.screen.width, "left")
 
     charScrBtn:draw()
 end
@@ -55,6 +55,8 @@ end
 function game:keyreleased(key)
     if key == "escape" then
         Gamestate.switch(pause)
+    elseif key == "c" then
+        Gamestate.switch(charScr)
     end
 
     if DEBUG then

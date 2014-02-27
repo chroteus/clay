@@ -282,9 +282,7 @@ function mousepressedMap(x, y, button)
                                     if adjCellX > 0 and adjCellY > 0 then
                                         if adjCellX < 792 and adjCellY < 568 then
                                             if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width-1,the.cell.height-1) then
-                                
                                                 -- Note: Conquering the cell is done in battle's leave function.
-                                        
                                                 -- Marking the selected as selected so that neighbor cells won't be claimed.
                                                 map[adjCell.columnIndex][adjCell.rowIndex].isSelected = true
                                                 if adjCellCountry == "Sea" then

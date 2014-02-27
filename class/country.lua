@@ -24,11 +24,15 @@ function Country:initialize(name, color, attack, defense, hp)
     -- Minature: A small pixel-art version of the ball.
     self.miniature = lg.newImage("assets/image/miniatures/"..self.name..".png")
     
-    self.attack = attack
-    self.defense = defense
-    self.hp = hp
-    self.maxHP = self.hp
-    self.energy = 100
+    self.stats = {
+        attack = attack,
+        defense = defense,
+        hp = hp,
+        energy = 100,
+    }
+    
+    self.maxHP = self.stats.hp
+    self.maxEnergy = self.stats.energy
     
     self.skills = {
         skills.heal:clone(),
@@ -41,24 +45,24 @@ local soundT = love.filesystem.getDirectoryItems("assets/sounds/attack")
 
 -- Loses HP by subtracting defense variable from the attack.
 function Country:loseHP(damage)
-    local netDamage = damage - self.defense
+    local netDamage = damage - self.stats.defense
     if netDamage < 0 then netDamage = 0 end
     
     local randNum = math.random(#soundT)
     local randSnd = soundT[randNum]
     TEsound.play("assets/sounds/attack/"..randSnd)
-    self.hp = self.hp - netDamage
+    self.stats.hp = self.stats.hp - netDamage
 end
 
 function Country:gainHP(amount)
-    self.hp = self.hp + amount
-    if self.hp > self.maxHP then
-        self.hp = self.maxHP
+    self.stats.hp = self.stats.hp + amount
+    if self.stats.hp > self.maxHP then
+        self.stats.hp = self.maxHP
     end
 end
 
 function Country:loseEnergy(amount)
-    self.energy = self.energy - amount
+    self.stats.energy = self.stats.energy - amount
 end
 
 

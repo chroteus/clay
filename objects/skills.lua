@@ -22,7 +22,7 @@ skills = {
     -- Attack skill for the AI
     aiAttack = Skill("AI Attack", 1, 3, 
         function(fighter, target) 
-            target:loseHP(math.random(fighter.defense+1, enemy.attack + 10)) 
+            target:loseHP(math.random(fighter.stats.defense+1, target.stats.attack + 10)) 
             knockback(target, 1)
         end),
         

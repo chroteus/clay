@@ -14,7 +14,7 @@ function Player:gainXP(amount)
     
     if finXP >= self.xpToUp then
         self.level = self.level + 1
-        unspentPoints = unspentPoints + 1
+        self.unspentPoints = self.unspentPoints + 1
         self.xp = 0
         leveledUp = true
         self.xpToUp = self.xpToUp * (self.level*2)

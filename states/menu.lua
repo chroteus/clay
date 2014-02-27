@@ -51,6 +51,7 @@ function menu:draw()
     end
     
     love.graphics.printf("Clay", 0, 50, the.screen.width, "center")
+    love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 50, the.screen.width, "center")
 end
 
 function menu:mousereleased(x,y,button)

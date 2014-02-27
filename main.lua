@@ -77,10 +77,14 @@ function love.keypressed(key, u)
     end 
 end
 
+
 function love.mousepressed(x, y, button)
 
 end
 
+function love.quit()
+   saveMap() -- save on quit
+end
 
 -- Collision detection function.
 -- Returns true if two boxes overlap, false if they don't

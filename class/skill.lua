@@ -21,8 +21,8 @@ end
 
 function Skill:exec(fighter, target)
     if self.isReady then
-        if fighter.energy - self.energy >= 0 then
-            fighter.energy = fighter.energy - self.energy
+        if fighter.stats.energy - self.energy >= 0 then
+            fighter.stats.energy = fighter.stats.energy - self.energy
             self.func(fighter, target)
         end 
         
@@ -84,8 +84,8 @@ function AttackSkill:updateSlider(dt)
         if self.slider.countdown <= 0 then
             self.slider.enabled = false
         
-            player.energy = player.energy - math.floor(self.slider.powerRect.width / 30)
-            enemy:loseHP(math.floor(self.slider.powerRect.width / 100 * player.attack))
+            player.stats.energy = player.stats.energy - math.floor(self.slider.powerRect.width / 30)
+            enemy:loseHP(math.floor(self.slider.powerRect.width / 100 * player.stats.attack))
             
             Timer.tween(0.5, self.slider.powerRect, {width = 0}, "out-quad")
             
