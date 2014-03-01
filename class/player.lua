@@ -4,13 +4,18 @@ Player = {
     xpToUp = 20,
     unspentPoints = 0,
     level = 1,
-    money = 100
+    money = 100,
+    attack = 0,
+    defense = 0,
 }
 
 function Player:gainXP(amount)
     local leveledUp = false    
     local finXP = self.xp + amount
-    Timer.tween(1, self, {xp = finXP})
+    self.showXP = self.xp
+    Timer.tween(1, self, {showXP = finXP})
+    
+    self.xp = self.xp + amount
     
     if finXP >= self.xpToUp then
         self.level = self.level + 1
@@ -23,10 +28,14 @@ function Player:gainXP(amount)
     return finXP, leveledUp
 end
 
-function Player:returnCountry()
+function Player:returnCountry(notClone)
     for _,country in pairs(countries) do
         if country.name == Player.country then
-            return country:clone()
+            if notClone then
+                return country
+            else
+                return country:clone()
+            end
         end
     end
 end

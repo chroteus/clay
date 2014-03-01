@@ -20,13 +20,13 @@ skills = {
         end),
         
     -- Attack skill for the AI
-    aiAttack = Skill("AI Attack", 1, 3, 
+    aiAttack = Skill("AI Attack", 1, 1, 
         function(fighter, target) 
-            target:loseHP(math.random(fighter.stats.defense+1, target.stats.attack + 10)) 
+            target:loseHP(math.random(fighter.defense+1, target.attack + 10)) 
             knockback(target, 1)
         end),
         
-    heal = Skill("(H)eal", 5, 16, function(fighter) fighter:gainHP(math.random(5,15)) end),
+    heal = Skill("(H)eal", 5, 5, function(fighter) fighter:gainHP(math.random(5,15)) end),
    
    
 }

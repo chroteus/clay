@@ -34,13 +34,13 @@ function game:draw()
     
     -- GUI
     local guiRectH = 25
-    love.graphics.setColor(0,0,0,90)
+    love.graphics.setColor(guiColors.bg)
     love.graphics.rectangle("fill", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(guiColors.fg)
     love.graphics.rectangle("line", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
-    love.graphics.setColor(255,255,255)
     love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-20, the.screen.width, "left")
-
+    love.graphics.setColor(255,255,255)
+    
     charScrBtn:draw()
 end
 

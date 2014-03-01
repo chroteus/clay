@@ -1,4 +1,12 @@
-Character screen
+Before Alpha:
+Blinking energy bar if energy is zero and if the player tried to use a skill.
+Blink HP bar if hp is low.
+Fonts.
+Backgrounds for menus.
+Better looking GUI.
+Invasions.
+
+Long term:
 Improve Battle System
 "Upgrade" system
 Economy

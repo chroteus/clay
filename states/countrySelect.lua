@@ -7,7 +7,8 @@ function countrySelect:init()
             table.insert(countrySelectBtn,
                 GenericButton(i-1, country.name, 
                     function() 
-                        Player.country = country.name 
+                        Player.country = country.name
+                        Player.attack, Player.defense = country.attack, country.defense 
                         Gamestate.switch(tutorial)
                     end)
             )

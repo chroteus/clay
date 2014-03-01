@@ -24,7 +24,7 @@ function winState:enter()
 end
 
 function winState:update(dt)
-    winXpRect.fillWidth = (winXpRect.width/Player.xpToUp) * Player.xp
+    winXpRect.fillWidth = (winXpRect.width/Player.xpToUp) * Player.showXP
     
     winBtn:update()
 end

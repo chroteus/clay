@@ -106,7 +106,7 @@ function battle:enter()
         y = player.y - padding,
         width = barWidth,
         height = barHeight,
-        fillWidth = (barWidth/ player.maxHP) * player.stats.hp
+        fillWidth = (barWidth/ player.maxHP) * player.hp
     } 
     
     player.energyBar = {
@@ -114,7 +114,7 @@ function battle:enter()
         y = player.y+250+padding,
         width = barWidth,
         height = barHeight,
-        fillWidth = (barWidth / player.maxEnergy) * player.stats.energy,
+        fillWidth = (barWidth / player.maxEnergy) * player.energy,
         
     }
 
@@ -123,7 +123,7 @@ function battle:enter()
         y = enemy.y - padding,
         width = barWidth,
         height = barHeight,
-        fillWidth = (barWidth / enemy.maxHP) * enemy.stats.hp
+        fillWidth = (barWidth / enemy.maxHP) * enemy.hp
     }
     
     enemy.energyBar = {
@@ -131,7 +131,7 @@ function battle:enter()
         y = enemy.y+250+padding,
         width = barWidth,
         height = barHeight,
-        fillWidth = (barWidth / enemy.maxEnergy) * enemy.stats.energy
+        fillWidth = (barWidth / enemy.maxEnergy) * enemy.energy
     } 
     
     for _,skill in pairs(player.skills) do
@@ -162,15 +162,15 @@ function battle:update(dt)
         btn:update()
     end
     
-    if enemy.stats.hp <= 0 then
+    if enemy.hp <= 0 then
         Gamestate.switch(winState)
-    elseif player.stats.hp <= 0 then
+    elseif player.hp <= 0 then
         Gamestate.switch(loseState)
     end
     
     for _,fighter in pairs(fighters) do
-        fighter.hpBar.fillWidth = (barWidth/ fighter.maxHP) * fighter.stats.hp
-        fighter.energyBar.fillWidth = (barWidth / fighter.maxEnergy) * fighter.stats.energy
+        fighter.hpBar.fillWidth = (barWidth/ fighter.maxHP) * fighter.hp
+        fighter.energyBar.fillWidth = (barWidth / fighter.maxEnergy) * fighter.energy
     
         for _,skill in pairs(fighter.skills) do
             skill:update(dt)
@@ -220,11 +220,11 @@ function battle:draw()
         love.graphics.setColor(255,255,255)
         
         local fontHeight = (love.graphics.getFont():getHeight())/2
-        love.graphics.printf("Energy: "..fighter.stats.energy.."/"..fighter.maxEnergy, fighter.energyBar.x+5, fighter.energyBar.y + barHeight/2 - fontHeight, barWidth, "left")
-        love.graphics.printf("Health "..fighter.stats.hp.."/"..fighter.maxHP, fighter.hpBar.x+5, fighter.hpBar.y + barHeight/2 - fontHeight, barWidth, "left")
+        love.graphics.printf("Energy: "..fighter.energy.."/"..fighter.maxEnergy, fighter.energyBar.x+5, fighter.energyBar.y + barHeight/2 - fontHeight, barWidth, "left")
+        love.graphics.printf("Health "..fighter.hp.."/"..fighter.maxHP, fighter.hpBar.x+5, fighter.hpBar.y + barHeight/2 - fontHeight, barWidth, "left")
         
-        love.graphics.printf("Attack: "..fighter.stats.attack, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "left")
-        love.graphics.printf("Defense: "..fighter.stats.defense, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "right")
+        love.graphics.printf("Attack: "..fighter.attack, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "left")
+        love.graphics.printf("Defense: "..fighter.defense, fighter.energyBar.x, fighter.energyBar.y - barHeight, barWidth, "right")
     end
     
     for _,btn in pairs(player.buttons) do
@@ -244,7 +244,7 @@ end
 
 function battle:leave()
     -- Claim the cell that we wanted to claim but only if the enemy is defeated.
-    if enemy.stats.hp <= 0 then
+    if enemy.hp <= 0 then
         for _,adjCellColumn in pairs(currAdjCells) do
             for _,adjCell in pairs(adjCellColumn) do
                 if map[adjCell.columnIndex][adjCell.rowIndex].name ~= "Sea" and map[adjCell.columnIndex][adjCell.rowIndex].isSelected then
@@ -256,8 +256,8 @@ function battle:leave()
     
     -- Reset countries' stats. [[WORKAROUND]]
     for _,fighter in pairs(fighters) do
-        fighter.stats.hp = fighter.maxHP
-        fighter.stats.energy = fighter.maxEnergy
+        fighter.hp = fighter.maxHP
+        fighter.energy = fighter.maxEnergy
     end
     
     startedBattle = false

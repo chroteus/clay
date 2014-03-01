@@ -21,8 +21,8 @@ end
 
 function Skill:exec(fighter, target)
     if self.isReady then
-        if fighter.stats.energy - self.energy >= 0 then
-            fighter.stats.energy = fighter.stats.energy - self.energy
+        if fighter.energy - self.energy >= 0 then
+            fighter.energy = fighter.energy - self.energy
             self.func(fighter, target)
         end 
         
@@ -37,7 +37,7 @@ function AttackSkill:initialize(extraFunc)
 
     -- energy is subtracted based on the power of attack.
     self.energy = 1
-    self.cooldown = 5
+    self.cooldown = 1
 
     self.slider = {
         -- x and y values are set in battle state.
@@ -84,10 +84,10 @@ function AttackSkill:updateSlider(dt)
         if self.slider.countdown <= 0 then
             self.slider.enabled = false
         
-            player.stats.energy = player.stats.energy - math.floor(self.slider.powerRect.width / 30)
-            enemy:loseHP(math.floor(self.slider.powerRect.width / 100 * player.stats.attack))
+            player.energy = player.energy - math.floor(self.slider.powerRect.width / 30)
+            enemy:loseHP(math.floor(self.slider.powerRect.width / 200 * player.attack))
             
-            Timer.tween(0.5, self.slider.powerRect, {width = 0}, "out-quad")
+            Timer.tween(0.3, self.slider.powerRect, {width = 0}, "out-quad")
             
             self.slider.countdown = self.slider.countdownReset
         end
@@ -98,7 +98,7 @@ function AttackSkill:keypressed(key)
     if self.slider.enabled then
         if key == " " then
            self.slider.power = self.slider.power + 1
-           self.slider.powerRect.width = self.slider.powerRect.width + 30
+           self.slider.powerRect.width = self.slider.powerRect.width + 60
         end
     end
 end

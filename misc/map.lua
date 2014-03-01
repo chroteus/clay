@@ -23,6 +23,9 @@ function loadMap() -- Load an existing map.
     for k,v in pairs(mapTable[2]) do
         Player[k] = v
     end
+    
+    Player:returnCountry(true).attack = Player.attack
+    Player:returnCountry(true).defense = Player.defense
 end
 
 function saveMap(name)
