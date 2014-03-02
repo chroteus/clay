@@ -7,8 +7,8 @@ Button = class("Button")
 -- Not to be used by itself.
 
 guiColors = {
-    bg = {225, 225, 225, 200},
-    fg = {50, 50, 50, 200}
+    bg = {255, 255, 255, 150},
+    fg = {50, 50, 50}
 }
 
 function Button:initialize(x, y, width, height, text, func)
@@ -33,15 +33,9 @@ function Button:initialize(x, y, width, height, text, func)
         
         -- active = Mouse is hovering on the button.
         active = {
-            bg = {guiColors.bg[1] + 30, guiColors.bg[2] + 30, guiColors.bg[3] + 30, 255},
-            fg = {guiColors.fg[1] + 30, guiColors.fg[2] + 30, guiColors.fg[3] + 30, 255}
+            bg = {guiColors.bg[1], guiColors.bg[2], guiColors.bg[3], 255},
+            fg = {guiColors.fg[1], guiColors.fg[2], guiColors.fg[3], 255}
         },
-        
-        -- clicked = Mouse clicked the button.
-        clicked = {
-            bg = {guiColors.bg[1] + 20, guiColors.bg[2] + 20, guiColors.bg[3] + 20, 255},
-            fg = {guiColors.fg[1] + 20, guiColors.fg[2] + 20, guiColors.fg[3] + 20, 255}
-        }
     }
 end
 
@@ -54,14 +48,6 @@ function Button:update(dt)
         self.state = "active"
     else
         self.state = "idle"
-    end
-end
-
-function Button:mousepressed(x, y, button)
-    -- To be used in mousepressed callback functions.
-    
-    if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
-        self.state = "clicked" -- Change state to "clicked" to change button's color.
     end
 end
 
@@ -95,11 +81,6 @@ function Button:draw()
         end
         love.graphics.setColor(self.colors.active.fg)
         love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
-    elseif self.state == "clicked" then
-        love.graphics.setColor(self.colors.clicked.bg)
-        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-        love.graphics.setColor(self.colors.clicked.fg)
-        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)       
     end
     
 
@@ -128,8 +109,8 @@ GenericButton = Button:subclass("GenericButton")
 function GenericButton:initialize(order, text, action)
     -- <order> defines button's y position, in a grid-like system.
     -- if <order> is too high (>20) order becomes y value.    
-    self.width = 120                 
-    self.height = 45                   
+    self.width = 180                 
+    self.height = 50                   
     self.x = the.screen.width/2 - self.width/2
     self.text = text
     self.action = action

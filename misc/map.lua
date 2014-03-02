@@ -104,8 +104,6 @@ end
 
 
 function enteredMap()
--- enterMap: Things to do every time game changes to "game" gamestate.
-    
     -- Clear up current adjacent cells table so that none of the cells would be selected.
     currAdjCells = {}
     
@@ -292,6 +290,12 @@ function mousepressedMap(x, y, button)
                                                     map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
                                                     map[adjCell.columnIndex][adjCell.rowIndex].isFaintClone = true
                                                 elseif not startedBattle then
+                                                    for _,country in pairs(countries) do
+                                                        if country.name == map[adjCell.columnIndex][adjCell.rowIndex].name then
+                                                            table.insert(country.foes, Player:returnCountry(true))
+                                                        end
+                                                    end
+                                                    
                                                     -- Prevent switching to battle more than once.
                                                     startBattle(Player.country, map[adjCell.columnIndex][adjCell.rowIndex].name)
                                                     startedBattle = true
@@ -356,8 +360,17 @@ function drawMap()
                 love.graphics.setLineWidth(0.5)
                 love.graphics.setColor(255,255,255,64)
                 love.graphics.rectangle("fill", cellX, cellY, the.cell.width-1, the.cell.height-1)
-                love.graphics.setColor(255,255,255)
+                
+                if cell.name == "Sea" then
+                    love.graphics.setColor(90,90,90)
+                else
+                    love.graphics.setColor(220,220,220)
+                end
+                
                 love.graphics.rectangle("line", cellX, cellY, the.cell.width-1, the.cell.height-1)
+                love.graphics.setColor(cell.color)
+                love.graphics.rectangle("line", cellX+1, cellY+1, the.cell.width-3, the.cell.height-3)
+                love.graphics.setColor(255,255,255)
                 love.graphics.setLineWidth(1)
             end
         end

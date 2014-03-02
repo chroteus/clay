@@ -29,6 +29,10 @@ function Country:initialize(name, color, attack, defense, hp)
     self.hp = hp
     self.energy = 100
     
+    self.foes = {}
+    self.allies = {}
+    self.neutrals = {}
+    
     self.maxHP = self.hp
     self.maxEnergy = self.energy
     

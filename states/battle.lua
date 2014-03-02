@@ -162,9 +162,9 @@ function battle:update(dt)
         btn:update()
     end
     
-    if enemy.hp <= 0 then
+    if enemy.hp <= 0 or enemy.energy <= 0 then
         Gamestate.switch(winState)
-    elseif player.hp <= 0 then
+    elseif player.hp <= 0 or player.energy <= 0 then
         Gamestate.switch(loseState)
     end
     
@@ -252,6 +252,13 @@ function battle:leave()
                 end
             end
         end
+    end
+    
+    -- Set lose message
+    if player.hp <= 0 then
+        loseState.msg = "You lose. (No HP left)"
+    elseif player.energy <= 0 then
+        loseState.msg = "You lose. (No energy left)"
     end
     
     -- Reset countries' stats. [[WORKAROUND]]

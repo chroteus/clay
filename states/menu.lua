@@ -26,8 +26,8 @@ end
 
 function menu:enter()
     if love.filesystem.exists("map.lua") then
-        menuButtons.quit.y = 3*45*2 -- Puts the button below continue button if save file exists.
-        menuButtons.start.y = 2*45*2
+        menuButtons.quit.y = 3*menuButtons.quit.height*2 -- Puts the button below continue button if save file exists.
+        menuButtons.start.y = 2*menuButtons.start.height*2
     
         local function continueGame()
             loadMap()
@@ -51,7 +51,7 @@ function menu:draw()
     end
     
     love.graphics.printf("Clay", 0, 50, the.screen.width, "center")
-    love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 50, the.screen.width, "center")
+    love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 100, the.screen.width, "center")
 end
 
 function menu:mousereleased(x,y,button)

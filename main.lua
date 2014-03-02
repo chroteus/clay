@@ -35,7 +35,7 @@ function love.load()
    -- love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
-    
+
     Gamestate.registerEvents()
     
     if DEBUG then
@@ -48,6 +48,9 @@ function love.load()
         Gamestate.switch(menu)
     end
     
+    gameFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
+    love.graphics.setFont(gameFont)
+    
     TEsound.playLooping("assets/sounds/music.ogg", "music")
     musicPaused = false
 end
@@ -59,7 +62,6 @@ function love.update(dt)
 end
 
 function love.draw()
-
 end
 
 function love.keypressed(key, u)
