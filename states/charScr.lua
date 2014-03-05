@@ -37,6 +37,7 @@ end
 
 function charScr:enter()
     love.mouse.setVisible(true)
+    randBg()
 end
 
 function charScr:update(dt)

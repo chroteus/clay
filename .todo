@@ -1,9 +1,13 @@
 Before Alpha:
-Fix edit mode bug.
-Fonts.
+
+Fix indexing bug.
+NOTE TO  FUTURE SELF:
+Don't create a full adjCells table for the cells which are in corner, bottom, top, etc.
+Just create a partial one.
+
 Backgrounds for menus.
 Better looking GUI.
-Invasions.
+Invasions of AI.
 
 Long term:
 Improve Battle System

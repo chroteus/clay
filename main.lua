@@ -51,6 +51,18 @@ function love.load()
     gameFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
     love.graphics.setFont(gameFont)
     
+    -- Backgrounds
+    local bgTable = love.filesystem.getDirectoryItems("assets/image/bg")
+    
+    function randBg()
+        local randChoice = math.random(#bgTable)
+        local randBg = bgTable[randChoice]
+        scrBgImg = love.graphics.newImage("assets/image/bg/"..randBg)
+    end
+    
+    randBg()
+    
+    -- Music
     TEsound.playLooping("assets/sounds/music.ogg", "music")
     musicPaused = false
 end
@@ -62,6 +74,18 @@ function love.update(dt)
 end
 
 function love.draw()
+    
+    if Gamestate.current() ~= battle and Gamestate.current() ~= winState and Gamestate.current() ~= loseState then
+        love.graphics.setBackgroundColor(45,45,55)
+        local imgW, imgH = scrBgImg:getWidth(), scrBgImg:getHeight()
+        -- draw the image at the right bottom corner.
+        love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
+        
+        -- tint
+        love.graphics.setColor(45,45,55, 64)
+        love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
+        love.graphics.setColor(255,255,255)
+    end
 end
 
 function love.keypressed(key, u)
@@ -85,7 +109,9 @@ function love.mousepressed(x, y, button)
 end
 
 function love.quit()
-   saveMap() -- save on quit
+    if Gamestate.current() == game then
+        saveMap() -- save on quit
+    end
 end
 
 -- Collision detection function.

@@ -43,9 +43,15 @@ function Country:initialize(name, color, attack, defense, hp)
     Cell.initialize(self, self.id, self.color)
 end
 
-local soundT = love.filesystem.getDirectoryItems("assets/sounds/attack")
+function Country:invade(columnIndex, rowIndex)
+   -- for _,foe in pairs(self.foes) do
+     --   if map[columnIndex][rowIndex].name == foe.name then
+            map[columnIndex][rowIndex] = self:clone()
+       -- end
+   -- end
+end
 
--- Loses HP by subtracting defense variable from the attack.
+local soundT = love.filesystem.getDirectoryItems("assets/sounds/attack")
 function Country:loseHP(damage)
     local netDamage = damage - self.defense
     if netDamage < 0 then netDamage = 0 end

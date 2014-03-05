@@ -73,6 +73,7 @@ function initMap()
         buttons = {}
     }
     
+
     -- Camera
     mapCam = Camera(the.screen.width/2, the.screen.height/2)
     
@@ -90,6 +91,7 @@ function initMap()
     else
         createMap()
     end
+    
 
     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
@@ -109,6 +111,19 @@ function enteredMap()
     
     -- Camera isn't limited by borders if true.
     mapBorderCheck = true
+    
+    
+    local function invasion()
+        for columnIndex, column in pairs(map) do
+            for rowIndex, cell in pairs(column) do
+                for _,country in pairs(countries) do
+                   -- country:invade(columnIndex, rowIndex)
+                end
+            end
+        end
+    end
+    
+    Timer.addPeriodic(1, invasion)
 end
 
 
@@ -217,7 +232,8 @@ function mousepressedMap(x, y, button)
                 for rowIndex,cell in pairs(column) do
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
-                    -- We make all cells non-selected first so that Player won't be able to select more than one cell.
+                    
+                    -- We make all cells non-selected first so that player won't be able to select more than one cell.
                     cell.isSelected = false
 
                     -----------------------------------------
@@ -238,7 +254,7 @@ function mousepressedMap(x, y, button)
                     
                     -------------------------------------------------------
                     --Generate adjacent cells table for the selected cell--
-
+                    
                     if Player.country == cell.name then
                         if checkCollision(mapMouse.x, mapMouse.y, 1,1, cellX,cellY,the.cell.width-1,the.cell.height-1) then
                             cell.isSelected = true

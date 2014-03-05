@@ -1,6 +1,9 @@
 countrySelect = {}
 
 function countrySelect:init()
+    CountryBtn = GenericButton:subclass("CountrySelectBtn")
+  --  function
+    
     countrySelectBtn = {}
     for i, country in ipairs(countries) do
         if country.name ~= "Sea" then

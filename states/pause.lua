@@ -14,6 +14,8 @@ function pause:enter()
     love.mouse.setVisible(true)
     love.mouse.setGrabbed(false)
     gameSaved = false
+    
+    randBg()
 end
 
 function pause:update(dt)
