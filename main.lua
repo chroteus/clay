@@ -32,7 +32,7 @@ require "misc.map"
 function love.load()
     love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", vsync=true})
     love.window.setTitle("Clay")
-   -- love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
+    --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
 

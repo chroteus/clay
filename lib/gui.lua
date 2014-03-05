@@ -99,6 +99,9 @@ function Button:draw()
     
     love.graphics.setColor(255,255,255)
     
+    if self:isInstanceOf(SelectBtn) then
+        self:drawBall()
+    end
 end
 
 
