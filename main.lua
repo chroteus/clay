@@ -30,6 +30,8 @@ require "objects.skills"
 require "misc.map"
 
 function love.load()
+    math.randomseed(os.time())
+
     love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", vsync=true})
     love.window.setTitle("Clay")
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
@@ -40,10 +42,6 @@ function love.load()
     
     if DEBUG then
         Gamestate.switch(game)
-        
-        Player.country = "Canada"
-        startBattle("Ukraine", "Canada")
-        
     else
         Gamestate.switch(menu)
     end
@@ -82,7 +80,7 @@ function love.draw()
         love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
         
         -- tint
-        love.graphics.setColor(45,45,55, 64)
+        love.graphics.setColor(45,45,55,100)
         love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
         love.graphics.setColor(255,255,255)
     end

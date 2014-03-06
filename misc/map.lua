@@ -124,6 +124,31 @@ function enteredMap()
     end
     
     Timer.addPeriodic(1, invasion)
+    
+    -----------------------------------------
+    --Generate adjacent cells for all cells--
+    
+    for columnIndex, column in pairs(map) do
+        for rowIndex, cell in pairs(column) do
+            local adj = cell.adjCells
+            
+            -- adjusting for width and height
+            local rowIndex = rowIndex - 1
+            local columnIndex = columnIndex - 1
+
+            adj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
+            adj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
+            adj[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
+
+            adj[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
+            adj[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
+            adj[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
+                                    
+            adj[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
+            adj[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
+            adj[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
+        end
+    end
 end
 
 
@@ -232,25 +257,9 @@ function mousepressedMap(x, y, button)
                 for rowIndex,cell in pairs(column) do
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
-                    
+
                     -- We make all cells non-selected first so that player won't be able to select more than one cell.
                     cell.isSelected = false
-
-                    -----------------------------------------
-                    --Generate adjacent cells for all cells--
-
-                    local adj = cell.adjCells
-                    adj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
-                    adj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
-                    adj[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
-                            
-                    adj[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
-                    adj[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
-                    adj[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
-                            
-                    adj[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
-                    adj[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
-                    adj[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
                     
                     -------------------------------------------------------
                     --Generate adjacent cells table for the selected cell--
@@ -262,22 +271,20 @@ function mousepressedMap(x, y, button)
                                             {0,0,0},
                                             {0,0,0}}
                         
-                            local c = currAdjCells
-                            local cAdj = cell.adjCells
-                        
+                            local currAdj = currAdjCells
                             if cellX > 0  and cellY > 0 then
                                 if cellX < 792 and cellY < 568 then
-                                    c[1][1] = cAdj[1][1]
-                                    c[1][2] = cAdj[1][2]
-                                    c[1][3] = cAdj[1][3]
-                                    
-                                    c[2][1] = cAdj[2][1]
-                                    c[2][2] = cAdj[2][2]
-                                    c[2][3] = cAdj[2][3]
-                                    
-                                    c[3][1] = cAdj[3][1]
-                                    c[3][2] = cAdj[3][2]
-                                    c[3][3] = cAdj[3][3]
+                                    currAdj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
+                                    currAdj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
+                                    currAdj[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
+
+                                    currAdj[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
+                                    currAdj[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
+                                    currAdj[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
+                                                            
+                                    currAdj[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
+                                    currAdj[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
+                                    currAdj[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
                                 end
                             end
                         end
@@ -370,7 +377,7 @@ function drawMap()
             local cellX = (rowIndex-1)*the.cell.width
             local cellY = (columnIndex-1)*the.cell.height
                
-            cell:draw(cellX,cellY)
+            cell:draw(cellX,cellY,columnIndex,rowIndex)
             
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
                 love.graphics.setLineWidth(0.5)
