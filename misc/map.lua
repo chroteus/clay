@@ -1,8 +1,8 @@
 require "objects.countries"
 
 map = {}
-mapW = 100
-mapH = 72
+mapW = 300
+mapH = 130
 
 function createMap() -- Fresh map. Used to load map at first play.
     love.filesystem.remove("map.lua")
@@ -77,10 +77,10 @@ function initMap()
     
 
     -- Camera
-    mapCam = Camera(the.screen.width/2, the.screen.height/2)
+    mapCam = Camera(2400, 1040)
     
     -- Map and grid images.
-    mapImg = love.graphics.newImage("assets/image/map.png")
+    mapImg = love.graphics.newImage("assets/image/map.jpg")
     gridImg = love.graphics.newImage("assets/image/grid.png")
     
     mapCam.scale = math.ceil(the.screen.width/800)
@@ -130,6 +130,19 @@ function initMap()
             adj[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
             adj[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
             adj[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
+        end
+    end
+    
+    function resetMap()
+        map = {}
+        for i=1,mapW do
+            map[i] = {}
+        end
+        
+        for _,row in ipairs(map) do
+            for i=1,mapH do
+                table.insert(row, countries[1]:clone())
+            end
         end
     end
 end
@@ -198,7 +211,7 @@ function updateMap(dt)
     
     if mapBorderCheck then
         local mapWidth, mapHeight = mapCam:worldCoords(the.screen.width, the.screen.height)        
-        local mapX, mapY = mapCam:cameraCoords(800, 576)
+        local mapX, mapY = mapCam:cameraCoords(2400,1040) -- 2400, 1040: Halves of width and height of map image
 
         if mapCam.x < (the.screen.width/2/mapCam.scale)-1 then
             mapCam.x = (the.screen.width/2/mapCam.scale)-1
@@ -218,8 +231,8 @@ function updateMap(dt)
     --------------
     --Lımit zoom--
 
-    if mapCam.scale < 2 then
-        mapCam.scale = 2
+    if mapCam.scale < 1 then
+        mapCam.scale = 1
     elseif mapCam.scale > 3 then
         mapCam.scale = 3
     end
@@ -353,15 +366,16 @@ function drawMap()
     mapCam:attach() 
 
     love.graphics.push()
-    love.graphics.scale(0.5)
-    love.graphics.draw(mapImg, 0,0)
+    love.graphics.scale(2400/mapImg:getWidth())
+    love.graphics.draw(mapImg, -1*mapCam.scale,-1*mapCam.scale)
     love.graphics.pop()
-    
+        
+--[[
     love.graphics.push()
     love.graphics.scale(0.25)
     love.graphics.draw(gridImg, -1*mapCam.scale, -1*mapCam.scale)
     love.graphics.pop()
-    
+]]--
     for _,adjCellRow in ipairs(currAdjCells) do
         for _,adjCell in ipairs(adjCellRow) do
             local adjCellX = (adjCell.rowIndex-1)*the.cell.width
@@ -386,7 +400,8 @@ function drawMap()
             local cellY = (columnIndex-1)*the.cell.height
                
             cell:draw(cellX,cellY)
-            
+
+                
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
                 love.graphics.setLineWidth(0.5)
                 love.graphics.setColor(255,255,255,64)
