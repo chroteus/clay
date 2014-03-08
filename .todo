@@ -2,8 +2,7 @@ Before Alpha:
 
 Fix indexing bug.
 NOTE TO  FUTURE SELF:
-Don't create a full adjCells table for the cells which are in corner, bottom, top, etc.
-Just create a partial one.
+A cell's adjCells table isn't unique. Fix this.
 
 Backgrounds for menus.
 Better looking GUI.

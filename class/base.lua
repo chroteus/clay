@@ -20,7 +20,7 @@ function Base:clone()
         t.loseEnergy = function(self, amount) Country.loseEnergy(self, amount) end
         t.gainHP = function(self, amount) Country.gainHP(self, amount) end
         t.addSkill = function(self, argSkill) Country.addSkill(self, argSkill) end
-        t.invade = function(self, columnIndex, rowIndex) Country.invade(self, columnIndex, rowIndex) end
+        t.invade = function(self, rowIndex, columnIndex) Country.invade(self, rowIndex, columnIndex) end
     elseif self:isInstanceOf(Skill) then
         t.update = function(self, dt) Skill.update(self, dt) end
         t.exec = function(self, fighter, target) Skill.exec(self, fighter, target) end

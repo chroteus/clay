@@ -14,10 +14,8 @@ function Country:initialize(name, color, attack, defense, hp)
     self.color = color
     
     -- Ball Images: If one of them is not present, one of the other images is used.
-    -- Image [Image]: Image to be used in battles and such. Frontal view.
     -- rightImage [Image]: Picture of ball facing to right.
     -- leftImage [Image]: Picture of ball facing to left. 
-    self.image = lg.newImage("assets/image/balls/"..self.name..".png")
     self.rightImage = lg.newImage("assets/image/balls/right/"..self.name..".png")
     self.leftImage = lg.newImage("assets/image/balls/left/"..self.name..".png")
     
@@ -43,10 +41,10 @@ function Country:initialize(name, color, attack, defense, hp)
     Cell.initialize(self, self.id, self.color)
 end
 
-function Country:invade(columnIndex, rowIndex)
+function Country:invade(rowIndex, columnIndex)
    -- for _,foe in pairs(self.foes) do
      --   if map[columnIndex][rowIndex].name == foe.name then
-            map[columnIndex][rowIndex] = self:clone()
+            map[rowIndex][columnIndex] = self:clone()
        -- end
    -- end
 end

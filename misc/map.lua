@@ -1,6 +1,8 @@
 require "objects.countries"
 
 map = {}
+mapW = 100
+mapH = 72
 
 function createMap() -- Fresh map. Used to load map at first play.
     love.filesystem.remove("map.lua")
@@ -33,11 +35,11 @@ function saveMap(name)
     local numMap = {}
     name = name or "map.lua" -- An optional name for map.
     -- Create rows
-    for i=0,100 do numMap[i] = {} end 
+    for i=0,#map do numMap[i] = {} end 
 
-    for columnIndex, column in pairs(map) do
-        for rowIndex, cell in pairs(column) do
-            numMap[columnIndex][rowIndex] = cell.id
+    for rowIndex,row in ipairs(map) do
+        for columnIndex, cell in ipairs(row) do
+            numMap[rowIndex][columnIndex] = cell.id
         end
     end
     
@@ -81,7 +83,7 @@ function initMap()
     mapImg = love.graphics.newImage("assets/image/map.png")
     gridImg = love.graphics.newImage("assets/image/grid.png")
     
-    mapCam.scale = 2
+    mapCam.scale = math.ceil(the.screen.width/800)
     mapCam.x = 400
     mapCam.y = 240
 
@@ -96,41 +98,22 @@ function initMap()
     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
 
-    for columnIndex,column in pairs(map) do
-        for rowIndex,num in pairs(column) do
-            table.remove(column, rowIndex)
-            table.insert(column, rowIndex, countries[num]:clone())
-        end
-    end
-end
-
-
-function enteredMap()
-    -- Clear up current adjacent cells table so that none of the cells would be selected.
-    currAdjCells = {}
-    
-    -- Camera isn't limited by borders if true.
-    mapBorderCheck = true
-    
-    
-    local function invasion()
-        for columnIndex, column in pairs(map) do
-            for rowIndex, cell in pairs(column) do
-                for _,country in pairs(countries) do
-                   -- country:invade(columnIndex, rowIndex)
-                end
-            end
+    for rowIndex,row in ipairs(map) do
+        for columnIndex,num in ipairs(row) do
+            table.remove(row, columnIndex)
+            table.insert(row, columnIndex, countries[num]:clone())
         end
     end
     
-    Timer.addPeriodic(1, invasion)
+    
     
     -----------------------------------------
     --Generate adjacent cells for all cells--
     
-    for columnIndex, column in pairs(map) do
-        for rowIndex, cell in pairs(column) do
-            local adj = cell.adjCells
+    
+    for rowIndex,row in ipairs(map) do
+        for columnIndex, cell in ipairs(row) do
+            local adj = map[rowIndex][columnIndex].adjCells
             
             -- adjusting for width and height
             local rowIndex = rowIndex - 1
@@ -152,6 +135,28 @@ function enteredMap()
 end
 
 
+function enteredMap()
+    -- Clear up current adjacent cells table so that none of the cells would be selected.
+    currAdjCells = {}
+    
+    -- Camera isn't limited by borders if true.
+    mapBorderCheck = true
+    
+    
+    local function invasion()
+        for rowIndex, row in pairs(map) do
+            for columnIndex, cell in pairs(row) do
+                for _,country in pairs(countries) do
+                   -- country:invade(columnIndex, rowIndex)
+                end
+            end
+        end
+    end
+    
+    Timer.addPeriodic(1, invasion)
+end
+
+
 function updateMap(dt)
     -- Converting camera to mouse coordinates.
     mapMouse = {}
@@ -159,13 +164,15 @@ function updateMap(dt)
     
     ---------------------------
     --Clean up "faint clones"--
-    for columnIndex, column in pairs(map) do
-        for rowIndex, cell in pairs(column) do
+    for rowIndex,row in ipairs(map) do
+        for columnIndex, cell in ipairs(row) do
             if cell.isFaintClone then
-                map[columnIndex][rowIndex] = countries[1]:clone()
+                map[rowIndex][columnIndex] = countries[1]:clone()
             end
         end
     end
+
+    
 
     ---------------------
     --Moving the camera--
@@ -222,14 +229,14 @@ function updateMap(dt)
     
     if editMode.enabled then
         if love.mouse.isDown("l") then
-            for columnIndex, column in pairs(map) do
-                for rowIndex, cell in pairs(column) do
+            for rowIndex, row in pairs(map) do
+                for columnIndex, cell in pairs(row) do
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
                     for _,country in pairs(countries) do
                         if checkCollision(mapMouse.x,mapMouse.y,1,1, cellX,cellY,the.cell.width,the.cell.height) then
                             if editMode.country == country.name then
-                                map[columnIndex][rowIndex] = country:clone()
+                                map[rowIndex][columnIndex] = country:clone()
                             end
                         end
                     end
@@ -253,8 +260,9 @@ function mousepressedMap(x, y, button)
 
     if not editMode.enabled then
         if button == "l" then
-            for columnIndex,column in pairs(map) do
-                for rowIndex,cell in pairs(column) do
+            for rowIndex,row in ipairs(map) do
+                for columnIndex,cell in ipairs(row) do
+                
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
 
@@ -294,9 +302,9 @@ function mousepressedMap(x, y, button)
                 ------------------------------
                 --Invasion of neighbor cells--
                 
-                for _,adjCellColumn in pairs(currAdjCells) do
-                    for _,adjCell in pairs(adjCellColumn) do
-                        if Player.country ~= map[adjCell.columnIndex][adjCell.rowIndex].name then
+                for _,adjCellRow in ipairs(currAdjCells) do
+                    for _,adjCell in ipairs(adjCellRow) do
+                        if Player.country ~= map[adjCell.rowIndex][adjCell.columnIndex].name then
                             for _,country in pairs(countries) do
                                 if Player.country == country.name then
                                     local adjCellX = (adjCell.rowIndex-1)*the.cell.width 
@@ -354,8 +362,8 @@ function drawMap()
     love.graphics.draw(gridImg, -1*mapCam.scale, -1*mapCam.scale)
     love.graphics.pop()
     
-    for _,adjCellColumn in pairs(currAdjCells) do
-        for _,adjCell in pairs(adjCellColumn) do
+    for _,adjCellRow in ipairs(currAdjCells) do
+        for _,adjCell in ipairs(adjCellRow) do
             local adjCellX = (adjCell.rowIndex-1)*the.cell.width
             local adjCellY = (adjCell.columnIndex-1)*the.cell.height
                    
@@ -372,12 +380,12 @@ function drawMap()
         end
     end
     
-    for columnIndex,column in pairs(map) do
-        for rowIndex,cell in pairs(column) do
+    for rowIndex,row in ipairs(map) do
+        for columnIndex,cell in ipairs(row) do
             local cellX = (rowIndex-1)*the.cell.width
             local cellY = (columnIndex-1)*the.cell.height
                
-            cell:draw(cellX,cellY,columnIndex,rowIndex)
+            cell:draw(cellX,cellY)
             
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
                 love.graphics.setLineWidth(0.5)

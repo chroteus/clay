@@ -13,7 +13,7 @@ function selection:init()
         self.width = 25
         self.height = 25
         self.text = " "
-        self.func = function() 
+        self.func = function()
                         editMode.country = self.country.name
                         editMode.enabled = true
                         Gamestate.switch(game)
