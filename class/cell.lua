@@ -21,26 +21,6 @@ function Cell:initialize(id, color)
         
 end
 
-function Cell:adjClone(rowIndex, columnIndex)
-    -- Clones the cell and generated adjacent cells table for it.
-    local cell = self:clone()
-    local adj = cell.adjCells
-    
-    adj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
-    adj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
-    adj[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
-    
-    adj[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
-    adj[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
-    adj[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
-                                    
-    adj[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
-    adj[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
-    adj[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
-
-    return cell
-end
-
 function Cell:draw(x, y)
     self.color[4] = 120 -- Set the alpha channel. Makes cell transparent.
 

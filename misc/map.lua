@@ -83,7 +83,7 @@ function initMap()
     mapImg = love.graphics.newImage("assets/image/map.jpg")
     gridImg = love.graphics.newImage("assets/image/grid.png")
     
-    mapCam.scale = math.ceil(the.screen.width/800)
+    mapCam.scale = math.ceil(the.screen.width/2400)
     mapCam.x = 400
     mapCam.y = 240
 
@@ -101,7 +101,27 @@ function initMap()
     for rowIndex,row in ipairs(map) do
         for columnIndex,num in ipairs(row) do
             table.remove(row, columnIndex)
-            table.insert(row, columnIndex, countries[num]:adjClone(rowIndex, columnIndex))
+            table.insert(row, columnIndex, countries[num]:clone())
+        end
+    end
+    
+    -----------------------------------------
+    --Generate adjacent cells for all cells--
+
+    for rowInd,row in pairs(map) do
+        for columnInd,cell in pairs(row) do
+            local adj = cell.adjCells
+            adj[1][1] = {rowIndex=rowInd-1, columnIndex=columnInd-1}
+            adj[1][2] = {rowIndex=rowInd, columnIndex=columnInd-1}
+            adj[1][3] = {rowIndex=rowInd+1, columnIndex=columnInd-1}
+                            
+            adj[2][1] = {rowIndex=rowInd-1, columnIndex=columnInd}
+            adj[2][2] = {rowIndex=rowInd, columnIndex=columnInd}
+            adj[2][3] = {rowIndex=rowInd+1, columnIndex=columnInd}
+                            
+            adj[3][1] = {rowIndex=rowInd-1, columnIndex=columnInd+1}
+            adj[3][2] = {rowIndex=rowInd, columnIndex=columnInd+1}
+            adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
         end
     end
     
@@ -139,7 +159,7 @@ function enteredMap()
         end
     end
     
-    Timer.addPeriodic(1, invasion)
+    --Timer.addPeriodic(1, invasion)
 end
 
 
@@ -153,7 +173,7 @@ function updateMap(dt)
     for rowIndex,row in ipairs(map) do
         for columnIndex, cell in ipairs(row) do
             if cell.isFaintClone then
-                map[rowIndex][columnIndex] = countries[1]:adjClone(rowIndex, columnIndex)
+                map[rowIndex][columnIndex] = countries[1]:clone()
             end
         end
     end
@@ -206,8 +226,8 @@ function updateMap(dt)
 
     if mapCam.scale < 1 then
         mapCam.scale = 1
-    elseif mapCam.scale > 3 then
-        mapCam.scale = 3
+    elseif mapCam.scale > 2.5 then
+        mapCam.scale = 2.5
     end
     
     ------------------------
@@ -251,11 +271,7 @@ function mousepressedMap(x, y, button)
                     
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
-    
-                    if checkCollision(mapMouse.x, mapMouse.y, 1,1, cellX,cellY,the.cell.width-1,the.cell.height-1) then
-                        print("ROW: "..cell.adjCells[3][3].rowIndex.." COL: "..columnIndex)
-                    end
-                    
+
                     
                     -- We make all cells non-selected first so that player won't be able to select more than one cell.
                     cell.isSelected = false
@@ -272,7 +288,7 @@ function mousepressedMap(x, y, button)
                         
                             local currAdj = currAdjCells
                             if cellX > 0  and cellY > 0 then
-                                if cellX < 792 and cellY < 568 then
+                                if cellX < (mapW-3)*the.cell.width and cellY < (mapH-3)*the.cell.height then
                                     currAdj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
                                     currAdj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
                                     currAdj[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
@@ -293,33 +309,33 @@ function mousepressedMap(x, y, button)
                 ------------------------------
                 --Invasion of neighbor cells--
                 
-                for _,adjCellRow in ipairs(currAdjCells) do
-                    for _,adjCell in ipairs(adjCellRow) do
+                for _,adjCellRow in pairs(currAdjCells) do
+                    for _,adjCell in pairs(adjCellRow) do
                         if Player.country ~= map[adjCell.rowIndex][adjCell.columnIndex].name then
                             for _,country in pairs(countries) do
                                 if Player.country == country.name then
                                     local adjCellX = (adjCell.rowIndex-1)*the.cell.width 
                                     local adjCellY = (adjCell.columnIndex-1)*the.cell.height
-                                    local adjCellCountry = map[adjCell.columnIndex][adjCell.rowIndex].name
+                                    local adjCellCountry = map[adjCell.rowIndex][adjCell.columnIndex].name
                                     
                                     if adjCellX > 0 and adjCellY > 0 then
-                                        if adjCellX < 792 and adjCellY < 568 then
+                                        if adjCellX < (mapW-3)*the.cell.width and (mapH-3)*the.cell.height then
                                             if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width-1,the.cell.height-1) then
                                                 -- Note: Conquering the cell is done in battle's leave function.
                                                 -- Marking the selected as selected so that neighbor cells won't be claimed.
-                                                map[adjCell.columnIndex][adjCell.rowIndex].isSelected = true
+                                                map[adjCell.rowIndex][adjCell.columnIndex].isSelected = true
                                                 if adjCellCountry == "Sea" then
-                                                    map[adjCell.columnIndex][adjCell.rowIndex] = country:clone()
-                                                    map[adjCell.columnIndex][adjCell.rowIndex].isFaintClone = true
+                                                    map[adjCell.rowIndex][adjCell.columnIndex] = country:clone()
+                                                    map[adjCell.rowIndex][adjCell.columnIndex].isFaintClone = true
                                                 elseif not startedBattle then
                                                     for _,country in pairs(countries) do
-                                                        if country.name == map[adjCell.columnIndex][adjCell.rowIndex].name then
+                                                        if country.name == map[adjCell.rowIndex][adjCell.columnIndex].name then
                                                             table.insert(country.foes, Player:returnCountry(true))
                                                         end
                                                     end
                                                     
                                                     -- Prevent switching to battle more than once.
-                                                    startBattle(Player.country, map[adjCell.columnIndex][adjCell.rowIndex].name)
+                                                    startBattle(Player.country, map[adjCell.rowIndex][adjCell.columnIndex].name)
                                                     startedBattle = true
                                                 end
                                             end
@@ -359,7 +375,7 @@ function drawMap()
             local adjCellX = (adjCell.rowIndex-1)*the.cell.width
             local adjCellY = (adjCell.columnIndex-1)*the.cell.height
                    
-            local cell = map[adjCell.columnIndex][adjCell.rowIndex]
+            local cell = map[adjCell.rowIndex][adjCell.columnIndex]
             
             cell.color[4] = 128
             
