@@ -77,15 +77,13 @@ function initMap()
     
 
     -- Camera
-    mapCam = Camera(2400, 1040)
+    mapCam = Camera(2400/2, 1040/2)
     
     -- Map and grid images.
     mapImg = love.graphics.newImage("assets/image/map.jpg")
     gridImg = love.graphics.newImage("assets/image/grid.png")
     
     mapCam.scale = math.ceil(the.screen.width/2400)
-    mapCam.x = 400
-    mapCam.y = 240
 
 
     if love.filesystem.exists("map.lua") then
@@ -138,6 +136,26 @@ function initMap()
             end
         end
     end
+    
+    ----------------------------------------------
+    --Canvas for drawing cells in a fast fashion--
+    cellCanvas = love.graphics.newCanvas(mapImg:getWidth(), mapImg:getHeight())
+    
+    function updateCellCanvas()
+        love.graphics.setCanvas(cellCanvas)
+            cellCanvas:clear()
+            love.graphics.setBlendMode("alpha")
+            for rowIndex, row in pairs(map) do
+                for columnIndex, cell in pairs(row) do
+                    local cellX = (rowIndex-1)*the.cell.width
+                    local cellY = (columnIndex-1)*the.cell.height
+                    
+                    cell:draw(cellX,cellY)
+                end
+            end
+        love.graphics.setCanvas()
+    end
+    updateCellCanvas()
 end
 
 
@@ -178,12 +196,10 @@ function updateMap(dt)
         end
     end
 
-    
-
     ---------------------
     --Moving the camera--
     
-    local cameraSpeed = 500/mapCam.scale
+    local cameraSpeed = 600/mapCam.scale
     local borderSize = 2
 
     if love.keyboard.isDown("d") or the.mouse.x > the.screen.width-borderSize then 
@@ -388,13 +404,12 @@ function drawMap()
         end
     end
     
+    love.graphics.draw(cellCanvas)
+    
     for rowIndex,row in ipairs(map) do
         for columnIndex,cell in ipairs(row) do
             local cellX = (rowIndex-1)*the.cell.width
             local cellY = (columnIndex-1)*the.cell.height
-               
-            cell:draw(cellX,cellY)
-
                 
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
                 love.graphics.setLineWidth(0.5)

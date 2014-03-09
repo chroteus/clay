@@ -267,5 +267,7 @@ function battle:leave()
         fighter.energy = fighter.maxEnergy
     end
     
+    updateCellCanvas()
+    
     startedBattle = false
 end
