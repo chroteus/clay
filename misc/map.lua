@@ -101,37 +101,10 @@ function initMap()
     for rowIndex,row in ipairs(map) do
         for columnIndex,num in ipairs(row) do
             table.remove(row, columnIndex)
-            table.insert(row, columnIndex, countries[num]:clone())
+            table.insert(row, columnIndex, countries[num]:adjClone(rowIndex, columnIndex))
         end
     end
     
-    
-    
-    -----------------------------------------
-    --Generate adjacent cells for all cells--
-    
-    
-    for rowIndex,row in ipairs(map) do
-        for columnIndex, cell in ipairs(row) do
-            local adj = map[rowIndex][columnIndex].adjCells
-            
-            -- adjusting for width and height
-            local rowIndex = rowIndex - 1
-            local columnIndex = columnIndex - 1
-
-            adj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
-            adj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
-            adj[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
-
-            adj[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
-            adj[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
-            adj[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
-                                    
-            adj[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
-            adj[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
-            adj[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
-        end
-    end
     
     function resetMap()
         map = {}
@@ -180,7 +153,7 @@ function updateMap(dt)
     for rowIndex,row in ipairs(map) do
         for columnIndex, cell in ipairs(row) do
             if cell.isFaintClone then
-                map[rowIndex][columnIndex] = countries[1]:clone()
+                map[rowIndex][columnIndex] = countries[1]:adjClone(rowIndex, columnIndex)
             end
         end
     end
@@ -275,10 +248,15 @@ function mousepressedMap(x, y, button)
         if button == "l" then
             for rowIndex,row in ipairs(map) do
                 for columnIndex,cell in ipairs(row) do
-                
+                    
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
-
+    
+                    if checkCollision(mapMouse.x, mapMouse.y, 1,1, cellX,cellY,the.cell.width-1,the.cell.height-1) then
+                        print("ROW: "..cell.adjCells[3][3].rowIndex.." COL: "..columnIndex)
+                    end
+                    
+                    
                     -- We make all cells non-selected first so that player won't be able to select more than one cell.
                     cell.isSelected = false
                     

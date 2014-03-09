@@ -1,6 +1,6 @@
 Base = class("Base")
 
-function Base:intialize()
+function Base:initialize()
 end
 
 function Base:clone()
@@ -32,6 +32,6 @@ function Base:clone()
         end
         
     end
-
+    
     return t
 end
