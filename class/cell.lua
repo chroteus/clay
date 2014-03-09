@@ -28,10 +28,10 @@ function Cell:draw(x, y)
         if self.isSelected then
             love.graphics.setColor(self.color) 
             self.color[4] = 180
-            love.graphics.rectangle("fill", x, y, the.cell.width-1, the.cell.height-1)
+            love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
             love.graphics.setColor(255,255,255)
             love.graphics.setLineWidth(0.5)
-            love.graphics.rectangle("line", x, y, the.cell.width-1, the.cell.height-1)
+            love.graphics.rectangle("line", x, y, the.cell.width, the.cell.height)
             love.graphics.setLineWidth(1)
         else
             love.graphics.setColor(self.color)

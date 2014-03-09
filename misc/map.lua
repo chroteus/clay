@@ -139,6 +139,7 @@ function initMap()
     
     ----------------------------------------------
     --Canvas for drawing cells in a fast fashion--
+    
     cellCanvas = love.graphics.newCanvas(mapImg:getWidth(), mapImg:getHeight())
     
     function updateCellCanvas()
@@ -251,6 +252,7 @@ function updateMap(dt)
     
     if editMode.enabled then
         if love.mouse.isDown("l") then
+            updateCellCanvas()
             for rowIndex, row in pairs(map) do
                 for columnIndex, cell in pairs(row) do
                     local cellX = (rowIndex-1)*the.cell.width
@@ -412,7 +414,6 @@ function drawMap()
             local cellY = (columnIndex-1)*the.cell.height
                 
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
-                love.graphics.setLineWidth(0.5)
                 love.graphics.setColor(255,255,255,64)
                 love.graphics.rectangle("fill", cellX, cellY, the.cell.width-1, the.cell.height-1)
                 
@@ -426,7 +427,6 @@ function drawMap()
                 love.graphics.setColor(cell.color)
                 love.graphics.rectangle("line", cellX+1, cellY+1, the.cell.width-3, the.cell.height-3)
                 love.graphics.setColor(255,255,255)
-                love.graphics.setLineWidth(1)
             end
         end
     end
@@ -434,6 +434,34 @@ function drawMap()
 
     
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
-    -- GUI should be drawn after this function is called.
+    -- GUI should be drawn after this function is called. (or in game's draw func)
     mapCam:detach()
+    
+ 
+    -- Country's name
+    local rectW = 150
+    local rectH = 25
+    local fontHeight = (love.graphics.getFont():getHeight())/2
+    love.graphics.setColor(guiColors.bg)
+    love.graphics.rectangle("fill", the.screen.width/2-rectW/2, 25-fontHeight, rectW, rectH)
+    love.graphics.setColor(guiColors.fg)
+    love.graphics.rectangle("line", the.screen.width/2-rectW/2, 25-fontHeight, rectW, rectH)
+    
+    local lastCountry = "Sea"
+    for rowIndex,row in ipairs(map) do
+        for columnIndex,cell in ipairs(row) do
+            local cellX = (rowIndex-1)*the.cell.width
+            local cellY = (columnIndex-1)*the.cell.height
+            
+            if checkCollision(cellX, cellY, the.cell.width, the.cell.height, mapMouse.x, mapMouse.y, 1,1) then
+                if cell.name then
+                    lastCountry = cell.name
+                end
+            end
+        end
+    end
+    
+    love.graphics.printf(lastCountry, 0, rectH-rectH/2+fontHeight, the.screen.width, "center")
+    
+    love.graphics.setColor(255,255,255)
 end

@@ -3,7 +3,7 @@ game = {}
 function game:init()    
     initMap()
     
-    charScrBtn = Button(the.screen.width-123, the.screen.height-69, 120, 40, "(C)haracter", function() Gamestate.switch(charScr) end)
+    charScrBtn = Button(the.screen.width-123, the.screen.height-73, 120, 40, "(C)haracter", function() Gamestate.switch(charScr) end)
 end
 
 function game:enter()
@@ -33,12 +33,12 @@ function game:draw()
     end
     
     -- GUI
-    local guiRectH = 25
+    local guiRectH = 30
     love.graphics.setColor(guiColors.bg)
     love.graphics.rectangle("fill", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
     love.graphics.setColor(guiColors.fg)
     love.graphics.rectangle("line", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
-    love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-20, the.screen.width, "left")
+    love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-25, the.screen.width, "left")
     love.graphics.setColor(255,255,255)
     
     charScrBtn:draw()
