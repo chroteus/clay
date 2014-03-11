@@ -63,6 +63,8 @@ function saveMap(name)
     love.filesystem.append(name, "} }")
 end
 
+mapImg = love.graphics.newImage("assets/image/map.jpg")
+
 function initMap()    
     currAdjCells = {} -- adjacent cells of the selected cell.
 
@@ -80,7 +82,7 @@ function initMap()
     mapCam = Camera(2400/2, 1040/2)
     
     -- Map and grid images.
-    mapImg = love.graphics.newImage("assets/image/map.jpg")
+    -- mapImg outside of init function because it might be changed in options before init function gets called.
     gridImg = love.graphics.newImage("assets/image/grid.png")
     
     mapCam.scale = math.ceil(the.screen.width/2400)
@@ -140,21 +142,25 @@ function initMap()
     ----------------------------------------------
     --Canvas for drawing cells in a fast fashion--
     
-    cellCanvas = love.graphics.newCanvas(mapImg:getWidth(), mapImg:getHeight())
+    if not prefs.noCanvas then
+        cellCanvas = love.graphics.newCanvas(mapImg:getWidth(), mapImg:getHeight())
+    end
     
     function updateCellCanvas()
-        love.graphics.setCanvas(cellCanvas)
-            cellCanvas:clear()
-            love.graphics.setBlendMode("alpha")
-            for rowIndex, row in pairs(map) do
-                for columnIndex, cell in pairs(row) do
-                    local cellX = (rowIndex-1)*the.cell.width
-                    local cellY = (columnIndex-1)*the.cell.height
-                    
-                    cell:draw(cellX,cellY)
+        if not prefs.noCanvas then
+            love.graphics.setCanvas(cellCanvas)
+                cellCanvas:clear()
+                love.graphics.setBlendMode("alpha")
+                for rowIndex, row in pairs(map) do
+                    for columnIndex, cell in pairs(row) do
+                        local cellX = (rowIndex-1)*the.cell.width
+                        local cellY = (columnIndex-1)*the.cell.height
+                        
+                        cell:draw(cellX,cellY)
+                    end
                 end
-            end
-        love.graphics.setCanvas()
+            love.graphics.setCanvas()
+        end
     end
     updateCellCanvas()
 end
@@ -406,12 +412,18 @@ function drawMap()
         end
     end
     
-    love.graphics.draw(cellCanvas)
+    if not prefs.noCanvas then
+        love.graphics.draw(cellCanvas)
+    end
     
     for rowIndex,row in ipairs(map) do
         for columnIndex,cell in ipairs(row) do
             local cellX = (rowIndex-1)*the.cell.width
             local cellY = (columnIndex-1)*the.cell.height
+                
+            if prefs.noCanvas then
+                cell:draw(cellX, cellY)
+            end
                 
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
                 love.graphics.setColor(255,255,255,64)

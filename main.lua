@@ -21,6 +21,7 @@ require "states.pause"
 require "states.winState"
 require "states.loseState"
 require "states.charScr"
+require "states.options"
 
 -- Misc
 require "class.player"

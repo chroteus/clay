@@ -19,23 +19,22 @@ function menu:init()
     menuButtons = {
         -- GenericButton(order, text, action)
         start = GenericButton(1, "New Game", function() newGame() end),
-        quit = GenericButton(2, "Exit", function() love.event.quit() end),
+        options = GenericButton(2, "Options", function() Gamestate.switch(options) end),
+        quit = GenericButton(3, "Exit", function() love.event.quit() end),
         debugBtn = GenericButton(4, "Dev Mode: OFF", function() debugBtnFunc() end),
     }
 end
 
 function menu:enter()
+    loadPrefs()
+
     if love.filesystem.exists("map.lua") then
-        menuButtons.quit.y = 3*menuButtons.quit.height*2 -- Puts the button below continue button if save file exists.
         menuButtons.start.y = 2*menuButtons.start.height*2
+        menuButtons.options.y = 3*menuButtons.options.height*2
+        menuButtons.quit.y = 4*menuButtons.quit.height*2 
+        menuButtons.debugBtn.y = 5*menuButtons.debugBtn.height*2 
     
-        local function continueGame()
-            loadMap()
-            Gamestate.switch(game)
-        end
-    
-    
-        table.insert(menuButtons, GenericButton(1, "Continue", function() continueGame() end))
+        table.insert(menuButtons, GenericButton(1, "Continue", function() Gamestate.switch(game) end))
     end
 end
 

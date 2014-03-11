@@ -16,7 +16,8 @@ end
 
 
 function winState:enter()
-    local xpAmnt = math.random(Player.level*3+math.random(2), Player.level*Player.level+math.random(5))
+    math.randomseed(os.time())
+    local xpAmnt = math.random(Player.level*3+math.random(2), Player.level*6+math.random(5))
     
     local winStartXp = Player.xp
     winFinXp, leveledUp = Player:gainXP(xpAmnt) -- gainXP returns the final xp value, and true if player leveled up
