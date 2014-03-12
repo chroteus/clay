@@ -26,8 +26,6 @@ function menu:init()
 end
 
 function menu:enter()
-    loadPrefs()
-
     if love.filesystem.exists("map.lua") then
         menuButtons.start.y = 2*menuButtons.start.height*2
         menuButtons.options.y = 3*menuButtons.options.height*2

@@ -98,16 +98,29 @@ function initMap()
     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
 
-    for rowIndex,row in ipairs(map) do
-        for columnIndex,num in ipairs(row) do
-            table.remove(row, columnIndex)
-            table.insert(row, columnIndex, countries[num]:clone())
+    for rowInd,row in ipairs(map) do
+        for columnInd,num in ipairs(row) do
+            table.remove(row, columnInd)
+            table.insert(row, columnInd, countries[num]:clone())
+            
+            local adj = row[columnInd].adjCells
+            adj[1][1] = {rowIndex=rowInd-1, columnIndex=columnInd-1}
+            adj[1][2] = {rowIndex=rowInd, columnIndex=columnInd-1}
+            adj[1][3] = {rowIndex=rowInd+1, columnIndex=columnInd-1}
+                            
+            adj[2][1] = {rowIndex=rowInd-1, columnIndex=columnInd}
+            adj[2][2] = {rowIndex=rowInd, columnIndex=columnInd}
+            adj[2][3] = {rowIndex=rowInd+1, columnIndex=columnInd}
+                            
+            adj[3][1] = {rowIndex=rowInd-1, columnIndex=columnInd+1}
+            adj[3][2] = {rowIndex=rowInd, columnIndex=columnInd+1}
+            adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
         end
     end
     
     -----------------------------------------
     --Generate adjacent cells for all cells--
-
+    --[[
     for rowInd,row in pairs(map) do
         for columnInd,cell in pairs(row) do
             local adj = cell.adjCells
@@ -124,7 +137,7 @@ function initMap()
             adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
         end
     end
-    
+    ]]--
     
     function resetMap()
         map = {}
@@ -256,9 +269,17 @@ function updateMap(dt)
     ------------------------
     --Edit Mode "painting"--
     
+    local updateCanvasTimer = 0.1
+    local updateCanvasTimerReset = updateCanvasTimer
     if editMode.enabled then
         if love.mouse.isDown("l") then
-            updateCellCanvas()
+            updateCanvasTimer = updateCanvasTimer - dt
+            
+            if updateCanvasTimer <= 0 then
+                updateCellCanvas()
+                updateCanvasTimer = updateCanvasTimerReset
+            end
+            
             for rowIndex, row in pairs(map) do
                 for columnIndex, cell in pairs(row) do
                     local cellX = (rowIndex-1)*the.cell.width

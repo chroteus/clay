@@ -17,9 +17,9 @@ function savePrefs()
 end
     
 function loadPrefs()
-    if love.filesystem.exists("prefs") then
+    if love.filesystem.exists("prefs.lua") then
         local prefsFile = love.filesystem.load("prefs.lua")
-        prefs = prefsTable() -- calling return function.
+        prefs = prefsFile() -- calling return function.
     end
 end
 
