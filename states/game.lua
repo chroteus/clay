@@ -7,8 +7,6 @@ function game:init()
 end
 
 function game:enter()
-    loadPrefs()
-    
     enteredMap()
 
     --love.mouse.setVisible(false)

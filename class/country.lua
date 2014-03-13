@@ -38,15 +38,62 @@ function Country:initialize(name, color, attack, defense, hp)
         skills.heal:clone(),
     } 
     
+    self.invadeTimer = 5
+    self.invadeTimerReset = self.invadeTimer
+    
     Cell.initialize(self, self.id, self.color)
 end
 
-function Country:invade(rowIndex, columnIndex)
-   -- for _,foe in pairs(self.foes) do
-     --   if map[columnIndex][rowIndex].name == foe.name then
-            map[rowIndex][columnIndex] = self:clone()
-       -- end
-   -- end
+local function adjCellsOf(rowInd, columnInd)
+    local adj = {{0,0,0},
+                 {0,0,0},
+                 {0,0,0}
+                }
+                
+    adj[1][1] = {rowIndex=rowInd-1, columnIndex=columnInd-1}
+    adj[1][2] = {rowIndex=rowInd, columnIndex=columnInd-1}
+    adj[1][3] = {rowIndex=rowInd+1, columnIndex=columnInd-1}
+                            
+    adj[2][1] = {rowIndex=rowInd-1, columnIndex=columnInd}
+    adj[2][2] = {rowIndex=rowInd, columnIndex=columnInd}
+    adj[2][3] = {rowIndex=rowInd+1, columnIndex=columnInd}
+                            
+    adj[3][1] = {rowIndex=rowInd-1, columnIndex=columnInd+1}
+    adj[3][2] = {rowIndex=rowInd, columnIndex=columnInd+1}
+    adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
+
+    return adj
+end
+
+local numOfInv = 0
+
+function Country:invade(dt)
+    -- Used for AI invasions
+    self.invadeTimer = self.invadeTimer - dt
+    
+    if self.invadeTimer <= 0 then
+        self.invadeTimer = self.invadeTimerReset
+        if self.name ~= Player.country then
+            for _,foe in pairs(self.foes) do
+                for rowIndex, row in ipairs(map) do
+                    for columnIndex, cell in ipairs(row) do
+                        --for adjRowIndex, adjRow in ipairs(adjCellsOf(rowIndex, columnIndex)) do
+                            --for adjColIndex, adjCell in ipairs(adjRow) do
+                                if map[rowIndex][columnIndex].name == foe.name then
+                                    if numOfInv == 0 then
+                                        map[rowIndex][columnIndex] = self:clone()
+                                        numOfInv = numOfInv + 1
+                                    end
+                                end
+                            --end
+                        --end
+                    end
+                end
+            end
+        end
+        
+        numOfInv = 0
+    end
 end
 
 local soundT = love.filesystem.getDirectoryItems("assets/sounds/attack")

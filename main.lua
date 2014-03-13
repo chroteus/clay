@@ -60,6 +60,7 @@ function love.load()
     end
     
     randBg()
+    loadPrefs()
     
     -- Music
     TEsound.playLooping("assets/sounds/music.ogg", "music")

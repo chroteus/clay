@@ -2,7 +2,7 @@ options = {}
 
 prefs = {
     lowresMap = false,
-    noCanvas = false
+    noCanvas = true
 }
     
 function savePrefs()
@@ -27,7 +27,7 @@ function options:init()
     options.fixTxt = "Fixes"
 
     options.btn = {
-        fix1 = GenericButton(1, "Low res map", 
+        lowresMap = GenericButton(1.5, "Low res map", 
             function() 
                 if prefs.lowresMap == false then
                     prefs.lowresMap = true
@@ -40,7 +40,7 @@ function options:init()
                 end
             end),
             
-        fix2 = GenericButton(2, "Disable canvases",
+        noCanvas = GenericButton(3, "Enable/Disable canvas",
             function()
                 if prefs.noCanvas == false then
                     prefs.noCanvas = true
@@ -51,7 +51,7 @@ function options:init()
                 end
             end),
         
-        quit = GenericButton(4, "<< Back",
+        quit = GenericButton(4.5, "<< Back",
             function()
                 Gamestate.switch(menu)
             end),
@@ -73,6 +73,9 @@ function options:draw()
     for _,btn in pairs(options.btn) do
         btn:draw()
     end
+    
+    love.graphics.printf("Use low res map. Turn on if you have old hardware and you're getting errors.", 0, options.btn.lowresMap.y-30, the.screen.width, "center")    
+    love.graphics.printf("Improves looks of cells, decreases performance. Turn this on if you're getting errors.", 0, options.btn.noCanvas.y-30, the.screen.width, "center")    
 end
 
 function options:mousereleased(x,y,button)

@@ -98,46 +98,22 @@ function initMap()
     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
 
-    for rowInd,row in ipairs(map) do
-        for columnInd,num in ipairs(row) do
-            table.remove(row, columnInd)
-            table.insert(row, columnInd, countries[num]:clone())
-            
-            local adj = row[columnInd].adjCells
-            adj[1][1] = {rowIndex=rowInd-1, columnIndex=columnInd-1}
-            adj[1][2] = {rowIndex=rowInd, columnIndex=columnInd-1}
-            adj[1][3] = {rowIndex=rowInd+1, columnIndex=columnInd-1}
-                            
-            adj[2][1] = {rowIndex=rowInd-1, columnIndex=columnInd}
-            adj[2][2] = {rowIndex=rowInd, columnIndex=columnInd}
-            adj[2][3] = {rowIndex=rowInd+1, columnIndex=columnInd}
-                            
-            adj[3][1] = {rowIndex=rowInd-1, columnIndex=columnInd+1}
-            adj[3][2] = {rowIndex=rowInd, columnIndex=columnInd+1}
-            adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
+    for rowIndex,row in ipairs(map) do
+        for columnIndex,num in ipairs(row) do
+            table.remove(row, columnIndex)
+            table.insert(row, columnIndex, countries[num]:clone())
         end
     end
     
-    -----------------------------------------
-    --Generate adjacent cells for all cells--
-    --[[
-    for rowInd,row in pairs(map) do
-        for columnInd,cell in pairs(row) do
-            local adj = cell.adjCells
-            adj[1][1] = {rowIndex=rowInd-1, columnIndex=columnInd-1}
-            adj[1][2] = {rowIndex=rowInd, columnIndex=columnInd-1}
-            adj[1][3] = {rowIndex=rowInd+1, columnIndex=columnInd-1}
-                            
-            adj[2][1] = {rowIndex=rowInd-1, columnIndex=columnInd}
-            adj[2][2] = {rowIndex=rowInd, columnIndex=columnInd}
-            adj[2][3] = {rowIndex=rowInd+1, columnIndex=columnInd}
-                            
-            adj[3][1] = {rowIndex=rowInd-1, columnIndex=columnInd+1}
-            adj[3][2] = {rowIndex=rowInd, columnIndex=columnInd+1}
-            adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
+    function genValues()
+        for rowIndex, row in ipairs(map) do
+            for columnIndex,cell in ipairs(row) do
+                cell.rowIndex = columnIndex
+                cell.columnIndex = rowIndex
+            end
         end
     end
-    ]]--
+    genValues()
     
     function resetMap()
         map = {}
@@ -182,22 +158,9 @@ end
 function enteredMap()
     -- Clear up current adjacent cells table so that none of the cells would be selected.
     currAdjCells = {}
-    
+
     -- Camera isn't limited by borders if true.
     mapBorderCheck = true
-    
-    
-    local function invasion()
-        for rowIndex, row in pairs(map) do
-            for columnIndex, cell in pairs(row) do
-                for _,country in pairs(countries) do
-                   -- country:invade(columnIndex, rowIndex)
-                end
-            end
-        end
-    end
-    
-    --Timer.addPeriodic(1, invasion)
 end
 
 
@@ -205,6 +168,10 @@ function updateMap(dt)
     -- Converting camera to mouse coordinates.
     mapMouse = {}
     mapMouse.x, mapMouse.y = mapCam:mousepos()
+    
+    for _,country in pairs(countries) do
+        country:invade(dt)
+    end
     
     ---------------------------
     --Clean up "faint clones"--
@@ -317,6 +284,9 @@ function mousepressedMap(x, y, button)
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
 
+                    -- For some reason, assigning inverse values gives the right value.
+                    cell.rowIndex = columnIndex
+                    cell.columnIndex = rowIndex
                     
                     -- We make all cells non-selected first so that player won't be able to select more than one cell.
                     cell.isSelected = false
@@ -324,7 +294,7 @@ function mousepressedMap(x, y, button)
                     -------------------------------------------------------
                     --Generate adjacent cells table for the selected cell--
                     
-                    if Player.country == cell.name then
+                    if Player.country == cell.name or "Sea" == cell.name then
                         if checkCollision(mapMouse.x, mapMouse.y, 1,1, cellX,cellY,the.cell.width-1,the.cell.height-1) then
                             cell.isSelected = true
                             currAdjCells = {{0,0,0},
@@ -332,7 +302,7 @@ function mousepressedMap(x, y, button)
                                             {0,0,0}}
                         
                             local currAdj = currAdjCells
-                            if cellX > 0  and cellY > 0 then
+                            if cellX > 0 and cellY > 0 then
                                 if cellX < (mapW-3)*the.cell.width and cellY < (mapH-3)*the.cell.height then
                                     currAdj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
                                     currAdj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
@@ -463,9 +433,7 @@ function drawMap()
             end
         end
     end
-    
-
-    
+        
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
     -- GUI should be drawn after this function is called. (or in game's draw func)
     mapCam:detach()
