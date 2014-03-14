@@ -21,8 +21,11 @@ function Cell:initialize(id, color)
         
 end
 
-function Cell:draw(x, y)
-    self.color[4] = 120 -- Set the alpha channel. Makes cell transparent.
+function Cell:draw(rowIndex, columnIndex)
+    local x = (rowIndex-1)*the.cell.width
+    local y = (columnIndex-1)*the.cell.height
+    
+    self.color[4] = 150 -- Set the alpha channel. Makes cell transparent.
 
     if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it greatly drops FPS.
         if self.isSelected then
@@ -30,7 +33,6 @@ function Cell:draw(x, y)
             self.color[4] = 220
             love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
             love.graphics.setColor(255,255,255)
-       --     love.graphics.rectangle("line", x, y, the.cell.width, the.cell.height)
         else
             love.graphics.setColor(self.color)
             love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)

@@ -7,6 +7,7 @@ require "class.country"
 -- countries [Table]:
 -- Where countries are instantiated.
 countries = {
+    -- WARNING: Countries should be added in order in which they are added to the game, or else maps will be corrupted.
     -- Country(name, color, attack, defense, hp)
     Country("Sea", {255, 255, 255}, 0,0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
     Country("Ukraine", {255,255,0}, 8,2, 50),
@@ -18,6 +19,7 @@ countries = {
     Country("Cyprus", {237, 128, 0}, 9, 3, 70),
     Country("Bavaria", {0,162,232}, 9,3, 65),
     Country("Germany", {255,0,0}, 11, 4, 90),
+    Country("Finland", {0,53,128}, 9, 5, 65),
 }
 
 for i=1, #countries do

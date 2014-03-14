@@ -44,29 +44,28 @@ function Country:initialize(name, color, attack, defense, hp)
     Cell.initialize(self, self.id, self.color)
 end
 
-local function adjCellsOf(rowInd, columnInd)
-    local adj = {{0,0,0},
-                 {0,0,0},
-                 {0,0,0}
-                }
-                
-    adj[1][1] = {rowIndex=rowInd-1, columnIndex=columnInd-1}
-    adj[1][2] = {rowIndex=rowInd, columnIndex=columnInd-1}
-    adj[1][3] = {rowIndex=rowInd+1, columnIndex=columnInd-1}
-                            
-    adj[2][1] = {rowIndex=rowInd-1, columnIndex=columnInd}
-    adj[2][2] = {rowIndex=rowInd, columnIndex=columnInd}
-    adj[2][3] = {rowIndex=rowInd+1, columnIndex=columnInd}
-                            
-    adj[3][1] = {rowIndex=rowInd-1, columnIndex=columnInd+1}
-    adj[3][2] = {rowIndex=rowInd, columnIndex=columnInd+1}
-    adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
-
-    return adj
-end
-
 local numOfInv = 0
-
+local function strongEnough(self, foe)
+    local winChance = (self.attack/(foe.defense*5))*100
+    
+    if winChance > 100 then winChance = 100
+    elseif winChance < 1 then winChance = 1
+    end
+    
+    local success = false
+    
+    math.randomseed(os.time())
+    local r = math.random(100)
+    
+    if winChance >= r then 
+        success = true
+    else 
+        success = false
+    end
+    
+    return success
+end
+        
 function Country:invade(dt)
     -- Used for AI invasions
     self.invadeTimer = self.invadeTimer - dt
@@ -77,21 +76,30 @@ function Country:invade(dt)
             for _,foe in pairs(self.foes) do
                 for rowIndex, row in ipairs(map) do
                     for columnIndex, cell in ipairs(row) do
-                        --for adjRowIndex, adjRow in ipairs(adjCellsOf(rowIndex, columnIndex)) do
-                            --for adjColIndex, adjCell in ipairs(adjRow) do
-                                if map[rowIndex][columnIndex].name == foe.name then
-                                    if numOfInv == 0 then
-                                        map[rowIndex][columnIndex] = self:clone()
+                        if numOfInv == 0 then
+                            if strongEnough(self, foe) then
+                                if map[rowIndex][columnIndex].name == self.name then
+                                    local randRow = math.random(3)
+                                    local randCol = math.random(3)
+                                    local adj = adjCellsOf(rowIndex, columnIndex)[randRow][randCol]
+                                                        
+                                    if map[adj.rowIndex][adj.columnIndex].name == foe.name then
+                                        map[adj.rowIndex][adj.columnIndex] = self:clone()
+                                        updateCellCanvas()
                                         numOfInv = numOfInv + 1
                                     end
+
+                                elseif map[rowIndex][columnIndex].name == foe.name then
+                                    map[rowIndex][columnIndex] = self:clone()
+                                    updateCellCanvas()
+                                    numOfInv = numOfInv + 1
                                 end
-                            --end
-                        --end
-                    end
+                            end
+                        end
+                    end         
                 end
             end
         end
-        
         numOfInv = 0
     end
 end

@@ -105,16 +105,6 @@ function initMap()
         end
     end
     
-    function genValues()
-        for rowIndex, row in ipairs(map) do
-            for columnIndex,cell in ipairs(row) do
-                cell.rowIndex = columnIndex
-                cell.columnIndex = rowIndex
-            end
-        end
-    end
-    genValues()
-    
     function resetMap()
         map = {}
         for i=1,mapW do
@@ -141,11 +131,8 @@ function initMap()
                 cellCanvas:clear()
                 love.graphics.setBlendMode("alpha")
                 for rowIndex, row in pairs(map) do
-                    for columnIndex, cell in pairs(row) do
-                        local cellX = (rowIndex-1)*the.cell.width
-                        local cellY = (columnIndex-1)*the.cell.height
-                        
-                        cell:draw(cellX,cellY)
+                    for columnIndex, cell in pairs(row) do                        
+                        cell:draw(rowIndex,columnIndex)
                     end
                 end
             love.graphics.setCanvas()
@@ -283,10 +270,6 @@ function mousepressedMap(x, y, button)
                     
                     local cellX = (rowIndex-1)*the.cell.width
                     local cellY = (columnIndex-1)*the.cell.height
-
-                    -- For some reason, assigning inverse values gives the right value.
-                    cell.rowIndex = columnIndex
-                    cell.columnIndex = rowIndex
                     
                     -- We make all cells non-selected first so that player won't be able to select more than one cell.
                     cell.isSelected = false
@@ -304,17 +287,19 @@ function mousepressedMap(x, y, button)
                             local currAdj = currAdjCells
                             if cellX > 0 and cellY > 0 then
                                 if cellX < (mapW-3)*the.cell.width and cellY < (mapH-3)*the.cell.height then
-                                    currAdj[1][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex-1}
-                                    currAdj[1][2] = {rowIndex=rowIndex, columnIndex=columnIndex-1}
-                                    currAdj[1][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex-1}
+                                    local a = adjCellsOf(rowIndex, columnIndex)
+                                    
+                                    currAdj[1][1] = a[1][1]
+                                    currAdj[1][2] = a[1][2]
+                                    currAdj[1][3] = a[1][3]
 
-                                    currAdj[2][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex}
-                                    currAdj[2][2] = {rowIndex=rowIndex, columnIndex=columnIndex}
-                                    currAdj[2][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex}
+                                    currAdj[2][1] = a[2][1]
+                                    currAdj[2][2] = a[2][2]
+                                    currAdj[2][3] = a[2][3]
                                                             
-                                    currAdj[3][1] = {rowIndex=rowIndex-1, columnIndex=columnIndex+1}
-                                    currAdj[3][2] = {rowIndex=rowIndex, columnIndex=columnIndex+1}
-                                    currAdj[3][3] = {rowIndex=rowIndex+1, columnIndex=columnIndex+1}
+                                    currAdj[3][1] = a[3][1]
+                                    currAdj[3][2] = a[3][2]
+                                    currAdj[3][3] = a[3][3]
                                 end
                             end
                         end
@@ -413,7 +398,7 @@ function drawMap()
             local cellY = (columnIndex-1)*the.cell.height
                 
             if prefs.noCanvas then
-                cell:draw(cellX, cellY)
+                cell:draw(rowIndex, columnIndex)
             end
                 
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
