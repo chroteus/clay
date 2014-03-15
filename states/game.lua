@@ -9,7 +9,7 @@ end
 function game:enter()
     enteredMap()
 
-    --love.mouse.setVisible(false)
+    love.mouse.setVisible(false)
     love.mouse.setGrabbed(true)
 end
 

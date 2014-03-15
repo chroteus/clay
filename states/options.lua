@@ -2,7 +2,7 @@ options = {}
 
 prefs = {
     lowresMap = false,
-    noCanvas = true
+    noCanvas = false,
 }
     
 function savePrefs()

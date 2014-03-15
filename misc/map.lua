@@ -354,7 +354,7 @@ end
 function drawMap()
     love.graphics.setBackgroundColor(110, 175, 177)
 
-
+    local drawSelectRect = true
     
     -- Attaches a camera. Everything from now on will be drawn from camera's perspective.
     mapCam:attach() 
@@ -370,6 +370,11 @@ function drawMap()
     love.graphics.draw(gridImg, -1*mapCam.scale, -1*mapCam.scale)
     love.graphics.pop()
 ]]--
+
+    if not prefs.noCanvas then
+        love.graphics.draw(cellCanvas)
+    end
+    
     for _,adjCellRow in ipairs(currAdjCells) do
         for _,adjCell in ipairs(adjCellRow) do
             local adjCellX = (adjCell.rowIndex-1)*the.cell.width
@@ -377,19 +382,26 @@ function drawMap()
                    
             local cell = map[adjCell.rowIndex][adjCell.columnIndex]
             
-            cell.color[4] = 128
-            
-            love.graphics.setColor(cell.color)
-            love.graphics.rectangle("fill", adjCellX, adjCellY, the.cell.width-1, the.cell.height-1)
-            love.graphics.setColor(255,255,255,180)
-            love.graphics.rectangle("fill", adjCellX, adjCellY, the.cell.width-1, the.cell.height-1)
+            love.graphics.setColor(255,255,255, 100)
+            love.graphics.setLineWidth(3)
+            if checkCollision(adjCellX, adjCellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
+                love.graphics.rectangle("fill", adjCellX+1, adjCellY+1, the.cell.width-2, the.cell.height-2)
+                love.graphics.setColor(255,255,255, 100)
+                love.graphics.rectangle("line", adjCellX+1, adjCellY+1, the.cell.width-2, the.cell.height-2)
+                love.graphics.setColor(cell.color)
+                love.graphics.rectangle("fill", adjCellX+1, adjCellY+1, the.cell.width-2, the.cell.height-2)
+                drawSelectRect = false
+            else
+                love.graphics.rectangle("fill", adjCellX+2, adjCellY+2, the.cell.width-4, the.cell.height-4)
+                love.graphics.setColor(255,255,255, 100)
+                love.graphics.rectangle("line", adjCellX+2, adjCellY+2, the.cell.width-4, the.cell.height-4)
+                love.graphics.setColor(cell.color)
+                love.graphics.rectangle("fill", adjCellX+2, adjCellY+2, the.cell.width-4, the.cell.height-4)
+            end
+            love.graphics.setLineWidth(1)
             love.graphics.setColor(255,255,255)
         
         end
-    end
-    
-    if not prefs.noCanvas then
-        love.graphics.draw(cellCanvas)
     end
     
     for rowIndex,row in ipairs(map) do
@@ -402,19 +414,27 @@ function drawMap()
             end
                 
             if checkCollision(cellX, cellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
-                love.graphics.setColor(255,255,255,64)
-                love.graphics.rectangle("fill", cellX, cellY, the.cell.width-1, the.cell.height-1)
+            
+                if drawSelectRect then
+                    love.graphics.setColor(255,255,255,64)
+                    love.graphics.rectangle("fill", cellX, cellY, the.cell.width, the.cell.height)
+                end
                 
+               -- love.graphics.rectangle("line", cellX, cellY, the.cell.width, the.cell.height)
+                --[[
                 if cell.name == "Sea" then
                     love.graphics.setColor(90,90,90)
                 else
                     love.graphics.setColor(220,220,220)
                 end
                 
-                love.graphics.rectangle("line", cellX, cellY, the.cell.width-1, the.cell.height-1)
+                love.graphics.rectangle("line", cellX+2, cellY+2, the.cell.width-4, the.cell.height-4)
                 love.graphics.setColor(cell.color)
-                love.graphics.rectangle("line", cellX+1, cellY+1, the.cell.width-3, the.cell.height-3)
+                love.graphics.rectangle("line", cellX+3, cellY+3, the.cell.width-5, the.cell.height-5)
+                --]]
+                
                 love.graphics.setColor(255,255,255)
+                
             end
         end
     end
@@ -423,6 +443,8 @@ function drawMap()
     -- GUI should be drawn after this function is called. (or in game's draw func)
     mapCam:detach()
     
+    local radius = 3
+    love.graphics.circle("fill", the.mouse.x, the.mouse.y, radius, 100)
  
     -- Country's name
     local rectW = 150

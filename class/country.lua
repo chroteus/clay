@@ -31,6 +31,7 @@ function Country:initialize(name, color, attack, defense, hp)
     self.allies = {}
     self.neutrals = {}
     
+    self.isDead = false
     self.maxHP = self.hp
     self.maxEnergy = self.energy
     
@@ -70,29 +71,46 @@ function Country:invade(dt)
     -- Used for AI invasions
     self.invadeTimer = self.invadeTimer - dt
     
+    -- Total number of clones of self on map. Country becomes dead if it has no cells on the map.
+    local selfTotalNo = 0
+    
+    local hasAccessToFoeLand = true
+    
     if self.invadeTimer <= 0 then
         self.invadeTimer = self.invadeTimerReset
         if self.name ~= Player.country then
             for _,foe in pairs(self.foes) do
                 for rowIndex, row in ipairs(map) do
                     for columnIndex, cell in ipairs(row) do
+                        
+                        -- Mechanism to prevent invasions if there are no cells.
+                        if map[rowIndex][columnIndex].name == self.name then
+                            selfTotalNo = selfTotalNo + 1
+                        end
+                    
                         if numOfInv == 0 then
                             if strongEnough(self, foe) then
-                                if map[rowIndex][columnIndex].name == self.name then
-                                    local randRow = math.random(3)
-                                    local randCol = math.random(3)
-                                    local adj = adjCellsOf(rowIndex, columnIndex)[randRow][randCol]
-                                                        
-                                    if map[adj.rowIndex][adj.columnIndex].name == foe.name then
-                                        map[adj.rowIndex][adj.columnIndex] = self:clone()
-                                        updateCellCanvas()
-                                        numOfInv = numOfInv + 1
-                                    end
+                                if selfTotalNo > 0 then
+                                    if map[rowIndex][columnIndex].name == self.name then
+                                        local randRow = math.random(3)
+                                        local randCol = math.random(3)
+                                        local adj = adjCellsOf(rowIndex, columnIndex)[randRow][randCol]
+                                                            
+                                        if map[adj.rowIndex][adj.columnIndex].name == foe.name then
+                                            map[adj.rowIndex][adj.columnIndex] = self:clone()
+                                            updateCellCanvas()
+                                            numOfInv = numOfInv + 1
+                                        else
+                                            hasAccessToFoeLand = false
+                                        end
 
-                                elseif map[rowIndex][columnIndex].name == foe.name then
-                                    map[rowIndex][columnIndex] = self:clone()
-                                    updateCellCanvas()
-                                    numOfInv = numOfInv + 1
+                                    elseif map[rowIndex][columnIndex].name == foe.name then
+                                        if not hasAccessToFoeLand then
+                                            map[rowIndex][columnIndex] = self:clone()
+                                            updateCellCanvas()
+                                            numOfInv = numOfInv + 1
+                                        end
+                                    end
                                 end
                             end
                         end

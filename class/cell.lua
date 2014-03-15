@@ -34,8 +34,27 @@ function Cell:draw(rowIndex, columnIndex)
             love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
             love.graphics.setColor(255,255,255)
         else
+            local a = adjCellsOf(rowIndex, columnIndex)
+            
+            local top = {left = a[1][1], middle = a[2][1], right = a[3][1]}
+            local middle = {left = a[1][2], middle = a[2][2], right = a[3][2]}
+            local bottom = {left = a[1][3], middle = a[2][3], right = a[3][3]}
+            
+            local function check(pos)
+                if map[pos.rowIndex][pos.columnIndex].name ~= self.name then return true end
+            end
+            
             love.graphics.setColor(self.color)
-            love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
+            
+            if check(top.middle) or check(bottom.middle) or check(middle.left) or check(middle.right) then
+                self.color[4] = 220
+                love.graphics.setColor(self.color)
+                love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
+            else
+                self.color[4] = 150
+                love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
+            end
+            
             love.graphics.setColor(255,255,255)
         end
     end
