@@ -53,7 +53,7 @@ function charScr:draw()
     love.graphics.draw(charScr.char.leftImage, charX, charY)
     
     local str = "| Points: "..Player.unspentPoints.." | Attack: "..Player.attack.." | Defense: "..Player.defense.." |" 
-    love.graphics.printf(str, 0, charY+charScr.char.leftImage:getHeight()+10, the.screen.width, "center")
+    love.graphics.printf(str, 0, charY+270, the.screen.width, "center")
     
     for _,btn in pairs(charScr.btn) do
         btn:draw()

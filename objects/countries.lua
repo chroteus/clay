@@ -16,10 +16,13 @@ countries = {
     Country("United Kingdom", {255,0,255}, 11, 4, 60),
     Country("Norway", {95,0,0}, 9, 4, 70),
     Country("Sweden", {0,0,60}, 10,4, 60),
-    Country("Cyprus", {237, 128, 0}, 9, 3, 70),
+    Country("Cyprus", {237,128,0}, 9, 3, 70),
     Country("Bavaria", {0,162,232}, 9,3, 65),
     Country("Germany", {255,0,0}, 11, 4, 90),
     Country("Finland", {0,53,128}, 9, 5, 65),
+    Country("Denmark", {100,50,50}, 9, 4, 80),
+    Country("France", {230,230,230}, 8, 5, 100),
+    Country("Austria", {200,40,40}, 10, 4, 70),
 }
 
 for i=1, #countries do

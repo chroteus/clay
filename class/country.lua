@@ -98,6 +98,7 @@ function Country:invade(dt)
                                                             
                                         if map[adj.rowIndex][adj.columnIndex].name == foe.name then
                                             map[adj.rowIndex][adj.columnIndex] = self:clone()
+                                            msgBox:add(self.name.." successfully claimed a part of your clay.")
                                             updateCellCanvas()
                                             numOfInv = numOfInv + 1
                                         else
@@ -107,11 +108,18 @@ function Country:invade(dt)
                                     elseif map[rowIndex][columnIndex].name == foe.name then
                                         if not hasAccessToFoeLand then
                                             map[rowIndex][columnIndex] = self:clone()
+                                            msgBox:add(self.name.." successfully claimed a part of your clay.")
                                             updateCellCanvas()
                                             numOfInv = numOfInv + 1
                                         end
                                     end
                                 end
+                            else -- if not strong enough
+                                if msgBox.list[#msgBox.list].str ~= self.name.." tried to attack you but failed because it was weak!" then
+                                    msgBox:add(self.name.." tried to attack you but failed because it was weak!")
+                                end
+                                
+                                break
                             end
                         end
                     end         

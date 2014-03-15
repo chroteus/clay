@@ -39,18 +39,24 @@ function battle:enter()
     
     player.image = {
         data = player.rightImage,
-        x = player.x-250/2,
-        y = player.y
+        --x = player.x-250/2,
+        --y = player.y
     }
+    
+    player.image.x = player.x-player.image.data:getWidth()/2 + 50
+    player.image.y = the.screen.height/2 - player.image.data:getHeight()/2 - 100
     
     enemy.x = the.screen.width - 330
     enemy.y = player.y
     enemy.isRight = true
     enemy.image = {
         data = enemy.leftImage,
-        x = enemy.x,
-        y = enemy.y
+        --x = enemy.x,
+        --y = enemy.y
     }
+    
+    enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
+    enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
     
     enemy.image.x = enemy.x
     

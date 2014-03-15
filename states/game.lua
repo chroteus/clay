@@ -15,7 +15,7 @@ end
 
 function game:update(dt)
     updateMap(dt)
-    
+    msgBox:update(dt)
     charScrBtn:update()
 end
 
@@ -42,6 +42,7 @@ function game:draw()
     love.graphics.setColor(255,255,255)
     
     charScrBtn:draw()
+    msgBox:draw()
 end
 
 function game:mousepressed(x, y, button)

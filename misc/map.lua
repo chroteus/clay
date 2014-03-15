@@ -225,15 +225,15 @@ function updateMap(dt)
     
     local updateCanvasTimer = 0.1
     local updateCanvasTimerReset = updateCanvasTimer
+    
     if editMode.enabled then
+        updateCanvasTimer = updateCanvasTimer - dt
+        if updateCanvasTimer <= 0 then
+            updateCellCanvas()
+            updateCanvasTimer = updateCanvasTimerReset
+        end
+    
         if love.mouse.isDown("l") then
-            updateCanvasTimer = updateCanvasTimer - dt
-            
-            if updateCanvasTimer <= 0 then
-                updateCellCanvas()
-                updateCanvasTimer = updateCanvasTimerReset
-            end
-            
             for rowIndex, row in pairs(map) do
                 for columnIndex, cell in pairs(row) do
                     local cellX = (rowIndex-1)*the.cell.width
@@ -331,6 +331,7 @@ function mousepressedMap(x, y, button)
                                                     for _,country in pairs(countries) do
                                                         if country.name == map[adjCell.rowIndex][adjCell.columnIndex].name then
                                                             table.insert(country.foes, Player:returnCountry(true))
+                                                            msgBox:add(country.name.." is your foe now!")
                                                         end
                                                     end
                                                     

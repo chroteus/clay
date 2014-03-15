@@ -29,6 +29,7 @@ require "class.base"
 require "class.skill"
 require "objects.skills"
 require "misc.map"
+require "misc.msgBox"
 
 function love.load()
     math.randomseed(os.time())
