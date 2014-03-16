@@ -30,6 +30,7 @@ require "class.skill"
 require "objects.skills"
 require "misc.map"
 require "misc.msgBox"
+require "lib.dialogBox"
 
 function love.load()
     math.randomseed(os.time())
@@ -39,7 +40,7 @@ function love.load()
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
-
+    
     Gamestate.registerEvents()
     
     if DEBUG then
@@ -69,7 +70,8 @@ function love.load()
 end
 
 function love.update(dt)
-    updateThe()    
+    updateThe()
+    DialogBoxes:update()
     Timer.update(dt)
     TEsound.cleanup()
 end
@@ -105,8 +107,8 @@ function love.keypressed(key, u)
 end
 
 
-function love.mousepressed(x, y, button)
-
+function love.mousereleased(x, y, button)
+    DialogBoxes:mousereleased(x,y,button)
 end
 
 function love.quit()

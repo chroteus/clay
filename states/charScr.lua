@@ -26,16 +26,21 @@ function charScr:init()
         return Button((the.screen.width/2-250+50*xOrder) + 100*xOrder, (the.screen.height/2-100) + 70*yOrder, 50, 50, "["..numText..amount.."]", function() upgFn() end)
     end
     
+    local function newSkillBtn(yOrder, variable, amount) -- uses skillBtn to create two buttons.
+        return skillBtn(1,yOrder,variable,-amount), skillBtn(2,yOrder,variable,amount)
+    end
+    
     charScr.btn = {
         cont = GenericButton(the.screen.height/2 + 200, "Continue >>", function() Gamestate.switch(game) end),
-        minusAtt = skillBtn(1, 1, "attack", -1),
-        plusAtt = skillBtn(2, 1, "attack", 1),
-        minusDef = skillBtn(1, 2, "defense", -1),
-        plusDef = skillBtn(2, 2, "defense", 1),
     }
+    
+    local c = charScr.btn
+    c.minusAtt,c.plusAtt = newSkillBtn(1, "attack", 1)
+    c.minusDef,c.plusDef = newSkillBtn(2, "defense", 1)
 end
 
 function charScr:enter()
+    charScr.text = ""
     love.mouse.setVisible(true)
     randBg()
 end
@@ -43,6 +48,13 @@ end
 function charScr:update(dt)
     for _,btn in pairs(charScr.btn) do
         btn:update()
+    end
+
+    local c = charScr.btn
+    if checkCollision(the.mouse.x,the.mouse.y,1,1, c.minusAtt.x, c.minusAtt.y, (c.plusAtt.x+c.plusAtt.width)-c.minusAtt.x, c.minusAtt.height) then
+        charScr.text = "Attack: Increases the damage inflicted to enemy."
+    elseif checkCollision(the.mouse.x,the.mouse.y,1,1, c.minusDef.x, c.minusDef.y, (c.plusDef.x+c.plusDef.width)-c.minusDef.x, c.minusDef.height) then
+        charScr.text = "Defense: Decreases the chance of your clay being taken. Decreases the damage in battles."
     end
 end
 
@@ -71,7 +83,8 @@ function charScr:draw()
 
     drawText(charScr.btn.minusAtt, "Attack")
     drawText(charScr.btn.minusDef, "Defense")
-    
+
+    love.graphics.printf(charScr.text, the.screen.width/3, charScr.btn.minusDef.y + 80, the.screen.width/3, "center")
 end
 
 function charScr:mousereleased(x,y,button)

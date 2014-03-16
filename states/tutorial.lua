@@ -2,12 +2,17 @@ tutorial = {}
 
 function tutorial:init()
     tutText = [[
+    Map:
     WASD/Mouse - Move camera
-    ESC = Menu
+    ESC - Menu
     Mouse wheel - Zoom in/out
+    
+    Battle:
+    Space - Attack 
+    Hotkey (or click) - Skill
      ]]
     
-    tutGameBtn = GenericButton(2, "Start >>", function() Gamestate.switch(game) end)
+    tutGameBtn = GenericButton(3, "Start >>", function() Gamestate.switch(game) end)
 end
 
 function tutorial:update(dt)

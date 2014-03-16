@@ -23,6 +23,11 @@ function menu:init()
         quit = GenericButton(3, "Exit", function() love.event.quit() end),
         debugBtn = GenericButton(4, "Dev Mode: OFF", function() debugBtnFunc() end),
     }
+    
+    
+    menuConfirmBox = DialogBoxes:new("You have a saved game. Continue?", 
+        {"Cancel", function() end}, {"Continue >>", function() newGame() end}
+    )
 end
 
 function menu:enter()
@@ -31,14 +36,18 @@ function menu:enter()
         menuButtons.options.y = 3*menuButtons.options.height*2
         menuButtons.quit.y = 4*menuButtons.quit.height*2 
         menuButtons.debugBtn.y = 5*menuButtons.debugBtn.height*2 
+        
+        menuButtons.start.action = function() menuConfirmBox:show() end
     
         table.insert(menuButtons, GenericButton(1, "Continue", function() Gamestate.switch(game) end))
     end
 end
 
 function menu:update(dt)
-    for _,button in pairs(menuButtons) do
-        button:update()
+    if not DialogBoxes:present() then
+        for _,button in pairs(menuButtons) do
+            button:update()
+        end
     end
 end
 
@@ -47,14 +56,18 @@ function menu:draw()
         button:draw()
     end
     
+    DialogBoxes:draw()
+    
     love.graphics.printf("Clay", 0, 50, the.screen.width, "center")
     love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 100, the.screen.width, "center")
 end
 
 function menu:mousereleased(x,y,button)
     if button == "l" then
-        for _,button in pairs(menuButtons) do
-            button:mousereleased(x,y,button)
+        if not DialogBoxes:present() then
+            for _,button in pairs(menuButtons) do
+                button:mousereleased(x,y,button)
+            end
         end
     end
 end

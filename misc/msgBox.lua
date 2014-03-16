@@ -49,8 +49,15 @@ function msgBox:update(dt)
     if checkCollision(msgBoxX,msgBoxY,msgBoxW,msgBoxH, the.mouse.x,the.mouse.y,1,1) then
         if msgBoxX+msgBoxW+5 == the.screen.width then
             msgBoxX = 5
+            for _,msg in pairs(msgBox.list) do
+                msg.x = msgBoxX+5
+            end
         else
             msgBoxX = the.screen.width - msgBoxW - 5
+            
+            for _,msg in pairs(msgBox.list) do
+                msg.x = msgBoxX+5
+            end
         end
     end
 end

@@ -322,16 +322,21 @@ function mousepressedMap(x, y, button)
                                         if adjCellX < (mapW-3)*the.cell.width and (mapH-3)*the.cell.height then
                                             if checkCollision(mapMouse.x,mapMouse.y,1,1, adjCellX,adjCellY,the.cell.width-1,the.cell.height-1) then
                                                 -- Note: Conquering the cell is done in battle's leave function.
-                                                -- Marking the selected as selected so that neighbor cells won't be claimed.
+                                                -- Marking the cell as selected so that neighbor cells won't be claimed.
                                                 map[adjCell.rowIndex][adjCell.columnIndex].isSelected = true
                                                 if adjCellCountry == "Sea" then
                                                     map[adjCell.rowIndex][adjCell.columnIndex] = country:clone()
                                                     map[adjCell.rowIndex][adjCell.columnIndex].isFaintClone = true
                                                 elseif not startedBattle then
+                                                    
+                                                    -- adding player as a foe to the country 
                                                     for _,country in pairs(countries) do
                                                         if country.name == map[adjCell.rowIndex][adjCell.columnIndex].name then
-                                                            table.insert(country.foes, Player:returnCountry(true))
-                                                            msgBox:add(country.name.." is your foe now!")
+                                                            if not country:isFoe(Player.country) then
+                                                            
+                                                                table.insert(country.foes, Player:returnCountry(true))
+                                                                msgBox:add(country.name.." is your foe now!")
+                                                            end
                                                         end
                                                     end
                                                     

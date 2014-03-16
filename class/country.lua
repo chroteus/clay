@@ -118,7 +118,6 @@ function Country:invade(dt)
                                 if msgBox.list[#msgBox.list].str ~= self.name.." tried to attack you but failed!" then
                                     msgBox:add(self.name.." tried to attack you but failed!")
                                 end
-                                
                                 break
                             end
                         end
@@ -152,6 +151,18 @@ function Country:loseEnergy(amount)
     self.stats.energy = self.stats.energy - amount
 end
 
+function Country:isFoe(name)
+    local r = false
+    for _,foe in pairs(self.foes) do
+        if name == foe.name then
+            r = true
+        else
+            r = false
+        end
+    end
+    
+    return r
+end
 
 function Country:addSkill(argSkill, order)    
     local order = order or 1
