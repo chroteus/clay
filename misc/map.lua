@@ -334,7 +334,7 @@ function mousepressedMap(x, y, button)
                                                         if country.name == map[adjCell.rowIndex][adjCell.columnIndex].name then
                                                             if not country:isFoe(Player.country) then
                                                             
-                                                                table.insert(country.foes, Player:returnCountry(true))
+                                                                Player:returnCountry(true):war(country)
                                                                 msgBox:add(country.name.." is your foe now!")
                                                             end
                                                         end

@@ -18,7 +18,7 @@ function DialogBox:initialize(text, ...)
     for i=1,#argFunc do
         local width = (self.width/#argFunc)
         local height = self.height/3
-        local x = self.x + ((width*(i-1)))
+        local x = self.x + (width*(i-1))
         local y = self.y+self.height
         local text = argFunc[i][1]
         local func = function() 
@@ -33,21 +33,25 @@ function DialogBox:initialize(text, ...)
 end
 
 function DialogBox:show()
-    self.enabled = true
-    self.y = -self.height
-    
-    Timer.tween(0.8, self, {y = the.screen.height/2-self.height/2}, "out-quad")
-    
-    for _,btn in pairs(self.buttons) do
-        btn.y = -btn.height
-        Timer.tween(0.8, btn, {y = (the.screen.height/2-self.height/2)+self.height}, "out-quad")
+    if not self.enabled then
+        self.enabled = true
+        self.y = -self.height
+        
+        Timer.tween(0.8, self, {y = the.screen.height/2-self.height/2}, "out-quad")
+        
+        for _,btn in pairs(self.buttons) do
+            btn.y = -btn.height
+            Timer.tween(0.8, btn, {y = (the.screen.height/2-self.height/2)+self.height}, "out-quad")
+        end
     end
 end
 
 function DialogBox:hide()
-    Timer.tween(0.8, self, {y = the.screen.width+self.height}, "out-quad", function() self.enabled = false end)
-    for _,btn in pairs(self.buttons) do
-        Timer.tween(0.8, btn, {y = the.screen.width+btn.height}, "out-quad")
+    if self.enabled then
+        Timer.tween(0.8, self, {y = the.screen.width+self.height}, "out-quad", function() self.enabled = false end)
+        for _,btn in pairs(self.buttons) do
+            Timer.tween(0.8, btn, {y = the.screen.width+btn.height}, "out-quad")
+        end
     end
 end
 

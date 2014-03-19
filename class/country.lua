@@ -164,6 +164,18 @@ function Country:isFoe(name)
     return r
 end
 
+function Country:war(country)
+    if #country.foes == 0 then 
+        table.insert(country.foes, self)
+    else
+        for _,foe in pairs(country.foes) do
+            if foe.name ~= self.name then
+                table.insert(country.foes, self)
+            end
+        end
+    end
+end
+
 function Country:addSkill(argSkill, order)    
     local order = order or 1
     table.insert(self.skills, order, skills[argSkill]:clone())
