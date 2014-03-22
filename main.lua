@@ -22,6 +22,7 @@ require "states.winState"
 require "states.loseState"
 require "states.charScr"
 require "states.options"
+require "states.gameOver"
 
 -- Misc
 require "class.player"
@@ -85,7 +86,7 @@ function love.draw()
         love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
         
         -- tint
-        love.graphics.setColor(45,45,55,100)
+        love.graphics.setColor(45,45,55,150)
         love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
         love.graphics.setColor(255,255,255)
     end

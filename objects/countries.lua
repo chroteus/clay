@@ -47,7 +47,12 @@ function checkIfDead()
         
         if num == 0 then 
             country.isDead = true
-            msgBox:add(country.name.." is defeated!")
+            
+            if country.name == Player.country then
+                Gamestate.switch(gameOver)
+            else
+                msgBox:add(country.name.." is defeated!")
+            end
         end
     end
 end
