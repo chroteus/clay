@@ -1,4 +1,6 @@
 Before Alpha:
+Game lost if no cells are left.
+Multiple word countries cause bugs.
 
 Long term:
 Improve Battle System

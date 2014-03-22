@@ -26,6 +26,30 @@ function loadMap() -- Load an existing map.
         Player[k] = v
     end
     
+    
+    local function convertStr(str)
+        -- converts a string like "UnitedStates" into "United States"
+        
+        str = string.gsub(str, "%u", " %1") -- put a space before each upper case letter
+        str = string.gsub(str, " ", "", 1) -- remove first space
+
+        return str
+    end
+
+    
+    for countryN,foeTable in pairs(mapTable[3]) do
+        local countryName = convertStr(countryN)
+    
+        for _,country in pairs(countries) do
+            for _,foe in pairs(foeTable) do
+                if country.name == countryName then
+                    foe:war(country)
+                end
+            end
+        end
+    end
+    
+    
     Player:returnCountry(true).attack = Player.attack
     Player:returnCountry(true).defense = Player.defense
 end
@@ -45,7 +69,7 @@ function saveMap(name)
     
     local mapString = serialize(numMap) -- numMap converted into a string.
     love.filesystem.write(name, "return {")
-    string.gsub(mapString, ",", "")
+    mapString = mapString:gsub(" ", "")
     love.filesystem.append(name, mapString)
     love.filesystem.append(name, ",".."{")
     for k,v in pairs(Player) do
@@ -60,6 +84,27 @@ function saveMap(name)
             love.filesystem.append(name, tostring(k).."="..stringV..",")
         end
     end
+    
+
+    
+    love.filesystem.append(name, "}")
+
+    -- save foes
+    love.filesystem.append(name, ",{")
+    for _,country in pairs(countries) do
+        if #country.foes > 0 then
+            local countryName = countryName
+            
+            countryName = string.gsub(country.name, " ", "")
+            
+            love.filesystem.append(name, countryName.."={")
+            for _,foe in pairs(country.foes) do
+                love.filesystem.append(name, "countries["..foe.id.."],")
+            end
+            love.filesystem.append(name, "},")
+        end
+    end
+    
     love.filesystem.append(name, "} }")
 end
 
@@ -94,8 +139,7 @@ function initMap()
         createMap()
     end
     
-
-    -------------------------------------------------------------------
+     -------------------------------------------------------------------
     --Insert countries in the place of numbers representing countries--
 
     for rowIndex,row in ipairs(map) do
