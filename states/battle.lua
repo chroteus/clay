@@ -274,6 +274,7 @@ function battle:leave()
     end
     
     updateCellCanvas()
+    checkIfDead() -- check if any of the countries are dead.
     
     startedBattle = false
 end

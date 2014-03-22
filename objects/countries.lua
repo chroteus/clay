@@ -8,6 +8,7 @@ require "class.country"
 -- Where countries are instantiated.
 countries = {
     -- WARNING: Countries should be added in order in which they are added to the game, or else maps will be corrupted.
+    
     -- Country(name, color, attack, defense, hp)
     Country("Sea", {255, 255, 255}, 0,0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
     Country("Ukraine", {255,255,0}, 8,2, 50),
@@ -28,6 +29,27 @@ countries = {
 
 for i=1, #countries do
     countries[i].id = i
+end
+
+function checkIfDead()
+    -- checking for the number of cells a country has
+    -- kills the country if there are none
+    for _,country in pairs(countries) do
+        local num = 0 
+        
+        for rowIndex, row in ipairs(map) do
+            for columnIndex, cell in ipairs(row) do
+                if cell.name == country.name then
+                    num = num + 1
+                end
+            end
+        end
+        
+        if num == 0 then 
+            country.isDead = true
+            msgBox:add(country.name.." is defeated!")
+        end
+    end
 end
 
 function funcCountry(countryName, func)

@@ -505,6 +505,9 @@ function drawMap()
     love.graphics.setColor(guiColors.fg)
     love.graphics.rectangle("line", the.screen.width/2-rectW/2, 25-fontHeight, rectW, rectH)
     
+    
+    local colorToSet = guiColors.fg
+    
     local lastCountry = "Sea"
     for rowIndex,row in ipairs(map) do
         for columnIndex,cell in ipairs(row) do
@@ -513,12 +516,23 @@ function drawMap()
             
             if checkCollision(cellX, cellY, the.cell.width, the.cell.height, mapMouse.x, mapMouse.y, 1,1) then
                 if cell.name then
+                    for _,country in pairs(countries) do
+                        if cell.name == country.name then
+                            for _,foe in pairs(country.foes) do
+                                if foe.name == Player.country then
+                                    colorToSet = {200,0,0}
+                                end
+                            end
+                        end
+                    end
+                    
                     lastCountry = cell.name
                 end
             end
         end
     end
-    
+
+    love.graphics.setColor(colorToSet)
     love.graphics.printf(lastCountry, 0, rectH-rectH/2+fontHeight, the.screen.width, "center")
     
     love.graphics.setColor(255,255,255)

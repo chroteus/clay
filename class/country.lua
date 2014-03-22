@@ -74,9 +74,9 @@ function Country:invade(dt)
     -- Total number of clones of self on map. Country becomes dead if it has no cells on the map.
     local selfTotalNo = 0
     
-    local hasAccessToFoeLand = true
-    
     if self.invadeTimer <= 0 then
+        local hasAccessToFoeLand = true
+    
         self.invadeTimer = self.invadeTimerReset
         if self.name ~= Player.country then
             for _,foe in pairs(self.foes) do
@@ -95,16 +95,20 @@ function Country:invade(dt)
                                         local randRow = math.random(3)
                                         local randCol = math.random(3)
                                         local adj = adjCellsOf(rowIndex, columnIndex)[randRow][randCol]
-                                                            
+                                        
+                                        -- land invasions
                                         if map[adj.rowIndex][adj.columnIndex].name == foe.name then
-                                            map[adj.rowIndex][adj.columnIndex] = self:clone()
-                                            msgBox:add(self.name.." took your clay!")
-                                            updateCellCanvas()
-                                            numOfInv = numOfInv + 1
+                                            if hasAccessToLand then
+                                                map[adj.rowIndex][adj.columnIndex] = self:clone()
+                                                msgBox:add(self.name.." took your clay!")
+                                                updateCellCanvas()
+                                                numOfInv = numOfInv + 1
+                                            end
                                         else
                                             hasAccessToFoeLand = false
                                         end
-
+                                        
+                                    -- sea invasion
                                     elseif map[rowIndex][columnIndex].name == foe.name then
                                         if not hasAccessToFoeLand then
                                             map[rowIndex][columnIndex] = self:clone()
@@ -114,8 +118,8 @@ function Country:invade(dt)
                                         end
                                     end
                                 end
-                            else -- if not strong enough
-                                if msgBox.list[#msgBox.list].str ~= self.name.." tried to attack you but failed!" then
+                            elseif not strongEnough(self, foe) then
+                                if #msgBox.list == 0 or msgBox.list[#msgBox.list].str ~= self.name.." tried to attack you but failed!" then
                                     msgBox:add(self.name.." tried to attack you but failed!")
                                 end
                                 break
@@ -126,6 +130,7 @@ function Country:invade(dt)
             end
         end
         numOfInv = 0
+        checkIfDead()
     end
 end
 
