@@ -411,7 +411,7 @@ function drawMap()
 
     love.graphics.push()
     love.graphics.scale(2400/mapImg:getWidth())
-    love.graphics.draw(mapImg, -1*mapCam.scale,-1*mapCam.scale)
+    love.graphics.draw(mapImg, -1,-1)
     love.graphics.pop()
         
 --[[

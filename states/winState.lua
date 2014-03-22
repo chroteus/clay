@@ -1,5 +1,10 @@
 winState = {}
 
+winState.enemy = {
+    att = 0,
+    def = 0
+}
+
 function winState:init()
     winImg = love.graphics.newImage("assets/image/winImg.png")
     winBtn = GenericButton(the.screen.height/2 + 200, "Continue >>", function() Gamestate.switch(game) end)
@@ -16,8 +21,14 @@ end
 
 
 function winState:enter()
+    local p = Player:returnCountry(true)
+    local netResult = (winState.enemy.def+winState.enemy.att) - (p.attack+p.defense)
+    if netResult <= 0 then netResult = 1 end
+    
     math.randomseed(os.time())
-    local xpAmnt = math.random(Player.level*3+math.random(2), Player.level*6+math.random(5))
+    --local xpAmnt = math.random(Player.level*3+math.random(2), Player.level*4+math.random(netResult))
+    --local xpAmnt = math.ceil(math.random((netResult/3)*(Player.level/2), (netResult*2)*(Player.level/2)))
+    local xpAmnt = math.random(netResult*2*Player.level, netResult*5*Player.level)
     
     local winStartXp = Player.xp
     winFinXp, leveledUp = Player:gainXP(xpAmnt) -- gainXP returns the final xp value, and true if player leveled up

@@ -258,6 +258,9 @@ function battle:leave()
                 end
             end
         end
+        
+        winState.enemy.att = enemy.attack
+        winState.enemy.def = enemy.defense
     end
     
     -- Set lose message

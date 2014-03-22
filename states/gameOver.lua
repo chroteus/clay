@@ -1,16 +1,12 @@
 gameOver = {}
 
 function gameOver:init()
-    local function endGame()
-        love.filesystem.remove("map.lua")
-        Gamestate.switch(menu)
-    end
-
     gameOver.img = love.graphics.newImage("assets/image/gameOverImg.png")
-    gameOver.menuBtn = GenericButton(the.screen.height/2 + 100, "<< Menu", function() endGame() end)
+    gameOver.menuBtn = GenericButton(the.screen.height/2 + 100, "<< Menu", function() Gamestate.switch(menu) end)
 end
 
 function gameOver:enter()
+    love.filesystem.remove("map.lua")
     love.mouse.setVisible(true)
 end
 
