@@ -1,7 +1,7 @@
 local msgBoxX = 5
 local msgBoxY = 5
-local msgBoxW = love.graphics.getWidth()/2-50
-local msgBoxH = 90
+local msgBoxW = love.graphics.getWidth()/2
+local msgBoxH = 120
 
 local Msg = Base:subclass("Msg")
 function Msg:initialize(str)
@@ -23,7 +23,7 @@ end
 msgBox = {}
 msgBox.list = {}
 
-local LIMIT = msgBoxW / 20
+local LIMIT = msgBoxH/(love.graphics.getFont():getHeight()+10)
 
 function msgBox:add(str)
     if #msgBox.list > 0 then
@@ -34,7 +34,7 @@ function msgBox:add(str)
     
     table.insert(self.list, Msg(str))
     
-    if #msgBox.list > 4 then
+    if #msgBox.list > LIMIT then
         table.remove(msgBox.list, 1)
     end
 end

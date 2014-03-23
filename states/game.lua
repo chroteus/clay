@@ -16,6 +16,7 @@ end
 function game:update(dt)
     updateMap(dt)
     msgBox:update(dt)
+    randEvent(dt)
     charScrBtn:update()
 end
 

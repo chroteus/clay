@@ -45,7 +45,7 @@ function Country:initialize(name, color, attack, defense, hp)
     Cell.initialize(self, self.id, self.color)
 end
 
-local numOfInv = 0
+
 local function strongEnough(self, foe)
     local winChance = (self.attack/(foe.defense*5))*100
     
@@ -66,71 +66,49 @@ local function strongEnough(self, foe)
     
     return success
 end
-        
+
+local numOfInv = 0
+
 function Country:invade(dt)
     -- Used for AI invasions
     self.invadeTimer = self.invadeTimer - dt
     
-    -- Total number of clones of self on map. Country becomes dead if it has no cells on the map.
-    local selfTotalNo = 0
-    
     if self.invadeTimer <= 0 then
-        local hasAccessToFoeLand = true
-    
+        checkIfDead()
         self.invadeTimer = self.invadeTimerReset
         if self.name ~= Player.country then
-            for _,foe in pairs(self.foes) do
-                for rowIndex, row in ipairs(map) do
-                    for columnIndex, cell in ipairs(row) do
-                        
-                        -- Mechanism to prevent invasions if there are no cells.
-                        if map[rowIndex][columnIndex].name == self.name then
-                            selfTotalNo = selfTotalNo + 1
-                        end
-                    
-                        if numOfInv == 0 then
-                            if strongEnough(self, foe) then
-                                if selfTotalNo > 0 then
+            if not self.isDead then
+                for _,foe in pairs(self.foes) do
+                    for rowIndex, row in ipairs(map) do
+                        for columnIndex, cell in ipairs(row) do
+                            if numOfInv == 0 then
+                                if strongEnough(self, foe) then
                                     if map[rowIndex][columnIndex].name == self.name then
                                         local randRow = math.random(3)
                                         local randCol = math.random(3)
                                         local adj = adjCellsOf(rowIndex, columnIndex)[randRow][randCol]
-                                        
-                                        -- land invasions
+                                                            
                                         if map[adj.rowIndex][adj.columnIndex].name == foe.name then
-                                            if hasAccessToLand then
-                                                map[adj.rowIndex][adj.columnIndex] = self:clone()
-                                                msgBox:add(self.name.." took your clay!")
-                                                updateCellCanvas()
-                                                numOfInv = numOfInv + 1
-                                            end
-                                        else
-                                            hasAccessToFoeLand = false
-                                        end
-                                        
-                                    -- sea invasion
-                                    elseif map[rowIndex][columnIndex].name == foe.name then
-                                        if not hasAccessToFoeLand then
-                                            map[rowIndex][columnIndex] = self:clone()
-                                            msgBox:add(self.name.." took your clay!")
+                                            map[adj.rowIndex][adj.columnIndex] = self:clone()
                                             updateCellCanvas()
                                             numOfInv = numOfInv + 1
                                         end
+                                        
+                                    --[[
+                                    elseif map[rowIndex][columnIndex].name == foe.name then
+                                        map[rowIndex][columnIndex] = self:clone()
+                                        updateCellCanvas()
+                                        numOfInv = numOfInv + 1
                                     end
+                                    ]]--
                                 end
-                            elseif not strongEnough(self, foe) then
-                                if #msgBox.list == 0 or msgBox.list[#msgBox.list].str ~= self.name.." tried to attack you but failed!" then
-                                    msgBox:add(self.name.." tried to attack you but failed!")
-                                end
-                                break
                             end
                         end
-                    end         
+                    end
                 end
             end
         end
         numOfInv = 0
-        checkIfDead()
     end
 end
 
@@ -169,15 +147,19 @@ function Country:isFoe(name)
     return r
 end
 
-function Country:war(country)
-    if #country.foes == 0 then 
-        table.insert(country.foes, self)
-    else
-        for _,foe in pairs(country.foes) do
-            if foe.name ~= self.name then
-                table.insert(country.foes, self)
+function Country:war(foe)
+    if type(foe) == "table" then
+        if #foe.foes == 0 then 
+            table.insert(foe.foes, self)
+        else
+            for _,foe in pairs(foe.foes) do
+                if foe.name ~= self.name then
+                    table.insert(foe.foes, self)
+                end
             end
         end
+    else
+        error("Country:war function accepts the table of the country only.")
     end
 end
 

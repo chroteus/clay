@@ -41,7 +41,8 @@ function loadMap() -- Load an existing map.
         local countryName = convertStr(countryN)
     
         for _,country in pairs(countries) do
-            for _,foe in pairs(foeTable) do
+            for _,foeId in pairs(foeTable) do
+                local foe = countries[foeId]
                 if country.name == countryName then
                     foe:war(country)
                 end
@@ -99,7 +100,7 @@ function saveMap(name)
             
             love.filesystem.append(name, countryName.."={")
             for _,foe in pairs(country.foes) do
-                love.filesystem.append(name, "countries["..foe.id.."],")
+                love.filesystem.append(name, foe.id..",")
             end
             love.filesystem.append(name, "},")
         end
@@ -125,10 +126,11 @@ function initMap()
 
     -- Camera
     mapCam = Camera(2400/2, 1040/2)
-    
-    -- Map and grid images.
+
     -- mapImg outside of init function because it might be changed in options before init function gets called.
     gridImg = love.graphics.newImage("assets/image/grid.png")
+    gridImg:setWrap("repeat","repeat")
+    gridQ = love.graphics.newQuad(0,0,mapImg:getWidth()/2,mapImg:getHeight()/2,gridImg:getWidth(),gridImg:getHeight())
     
     mapCam.scale = math.ceil(the.screen.width/2400)
 
@@ -201,7 +203,9 @@ function updateMap(dt)
     mapMouse.x, mapMouse.y = mapCam:mousepos()
     
     for _,country in pairs(countries) do
-        country:invade(dt)
+        if #country.foes > 0 then
+            country:invade(dt)
+        end
     end
     
     ---------------------------
@@ -413,7 +417,7 @@ function drawMap()
     love.graphics.scale(2400/mapImg:getWidth())
     love.graphics.draw(mapImg, -1,-1)
     love.graphics.pop()
-        
+    
 --[[
     love.graphics.push()
     love.graphics.scale(0.25)
@@ -488,6 +492,8 @@ function drawMap()
             end
         end
     end
+    
+    love.graphics.draw(gridImg,gridQ,0,0)
         
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
     -- GUI should be drawn after this function is called. (or in game's draw func)

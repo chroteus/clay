@@ -49,12 +49,10 @@ function Cell:draw(rowIndex, columnIndex)
             if check(top.middle) or check(bottom.middle) or check(middle.left) or check(middle.right) then
                 self.color[4] = 220
                 love.graphics.setColor(self.color)
-                love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
             else
                 self.color[4] = 150
-                love.graphics.rectangle("fill", x, y, the.cell.width, the.cell.height)
             end
-            
+            love.graphics.rectangle("fill", x+1, y+1, the.cell.width-1, the.cell.height-1)
             love.graphics.setColor(255,255,255)
         end
     end
