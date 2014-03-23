@@ -471,7 +471,7 @@ function drawMap()
             
                 if drawSelectRect then
                     love.graphics.setColor(255,255,255,64)
-                    love.graphics.rectangle("fill", cellX, cellY, the.cell.width, the.cell.height)
+                    love.graphics.rectangle("fill", cellX+1, cellY+1, the.cell.width-1, the.cell.height-1)
                 end
                 
                -- love.graphics.rectangle("line", cellX, cellY, the.cell.width, the.cell.height)

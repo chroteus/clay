@@ -90,6 +90,11 @@ function Country:invade(dt)
                                                             
                                         if map[adj.rowIndex][adj.columnIndex].name == foe.name then
                                             map[adj.rowIndex][adj.columnIndex] = self:clone()
+                                            
+                                            if map[adj.rowIndex][adj.columnIndex].name == Player.country then
+                                                msgBox:add(self.name.." took your clay!")
+                                            end
+                                                
                                             updateCellCanvas()
                                             numOfInv = numOfInv + 1
                                         end
@@ -101,6 +106,7 @@ function Country:invade(dt)
                                         numOfInv = numOfInv + 1
                                     end
                                     ]]--
+                                    end
                                 end
                             end
                         end

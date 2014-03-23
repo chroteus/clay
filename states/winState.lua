@@ -63,7 +63,3 @@ end
 function winState:mousereleased(x, y, button)
     winBtn:mousereleased(x, y, button)
 end
-
-function winState:leave()
-    saveMap()
-end

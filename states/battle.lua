@@ -255,6 +255,7 @@ function battle:leave()
             for _,adjCell in ipairs(adjCellRow) do
                 if map[adjCell.rowIndex][adjCell.columnIndex].name ~= "Sea" and map[adjCell.rowIndex][adjCell.columnIndex].isSelected then
                     map[adjCell.rowIndex][adjCell.columnIndex] = Player:returnCountry()
+                    updateCellCanvas()
                 end
             end
         end
@@ -276,7 +277,6 @@ function battle:leave()
         fighter.energy = fighter.maxEnergy
     end
     
-    updateCellCanvas()
     checkIfDead() -- check if any of the countries are dead.
     
     startedBattle = false
