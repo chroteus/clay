@@ -4,6 +4,8 @@ function game:init()
     initMap()
     
     charScrBtn = Button(the.screen.width-123, the.screen.height-73, 120, 40, "(C)haracter", function() Gamestate.switch(charScr) end)
+
+    Timer.addPeriodic(5, function() checkIfDead() end)
 end
 
 function game:enter()

@@ -5,7 +5,7 @@ randEvents = {
         math.randomseed(os.time())
         local r = math.random(#countries)
         local randCountry = countries[r]
-        
+                
         for rowIndex, row in ipairs(map) do
             for columnIndex, cell in ipairs(row) do
                 if cell.name == randCountry.name then
@@ -16,14 +16,9 @@ randEvents = {
                                     local foe = map[adjCell.rowIndex][adjCell.columnIndex]
                                     if foe.name ~= randCountry.name and foe.name ~= "Sea" and randCountry.name ~= "Sea" and randCountry.name ~= Player.country then
                                         if num == 0 then
-                                            if not randCountry:isFoe(foe.name) then
+                                            if not randCountry:isFoe(foe.name) and not nameToCountry(foe.name):isFoe(randCountry.name) then
                                                 randCountry:war(foe)
-                                                
-                                                for _,_country in pairs(countries) do
-                                                    if foe.name == _country.name then
-                                                        _country:war(randCountry)
-                                                    end
-                                                end
+                                                nameToCountry(foe.name):war(randCountry)
                                                 
                                                 msgBox:add(randCountry.name.." has declared war on "..foe.name.." !")
                                                 updateCellCanvas()

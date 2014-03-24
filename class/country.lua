@@ -39,8 +39,7 @@ function Country:initialize(name, color, attack, defense, hp)
         skills.heal:clone(),
     } 
     
-    self.invadeTimer = 5
-    self.invadeTimerReset = self.invadeTimer
+    self.invadeTimer = math.random(3,6)
     
     Cell.initialize(self, self.id, self.color)
 end
@@ -74,8 +73,7 @@ function Country:invade(dt)
     self.invadeTimer = self.invadeTimer - dt
     
     if self.invadeTimer <= 0 then
-        checkIfDead()
-        self.invadeTimer = self.invadeTimerReset
+        self.invadeTimer = math.random(3,6)
         if self.name ~= Player.country then
             if not self.isDead then
                 for _,foe in pairs(self.foes) do

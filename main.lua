@@ -140,6 +140,15 @@ function adjCellsOf(rowInd, columnInd)
     return adj
 end
 
+function nameToCountry(name)
+    for _,country in pairs(countries) do
+        if country.name == name then
+            return country
+        end
+    end
+end
+            
+
 -- Collision detection function.
 -- Returns true if two boxes overlap, false if they don't
 -- x1,y1 are the left-top coords of the first box, while w1,h1 are its width and height
