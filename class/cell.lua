@@ -1,11 +1,14 @@
 Cell = Base:subclass("Cell")
 
-function Cell:initialize(id, color)
+function Cell:initialize(id, name, color)
     -- id [Number]: A single digit representing a cell. Used for inserting cells into <map> table according to the id.
     self.id = id
     
     -- color [Table]: Color of the cell. (Captain Obvious to the rescue!)
     self.color = color
+    
+    -- name [String]: Name of the cell
+    self.name = name
     
     -- isSelected [Bool]: If a cell is selected, it is more opaque.
     self.isSelected = false
@@ -14,18 +17,29 @@ function Cell:initialize(id, color)
     self.isFaintClone = false
     
     -- adjCells [Table]: A table with information about adjacent cells.
-    -- This table will store information about adjacent cells which will be generated in /misc/map.lua
     self.adjCells = {{0,0,0}, 
                      {0,0,0},
                      {0,0,0}}
         
 end
 
+function Cell:cellClone()
+    -- clones only the needed stuff so that memory won't be occupied for no reason.
+    local t = {}
+    t.id = self.id
+    t.name = self.name
+    t.color = self.color
+    t.isSelected = self.isSelected
+    
+    t.draw = function(self, rowIndex, columnIndex) Cell.draw(self, rowIndex, columnIndex) end
+    return t
+end
+
 function Cell:draw(rowIndex, columnIndex)
     local x = (rowIndex-1)*the.cell.width
     local y = (columnIndex-1)*the.cell.height
     
-    self.color[4] = 150 -- Set the alpha channel. Makes cell transparent.
+    self.color[4] = 180 -- Set the alpha channel. Makes cell transparent.
 
     if self.name ~= "Sea" then -- Sea cells shouldn't be drawn as it greatly drops FPS.
         if self.isSelected then

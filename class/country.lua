@@ -41,7 +41,7 @@ function Country:initialize(name, color, attack, defense, hp)
     
     self.invadeTimer = math.random(3,6)
     
-    Cell.initialize(self, self.id, self.color)
+    Cell.initialize(self, self.id, self.name, self.color)
 end
 
 
@@ -152,6 +152,7 @@ function Country:isFoe(name)
 end
 
 function Country:war(foe)
+    local foe = nameToCountry(foe.name)
     if type(foe) == "table" then
         if #foe.foes == 0 then 
             table.insert(foe.foes, self)

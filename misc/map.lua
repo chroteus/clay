@@ -147,7 +147,7 @@ function initMap()
     for rowIndex,row in ipairs(map) do
         for columnIndex,num in ipairs(row) do
             table.remove(row, columnIndex)
-            table.insert(row, columnIndex, countries[num]:clone())
+            table.insert(row, columnIndex, countries[num]:cellClone())
         end
     end
     

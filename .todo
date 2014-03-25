@@ -1,5 +1,9 @@
 Before Alpha:
 
+(QUICK) CountryCell:
+    Cells should contain only the things they need (color, name).
+end
+
 Random events:
     Peace between countries.
     Riots (Khohol Power!)
@@ -10,19 +14,25 @@ end
 
 Economy: 
     Resources, money, etc.
-    
+end
+
 RPG elements:
     Item shop
-                                        
+end                                        
 
 Improve Battle System:
+    Add indicators on how much health, energy were used (Chrono Trigger style).
+    Make battles a bit longer, more strategic, but with enough action.
     Add new types of combat techniques.
     Add animations.
-    
+end
+
 "Upgrade" system:
     Countries cannot attack each other over sea unless they have a navy.
+end
 
 Diplomacy:  
     Peace for resources, money.
+end
 
 Refactor the code

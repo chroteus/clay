@@ -29,13 +29,7 @@ function Player:gainXP(amount)
 end
 
 function Player:returnCountry(notClone)
-    for _,country in pairs(countries) do
-        if country.name == Player.country then
-            if notClone then
-                return country
-            else
-                return country:clone()
-            end
-        end
+    if notClone then return nameToCountry(Player.country)
+    else return nameToCountry(Player.country):clone()
     end
 end
