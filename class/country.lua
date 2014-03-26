@@ -32,6 +32,8 @@ function Country:initialize(name, color, attack, defense, hp)
     self.neutrals = {}
     
     self.isDead = false
+    self.deadMessagePrinted = false
+    
     self.maxHP = self.hp
     self.maxEnergy = self.energy
     

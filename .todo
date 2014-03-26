@@ -1,9 +1,5 @@
 Before Alpha:
 
-(QUICK) CountryCell:
-    Cells should contain only the things they need (color, name).
-end
-
 Random events:
     Peace between countries.
     Riots (Khohol Power!)
