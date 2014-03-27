@@ -24,7 +24,7 @@ Improve Battle System:
 end
 
 "Upgrade" system:
-    Countries cannot attack each other over sea unless they have a navy.
+    Countries cannot attack each other over sea unless they have a navy (they must have a cell adjacent to sea). 
 end
 
 Diplomacy:  
