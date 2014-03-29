@@ -271,7 +271,7 @@ function updateMap(dt)
     ------------------------
     --Edit Mode "painting"--
     
-    local updateCanvasTimer = 0.1
+    local updateCanvasTimer = 0.05
     local updateCanvasTimerReset = updateCanvasTimer
     
     if editMode.enabled then

@@ -78,9 +78,9 @@ function Country:invade(dt)
         self.invadeTimer = math.random(3,6)
         if self.name ~= Player.country then
             if not self.isDead then
-                for _,foe in pairs(self.foes) do
-                    for rowIndex, row in ipairs(map) do
-                        for columnIndex, cell in ipairs(row) do
+                for rowIndex, row in ipairs(map) do
+                    for columnIndex, cell in ipairs(row) do
+                        for _,foe in pairs(self.foes) do
                             if numOfInv == 0 then
                                 if strongEnough(self, foe) then
                                     if map[rowIndex][columnIndex].name == self.name then
@@ -89,12 +89,12 @@ function Country:invade(dt)
                                         local adj = adjCellsOf(rowIndex, columnIndex)[randRow][randCol]
                                                             
                                         if map[adj.rowIndex][adj.columnIndex].name == foe.name then
-                                            map[adj.rowIndex][adj.columnIndex] = self:clone()
-                                            
                                             if map[adj.rowIndex][adj.columnIndex].name == Player.country then
                                                 msgBox:add(self.name.." took your clay!")
                                             end
-                                                
+                                            
+                                            map[adj.rowIndex][adj.columnIndex] = self:clone()
+                                            
                                             updateCellCanvas()
                                             numOfInv = numOfInv + 1
                                         end
@@ -154,7 +154,6 @@ function Country:isFoe(name)
 end
 
 function Country:war(foe)
-    local foe = nameToCountry(foe.name)
     if type(foe) == "table" then
         if #foe.foes == 0 then 
             table.insert(foe.foes, self)
@@ -166,7 +165,31 @@ function Country:war(foe)
             end
         end
     else
-        error("Country:war function accepts the table of the country only.")
+        error("Country:war method accepts the instance of the country only.")
+    end
+end
+
+function Country:peace(country)
+    if type(country) == "table" then
+        if #self.foes > 0 then
+            for i,foe in ipairs(self.foes) do
+                if country.name == foe.name then
+                    table.remove(self.foes, i)
+                end
+            end
+            
+        end
+        if #country.foes > 0 then
+            for i,foe in ipairs(country.foes) do
+                if self.name == foe.name then
+                    table.remove(country.foes, i)
+                end
+            end
+        end
+        
+        msgBox:add(self.name.." made a peace treaty with "..country.name..".")
+    else
+        error("Country:peace method accepts the instance of the country only.")
     end
 end
 

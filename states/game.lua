@@ -6,6 +6,23 @@ function game:init()
     charScrBtn = Button(the.screen.width-123, the.screen.height-73, 120, 40, "(C)haracter", function() Gamestate.switch(charScr) end)
 
     Timer.addPeriodic(5, function() checkIfDead() end)
+    
+    -- If death message was printed already, don't print it again at the start of the game.
+    for _,country in pairs(countries) do
+        local num = 0
+        
+        for rowIndex, row in ipairs(map) do
+            for columnIndex, cell in ipairs(row) do
+                if cell.name == country.name then
+                    num = num + 1
+                end
+            end
+        end
+        
+        if num == 0 then
+            country.deadMessagePrinted = true
+        end
+    end
 end
 
 function game:enter()

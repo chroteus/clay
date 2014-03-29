@@ -94,10 +94,7 @@ function love.draw()
 end
 
 function love.keypressed(key, u)
-    -- Debug
-    if key == "0" then
-        debug.debug()
-    elseif key == "m" then
+    if key == "m" then
         if not musicPaused then
             TEsound.pause("music")
             musicPaused = true
@@ -139,16 +136,6 @@ function adjCellsOf(rowInd, columnInd)
 
     return adj
 end
-
-function nameToCountry(name)
-    -- returns country based on name
-    for _,country in pairs(countries) do
-        if country.name == name then
-            return country
-        end
-    end
-end
-            
 
 -- Collision detection function.
 -- Returns true if two boxes overlap, false if they don't

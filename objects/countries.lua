@@ -70,3 +70,12 @@ function funcCountry(countryName, func)
     end
 end
 
+function nameToCountry(name)
+    -- returns country based on name
+    for _,country in pairs(countries) do
+        if country.name == name then
+            return country
+        end
+    end
+end
+

@@ -17,11 +17,11 @@ randEvents = {
                                     if foe.name ~= randCountry.name and foe.name ~= "Sea" and randCountry.name ~= "Sea" and randCountry.name ~= Player.country then
                                         if num == 0 then
                                             if not randCountry:isFoe(foe.name) and not nameToCountry(foe.name):isFoe(randCountry.name) then
-                                                randCountry:war(foe)
+                                                
+                                                randCountry:war(nameToCountry(foe.name))
                                                 nameToCountry(foe.name):war(randCountry)
                                                 
-                                                msgBox:add(randCountry.name.." has declared war on "..foe.name.." !")
-                                                updateCellCanvas()
+                                                msgBox:add(randCountry.name.." has declared war on "..foe.name.."!")
                                                 num = num + 1
                                            end
                                         end
@@ -36,6 +36,19 @@ randEvents = {
         
         num = 0
     end,
+    
+    function() -- peace
+        local randCountry = countries[math.random(#countries)]
+        local num = 0
+        
+        for _,foe in pairs(randCountry.foes) do
+            if num == 0 then
+                randCountry:peace(foe)
+                num = num + 1
+            end
+        end
+    end
+        
 }
             
 local randEventTimer = math.random(5,20)
