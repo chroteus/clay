@@ -44,7 +44,9 @@ function loadMap() -- Load an existing map.
             for _,foeId in pairs(foeTable) do
                 local foe = countries[foeId]
                 if country.name == countryName then
-                    foe:war(country)
+                    if not foe:isFoe(country.name) then
+                        foe:war(country)
+                    end
                 end
             end
         end

@@ -7,7 +7,7 @@ Button = class("Button")
 -- Not to be used by itself.
 
 guiColors = {
-    bg = {200, 200, 200, 255},
+    bg = {200, 200, 200, 200},
     fg = {50, 50, 50}
 }
 
@@ -18,7 +18,7 @@ function Button:initialize(x, y, width, height, text, func)
     self.height = height
     self.func = assert(func) -- Function to be executed when button is clicked.
     self.state = "idle" -- Default state is idle. State is used to change colors of button.
-    self.text = text -- Text to be displayed.
+    self.text = text
     
     self.colors = {
         -- <self.colors> is table containing colors of button.

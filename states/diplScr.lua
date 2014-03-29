@@ -5,11 +5,8 @@ function diplScr:init()
     diplCam = Camera(the.screen.width/2, the.screen.height/2)
 end
 
-function diplScr:enter()
-    diplScr.foeList = {}
-    for _,foe in pairs(Player:returnCountry(true).foes) do
-        table.insert(diplScr.foeList, foe)
-    end
+function diplScr:enter()    
+    randBg()
 end
 
 function diplScr:update(dt)
@@ -19,9 +16,17 @@ end
 function diplScr:draw()
     diplCam:attach()
     
-    for _,foe in ipairs(diplScr.foeList) do
-        love.graphics.printf(foe.name, 0, diplScr.margin + 50, the.screen.width, "center")
-    end        
+    for i,foe in ipairs(Player:returnCountry(true).foes) do
+        love.graphics.printf(foe.name, 0, diplScr.margin+(50*i), the.screen.width, "center")
+        
+        local ball = foe.miniature
+        ball:setFilter("nearest", "nearest")
+        love.graphics.push()
+        love.graphics.scale(2)
+        love.graphics.draw(ball, 290, (diplScr.margin+((50/2)*i))-ball:getHeight()/2)
+        love.graphics.pop()
+    end
+    
 
     diplCam:detach()
 end

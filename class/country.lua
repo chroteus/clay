@@ -158,10 +158,16 @@ function Country:war(foe)
         if #foe.foes == 0 then 
             table.insert(foe.foes, self)
         else
-            for _,foe in pairs(foe.foes) do
-                if foe.name ~= self.name then
-                    table.insert(foe.foes, self)
-                end
+            if not foe:isFoe(Player.country) then
+                table.insert(foe.foes, self)
+            end
+        end
+        
+        if #self.foes == 0 then
+            table.insert(self.foes, foe)
+        else
+            if not self:isFoe(foe.name) then
+                table.insert(self.foes, foe)
             end
         end
     else
