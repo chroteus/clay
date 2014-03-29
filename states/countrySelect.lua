@@ -10,6 +10,8 @@ function countrySelect:init()
         self.text = text
         self.func = func
         
+        self.ball:setFilter("nearest", "nearest")
+        
         if xOrder == 1 then
             self.x = the.screen.width/2 - self.width*3
         elseif xOrder == 2 then
@@ -25,8 +27,8 @@ function countrySelect:init()
     
     function SelectBtn:drawBall()
         local padding = 5
-        local ballX = self.x - self.ball:getWidth() - padding
-        local ballY = self.y + self.ball:getHeight()
+        local ballX = (self.x - self.ball:getWidth() - padding*3) / 3
+        local ballY = (self.y + self.ball:getHeight() + padding) / 3
         love.graphics.draw(self.ball, ballX, ballY)
     end
     

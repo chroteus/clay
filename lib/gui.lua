@@ -7,7 +7,7 @@ Button = class("Button")
 -- Not to be used by itself.
 
 guiColors = {
-    bg = {255, 255, 255, 150},
+    bg = {200, 200, 200, 255},
     fg = {50, 50, 50}
 }
 
@@ -33,8 +33,8 @@ function Button:initialize(x, y, width, height, text, func)
         
         -- active = Mouse is hovering on the button.
         active = {
-            bg = {guiColors.bg[1], guiColors.bg[2], guiColors.bg[3], 255},
-            fg = {guiColors.fg[1], guiColors.fg[2], guiColors.fg[3], 255}
+            bg = {guiColors.bg[1]+55, guiColors.bg[2]+55, guiColors.bg[3]+55, 255},
+            fg = {guiColors.fg[1]+55, guiColors.fg[2]+55, guiColors.fg[3]+55, 255}
         },
     }
 end
@@ -100,7 +100,10 @@ function Button:draw()
     love.graphics.setColor(255,255,255)
     
     if self:isInstanceOf(SelectBtn) then
+        love.graphics.push()
+        love.graphics.scale(3)
         self:drawBall()
+        love.graphics.pop()
     end
 end
 

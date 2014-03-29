@@ -78,6 +78,8 @@ function game:keyreleased(key)
         Gamestate.switch(pause)
     elseif key == "c" then
         Gamestate.switch(charScr)
+    elseif key == "tab" then
+        Gamestate.switch(diplScr)
     end
 
     if DEBUG then

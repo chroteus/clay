@@ -22,6 +22,7 @@ require "states.winState"
 require "states.loseState"
 require "states.charScr"
 require "states.options"
+require "states.diplScr"
 require "states.gameOver"
 
 -- Misc
