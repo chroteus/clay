@@ -34,6 +34,7 @@ require "misc.map"
 require "misc.msgBox"
 require "lib.dialogBox"
 require "misc.randEvent"
+require "misc.screenBtn"
 
 function love.load()
     math.randomseed(os.time())
@@ -43,6 +44,7 @@ function love.load()
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
+    screenBtn:initialize()
     
     Gamestate.registerEvents()
     
@@ -53,6 +55,7 @@ function love.load()
     end
     
     gameFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
+    bigFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 22)
     love.graphics.setFont(gameFont)
     
     -- Backgrounds
@@ -64,12 +67,18 @@ function love.load()
         scrBgImg = love.graphics.newImage("assets/image/bg/"..randBg)
     end
     
+    bgLineImg = love.graphics.newImage("assets/image/bgLine.png")
+    bgLineImg:setWrap("repeat", "repeat")
+    bgLineQ = love.graphics.newQuad(0,0,the.screen.width,the.screen.height,bgLineImg:getWidth(),bgLineImg:getHeight())
+    
+    
     randBg()
     loadPrefs()
     
     -- Music
     TEsound.playLooping("assets/sounds/music.ogg", "music")
     musicPaused = false
+    
 end
 
 function love.update(dt)
@@ -80,7 +89,6 @@ function love.update(dt)
 end
 
 function love.draw()
-    
     if Gamestate.current() ~= battle and Gamestate.current() ~= winState and Gamestate.current() ~= loseState then
         love.graphics.setBackgroundColor(45,45,55)
         local imgW, imgH = scrBgImg:getWidth(), scrBgImg:getHeight()
@@ -90,6 +98,10 @@ function love.draw()
         -- tint
         love.graphics.setColor(45,45,55,150)
         love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
+            
+        -- lines
+        love.graphics.draw(bgLineImg,bgLineQ,0,0)
+    
         love.graphics.setColor(255,255,255)
     end
 end
@@ -103,7 +115,9 @@ function love.keypressed(key, u)
             TEsound.resume("music")
             musicPaused = false
         end
-    end 
+    elseif key == "home" then
+        debug.debug()
+    end
 end
 
 

@@ -25,6 +25,7 @@ countries = {
     Country("France", {230,230,230}, 8, 5, 100),
     Country("Austria", {200,40,40}, 10, 4, 70),
     Country("Belarus", {38,127,0}, 9, 3, 80),
+    Country("Poland", {220,20,60}, 8, 4, 70),
 }
 
 for i=1, #countries do

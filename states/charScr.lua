@@ -56,6 +56,8 @@ function charScr:update(dt)
     elseif checkCollision(the.mouse.x,the.mouse.y,1,1, c.minusDef.x, c.minusDef.y, (c.plusDef.x+c.plusDef.width)-c.minusDef.x, c.minusDef.height) then
         charScr.text = "Defense: Decreases the chance of your clay being taken. Decreases the damage in battles."
     end
+    
+    screenBtn:update()
 end
 
 function charScr:draw()
@@ -85,12 +87,16 @@ function charScr:draw()
     drawText(charScr.btn.minusDef, "Defense")
 
     love.graphics.printf(charScr.text, the.screen.width/3, charScr.btn.minusDef.y + 80, the.screen.width/3, "center")
+    
+    screenBtn:draw()
 end
 
 function charScr:mousereleased(x,y,button)
     for _,btn in pairs(charScr.btn) do
         btn:mousereleased(x,y,button)
     end
+    
+    screenBtn:mousereleased(x,y,button)
 end
 
 function charScr:keyreleased(key)

@@ -327,7 +327,7 @@ function mousepressedMap(x, y, button)
                     -------------------------------------------------------
                     --Generate adjacent cells table for the selected cell--
                     
-                    if Player.country == cell.name or "Sea" == cell.name then
+                    if Player.country == cell.name then --or "Sea" == cell.name then
                         if checkCollision(mapMouse.x, mapMouse.y, 1,1, cellX,cellY,the.cell.width-1,the.cell.height-1) then
                             cell.isSelected = true
                             currAdjCells = {{0,0,0},
@@ -374,25 +374,28 @@ function mousepressedMap(x, y, button)
                                                 -- Note: Conquering the cell is done in battle's leave function.
                                                 -- Marking the cell as selected so that neighbor cells won't be claimed.
                                                 map[adjCell.rowIndex][adjCell.columnIndex].isSelected = true
+                                               --[[
                                                 if adjCellCountry == "Sea" then
                                                     map[adjCell.rowIndex][adjCell.columnIndex] = country:clone()
                                                     map[adjCell.rowIndex][adjCell.columnIndex].isFaintClone = true
-                                                elseif not startedBattle then
-                                                    
-                                                    -- adding player as a foe to the country 
-                                                    for _,country in pairs(countries) do
-                                                        if country.name == map[adjCell.rowIndex][adjCell.columnIndex].name then
-                                                            if not country:isFoe(Player.country) then
-                                                            
-                                                                Player:returnCountry(true):war(country)
-                                                                msgBox:add(country.name.." is your foe now!")
+                                                ]]--
+                                                if not startedBattle then
+                                                    if adjCellCountry ~= "Sea" then    
+                                                        -- adding player as a foe to the country 
+                                                        for _,country in pairs(countries) do
+                                                            if country.name == map[adjCell.rowIndex][adjCell.columnIndex].name then
+                                                                if not country:isFoe(Player.country) then
+                                                                
+                                                                    Player:returnCountry(true):war(country)
+                                                                    msgBox:add(country.name.." is your foe now!")
+                                                                end
                                                             end
                                                         end
+                                                        
+                                                        -- Prevent switching to battle more than once.
+                                                        startBattle(Player.country, map[adjCell.rowIndex][adjCell.columnIndex].name)
+                                                        startedBattle = true
                                                     end
-                                                    
-                                                    -- Prevent switching to battle more than once.
-                                                    startBattle(Player.country, map[adjCell.rowIndex][adjCell.columnIndex].name)
-                                                    startedBattle = true
                                                 end
                                             end
                                         end

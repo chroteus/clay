@@ -54,10 +54,12 @@ randEvents = {
 local randEventTimer = math.random(5,20)
 
 function randEvent(dt)
-    randEventTimer = randEventTimer - dt
-    if randEventTimer <= 0 then
-        local r = math.random(#randEvents)
-        randEvents[r]()
-        randEventTimer = math.random(5,20)
+    if not DEBUG then
+        randEventTimer = randEventTimer - dt
+        if randEventTimer <= 0 then
+            local r = math.random(#randEvents)
+            randEvents[r]()
+            randEventTimer = math.random(5,20)
+        end
     end
 end
