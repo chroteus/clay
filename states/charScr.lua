@@ -42,7 +42,6 @@ end
 function charScr:enter()
     charScr.text = ""
     love.mouse.setVisible(true)
-    randBg()
 end
 
 function charScr:update(dt)
@@ -100,7 +99,7 @@ function charScr:mousereleased(x,y,button)
 end
 
 function charScr:keyreleased(key)
-    if key == "c" or key == "escape" then
+    if key == "tab" or key == "escape" then
         Gamestate.switch(game)
     end
 end

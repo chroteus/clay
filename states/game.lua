@@ -7,7 +7,7 @@ function game:init()
 
     Timer.addPeriodic(5, function() checkIfDead() end)
     
-    -- If death message was printed already, don't print it again at the start of the game.
+    -- If death message was printed already previous game, don't print it again at the start of the game.
     for _,country in pairs(countries) do
         local num = 0
         
@@ -79,7 +79,7 @@ function game:keyreleased(key)
     elseif key == "c" then
         Gamestate.switch(charScr)
     elseif key == "tab" then
-        Gamestate.switch(diplScr)
+        Gamestate.switch(transState)
     end
 
     if DEBUG then

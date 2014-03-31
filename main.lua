@@ -24,6 +24,7 @@ require "states.charScr"
 require "states.options"
 require "states.diplScr"
 require "states.gameOver"
+require "states.transState"
 
 -- Misc
 require "class.player"

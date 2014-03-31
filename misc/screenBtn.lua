@@ -12,10 +12,15 @@ screenBtn.list = {}
 
 function screenBtn:initialize()
     local w = the.screen.width/#screenBtn.states
-    local h = 45
+    local h = 35
     for i,state in ipairs(screenBtn.states) do
         table.insert(screenBtn.list,
-            Button(w*(i-1), the.screen.height-h, w, h, state[1], function() Gamestate.switch(state[2]) end)
+            Button(w*(i-1), the.screen.height-h, w, h, state[1], 
+                function() 
+                    Gamestate.switch(state[2])
+                    transState.lastState = state[2]
+                end
+            )
         )
     end
 end
