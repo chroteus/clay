@@ -9,6 +9,7 @@ function DialogBox:initialize(text, ...)
     self.height = 150
     self.x = the.screen.width/2-self.width/2
     self.y = the.screen.height/2-self.height/2
+    self.alpha = 255
     
     self.enabled = false
  
@@ -48,9 +49,9 @@ end
 
 function DialogBox:hide()
     if self.enabled then
-        Timer.tween(0.8, self, {y = the.screen.width+self.height}, "out-quad", function() self.enabled = false end)
-        for _,btn in pairs(self.buttons) do
-            Timer.tween(0.8, btn, {y = the.screen.width+btn.height}, "out-quad")
+        Timer.tween(0.8, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
+        for i,btn in ipairs(self.buttons) do
+            Timer.tween(0.8, btn, {x = -btn.width}, "out-quad")
         end
     end
 end
@@ -65,16 +66,17 @@ end
 
 function DialogBox:draw()
     if self.enabled then
-        love.graphics.setColor(guiColors.bg)
+        love.graphics.setColor(guiColors.bg[1],guiColors.bg[2],guiColors.bg[3],self.alpha)
         love.graphics.rectangle("fill",self.x,self.y,self.width,self.height)
         love.graphics.setColor(guiColors.fg)
         love.graphics.rectangle("line",self.x,self.y,self.width,self.height)    
         love.graphics.printf(self.text,self.x+padding,self.y+padding,self.width-padding,"left")
-        love.graphics.setColor(255,255,255)
         
         for _,btn in pairs(self.buttons) do
             btn:draw()
         end
+        
+        love.graphics.setColor(255,255,255)
     end
 end
 

@@ -12,7 +12,7 @@ screenBtn.list = {}
 
 function screenBtn:initialize()
     local w = the.screen.width/#screenBtn.states
-    local h = 35
+    local h = 30
     for i,state in ipairs(screenBtn.states) do
         table.insert(screenBtn.list,
             Button(w*(i-1), the.screen.height-h, w, h, state[1], 

@@ -1,23 +1,28 @@
 Before Alpha:
 
+Economy: 
+    Resources, money, etc.
+    Countries should be able to trade resources amongst each other.
+end
+
+Diplomacy:  
+    Peace for resources, money.
+end
+
 Random events:
     Peace between countries.
     Riots (Khohol Power!)
 end
 
 
-*Possible improvement: Countries attacking each other over sea.
-
-Economy: 
-    Resources, money, etc.
-end
+*Improvement: Countries attacking each other over sea.
 
 RPG elements:
     Item shop
 end                                        
 
 Improve Battle System:
-    Add indicators on how much health, energy were used (Chrono Trigger style).
+    Add indicators on how much health, energy were used (Chrono Trigger-esque).
     Make battles a bit longer, more strategic, but with enough action.
     Add new types of combat techniques.
     Add animations.
@@ -25,10 +30,6 @@ end
 
 "Upgrade" system:
     Countries cannot attack each other over sea unless they have a navy (they must have a cell adjacent to sea). 
-end
-
-Diplomacy:  
-    Peace for resources, money.
 end
 
 Refactor the code

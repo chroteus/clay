@@ -4,15 +4,21 @@ function tutorial:init()
     tutText = [[
     Map:
     WASD/Mouse - Move camera
-    ESC - Menu
     Mouse wheel - Zoom in/out
+    
+    ESC - Menu
+    Tab - Character Screen
     
     Battle:
     Space - Attack 
     Hotkey (or click) - Skill
      ]]
     
-    tutGameBtn = GenericButton(3, "Start >>", function() Gamestate.switch(game) end)
+    tutGameBtn = GenericButton(4, "Start >>", function() Gamestate.switch(game) end)
+end
+
+function tutorial:enter()
+    love.graphics.setFont(bigFont)
 end
 
 function tutorial:update(dt)
@@ -26,4 +32,8 @@ end
 
 function tutorial:mousereleased(x,y,button)
     tutGameBtn:mousereleased(x,y,button)
+end
+
+function tutorial:leave()
+    love.graphics.setFont(gameFont)
 end

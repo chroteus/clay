@@ -59,11 +59,16 @@ function Button:mousereleased(x, y, button)
     end
 end
 
-function Button:draw()
+function Button:draw(rgba)
     -- Change colors of button which depends on state of the buttton.
 
     if self.state == "idle" then
-        love.graphics.setColor(self.colors.idle.bg)
+        if rgba ~= nil then
+            love.graphics.setColor(rgba)
+        else
+            love.graphics.setColor(self.colors.idle.bg)
+        end
+        
         if self:isInstanceOf(SkillBtn) then
             love.graphics.rectangle("fill", self.x, self.y, self.fillWidth, self.height)
         else

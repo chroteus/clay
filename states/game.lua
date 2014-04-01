@@ -1,11 +1,9 @@
 game = {}
 
-function game:init()    
+function game:init()
     initMap()
     
-    charScrBtn = Button(the.screen.width-123, the.screen.height-73, 120, 40, "(C)haracter", function() Gamestate.switch(charScr) end)
-
-    Timer.addPeriodic(5, function() checkIfDead() end)
+    Timer.addPeriodic(2, function() checkIfDead() end)
     
     -- If death message was printed already previous game, don't print it again at the start of the game.
     for _,country in pairs(countries) do
@@ -36,7 +34,6 @@ function game:update(dt)
     updateMap(dt)
     msgBox:update(dt)
     randEvent(dt)
-    charScrBtn:update()
 end
 
 function game:draw()
@@ -61,7 +58,6 @@ function game:draw()
     love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-25, the.screen.width, "left")
     love.graphics.setColor(255,255,255)
     
-    charScrBtn:draw()
     msgBox:draw()
 end
 
@@ -69,15 +65,9 @@ function game:mousepressed(x, y, button)
     mousepressedMap(x, y, button)
 end
 
-function game:mousereleased(x,y,button)
-    charScrBtn:mousereleased(x,y,button)
-end
-
 function game:keyreleased(key)
     if key == "escape" then
         Gamestate.switch(pause)
-    elseif key == "c" then
-        Gamestate.switch(charScr)
     elseif key == "tab" then
         Gamestate.switch(transState)
     end
