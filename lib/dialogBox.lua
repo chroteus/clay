@@ -37,11 +37,13 @@ function DialogBox:show()
     if not self.enabled then
         self.enabled = true
         self.y = -self.height
+        self.x = the.screen.width/2-self.width/2
         
         Timer.tween(0.8, self, {y = the.screen.height/2-self.height/2}, "out-quad")
         
-        for _,btn in pairs(self.buttons) do
+        for i,btn in ipairs(self.buttons) do
             btn.y = -btn.height
+            btn.x = self.x + (btn.width*(i-1))
             Timer.tween(0.8, btn, {y = (the.screen.height/2-self.height/2)+self.height}, "out-quad")
         end
     end
@@ -51,7 +53,7 @@ function DialogBox:hide()
     if self.enabled then
         Timer.tween(0.8, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
         for i,btn in ipairs(self.buttons) do
-            Timer.tween(0.8, btn, {x = -btn.width}, "out-quad")
+            Timer.tween(0.8, btn, {x = the.screen.width+btn.width}, "out-quad")
         end
     end
 end
