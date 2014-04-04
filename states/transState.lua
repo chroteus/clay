@@ -8,5 +8,11 @@ end
 
 function transState:enter()
     randBg()
+    
+    if prefs.firstPlay then
+        prefs.firstPlay = false
+        savePrefs()
+    end
+    
     Gamestate.switch(transState.lastState)
 end

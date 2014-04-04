@@ -3,10 +3,23 @@ diplScr.margin = 20
 diplScr.country = ""
 diplScr.enabled = false -- indicates if player clicked on the country to talk
 
+local function randFoeMsg(foe)
+    local m = {
+        "We, the people of "..foe.name.." curse you. What do you want?",
+        "What do you want, "..Player.country.."?",
+        "Stop stealing my clay, "..Player.country.."!",
+    }
+        
+    return m[math.random(#m)]
+end
+
 local rectW,rectH = 130,80
 
 function diplScr:init()
     diplCam = Camera(the.screen.width/2, the.screen.height/2)
+    
+    -- a button to go back to list of countries
+    diplScr.disBtn = GenericButton(6, "<< Back", function() diplScr.enabled = false end)
 end
 
 function diplScr:enter()
@@ -24,10 +37,11 @@ function diplScr:enter()
     local btnH = 30
     for i,foe in ipairs(Player:returnCountry(true).foes) do
         table.insert(diplScr.btn,
-            Button(the.screen.width/2-rectW/2, (rectW+(btnH/3))*i, rectW, btnH, "Talk", 
+            Button(the.screen.width/2-rectW/2, ((rectH*1.5)*i)+rectH, rectW, btnH, "Talk", 
                 function() 
                     diplScr.country = foe
                     diplScr.enabled = true
+                    diplScr.message = randFoeMsg(foe)
                 end
             )
         )
@@ -42,6 +56,8 @@ function diplScr:update(dt)
         for _,btn in pairs(diplScr.btn) do
             btn:update()
         end
+    else
+        diplScr.disBtn:update()
     end
     
     screenBtn:update()
@@ -56,17 +72,17 @@ function diplScr:draw()
         
         for i,foe in ipairs(Player:returnCountry(true).foes) do
             love.graphics.setColor(guiColors.bg)
-            love.graphics.rectangle("fill",the.screen.width/2-rectW/2, (60*i), rectW, rectH)
+            love.graphics.rectangle("fill",the.screen.width/2-rectW/2, ((rectH*1.5)*i), rectW, rectH)
             love.graphics.setColor(guiColors.fg)
-            love.graphics.rectangle("line",the.screen.width/2-rectW/2, (60*i), rectW, rectH)
-            love.graphics.printf(foe.name, 0, diplScr.margin+(90*i), the.screen.width, "center")
+            love.graphics.rectangle("line",the.screen.width/2-rectW/2, ((rectH*1.5)*i), rectW, rectH)
+            love.graphics.printf(foe.name, 0, diplScr.margin*2.5+(rectH*1.5*i), the.screen.width, "center")
             love.graphics.setColor(255,255,255)
 
             local ball = foe.miniature
             ball:setFilter("nearest", "nearest")
             love.graphics.push()
             love.graphics.scale(2)
-            love.graphics.draw(ball, (the.screen.width/4)-(ball:getWidth()/2), (diplScr.margin+((50/2)*i))-ball:getHeight()/2)
+            love.graphics.draw(ball, (the.screen.width/4)-(ball:getWidth()/2), (rectH*0.75*i)+diplScr.margin/4) --0.75 because it's scaled
             love.graphics.pop()
         end
         
@@ -85,8 +101,15 @@ function diplScr:draw()
         end
         
         diplCam:detach()
-    else
-        love.graphics.draw(diplScr.country.leftImage, the.screen.width/2 - diplScr.country.leftImage:getWidth()/2, the.screen.height/2 - 350)
+    
+    else -- if talking with country
+        love.graphics.setFont(bigFont)
+        love.graphics.draw(diplScr.country.leftImage, the.screen.width/2 - diplScr.country.leftImage:getWidth()/2, the.screen.height/2 - diplScr.country.leftImage:getHeight())
+        love.graphics.printf(diplScr.country.name, 0, diplScr.margin, the.screen.width, "center")
+        love.graphics.printf(diplScr.message, the.screen.width/4, the.screen.height/2 + diplScr.margin, the.screen.width/2, "center")
+        love.graphics.setFont(gameFont)
+        
+        diplScr.disBtn:draw()
     end
     
     screenBtn:draw()
@@ -107,6 +130,8 @@ function diplScr:mousereleased(x,y,button)
         for _,btn in pairs(diplScr.btn) do
             btn:mousereleased(x,y,button)
         end
+    else
+        diplScr.disBtn:mousereleased(x,y,button)
     end
 end
 

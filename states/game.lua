@@ -56,6 +56,11 @@ function game:draw()
     love.graphics.setColor(guiColors.fg)
     love.graphics.rectangle("line", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
     love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-25, the.screen.width, "left")
+    
+    if prefs.firstPlay then
+        love.graphics.printf("Press 'Tab'", 0, the.screen.height-25, the.screen.width-15, "right")
+    end
+    
     love.graphics.setColor(255,255,255)
     
     msgBox:draw()

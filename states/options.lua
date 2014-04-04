@@ -3,6 +3,7 @@ options = {}
 prefs = {
     lowresMap = false,
     noCanvas = false,
+    firstPlay = true,
 }
     
 function savePrefs()
