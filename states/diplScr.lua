@@ -3,23 +3,45 @@ diplScr.margin = 20
 diplScr.country = ""
 diplScr.enabled = false -- indicates if player clicked on the country to talk
 
-local function randFoeMsg(foe)
-    local m = {
-        "We, the people of "..foe.name.." curse you. What do you want?",
-        "What do you want, "..Player.country.."?",
-        "Stop stealing my clay, "..Player.country.."!",
-    }
+local randMsg = { 
+    foe = function(foe)
+        local m = {
+            "Freedom ain't free. You, "..Player.country..", is the sacrifice.",
+            "What do you want, "..Player.country.."?!",
+            "Stop stealing my clay, "..Player.country.."!",
+        }
+            
+        return m[math.random(#m)]
+    end,
+    
+    denyPeace = function()
+        local m = {
+            "Peace? Ha! No way.",
+            "You're a barbarian. Peace is not possible with you.",
+            "No.",
+            "Our proud nation will not be happy until it exterminates barbarians like you.",
+        }
         
-    return m[math.random(#m)]
-end
+        return m[math.random(#m)]
+    end,
+}
 
 local rectW,rectH = 130,80
 
 function diplScr:init()
     diplCam = Camera(the.screen.width/2, the.screen.height/2)
     
-    -- a button to go back to list of countries
-    diplScr.disBtn = GenericButton(6, "<< Back", function() diplScr.enabled = false end)
+    local btnW,btnH = 150,50
+    -- buttons when talk screen is present
+    diplScr.cBtn = {
+        disBtn = GenericButton(6, "<< Back", function() diplScr.enabled = false end),
+        peace = Button(the.screen.width/2-btnW/2, the.screen.height/2 + 100, btnW, btnH,
+                    "Offer peace",
+                    function()
+                        diplScr.message = randMsg.denyPeace()
+                    end
+                ),
+    }
 end
 
 function diplScr:enter()
@@ -41,7 +63,7 @@ function diplScr:enter()
                 function() 
                     diplScr.country = foe
                     diplScr.enabled = true
-                    diplScr.message = randFoeMsg(foe)
+                    diplScr.message = randMsg.foe(foe)
                 end
             )
         )
@@ -57,7 +79,9 @@ function diplScr:update(dt)
             btn:update()
         end
     else
-        diplScr.disBtn:update()
+        for _,btn in pairs(diplScr.cBtn) do
+            btn:update()
+        end
     end
     
     screenBtn:update()
@@ -109,7 +133,9 @@ function diplScr:draw()
         love.graphics.printf(diplScr.message, the.screen.width/4, the.screen.height/2 + diplScr.margin, the.screen.width/2, "center")
         love.graphics.setFont(gameFont)
         
-        diplScr.disBtn:draw()
+        for _,btn in pairs(diplScr.cBtn) do
+            btn:draw()
+        end
     end
     
     screenBtn:draw()
@@ -131,7 +157,9 @@ function diplScr:mousereleased(x,y,button)
             btn:mousereleased(x,y,button)
         end
     else
-        diplScr.disBtn:mousereleased(x,y,button)
+        for _,btn in pairs(diplScr.cBtn) do
+            btn:mousereleased(x,y,button)
+        end
     end
 end
 
