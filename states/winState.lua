@@ -33,6 +33,9 @@ function winState:enter()
     local winStartXp = Player.xp
     winFinXp, leveledUp = Player:gainXP(xpAmnt) -- gainXP returns the final xp value, and true if player leveled up
     winResultXp = winFinXp - winStartXp
+    
+    winMoneyAmnt = math.random(netResult*2*Player.level, netResult*5*Player.level)
+    Player:returnCountry(true):addMoney(winMoneyAmnt)
 end
 
 function winState:update(dt)
@@ -57,6 +60,10 @@ function winState:draw()
         love.graphics.printf("Level up!", winXpRect.x, winXpRect.y - winXpRect.height/2 - fontHeight, winXpRect.width, "left")
     end
     
+    love.graphics.setFont(bigFont)
+    love.graphics.printf("You've gained "..tostring(winMoneyAmnt).."G !", 0, winXpRect.y+50, the.screen.width, "center")
+    love.graphics.setFont(gameFont)
+        
     love.graphics.setColor(255,255,255)
 end
 

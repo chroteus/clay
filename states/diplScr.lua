@@ -9,6 +9,7 @@ local randMsg = {
             "Freedom ain't free. You, "..Player.country..", is the sacrifice.",
             "What do you want, "..Player.country.."?!",
             "Stop stealing my clay, "..Player.country.."!",
+            "Who the hell are you? Oh right, you're the barbarian "..Player.country.."!",
         }
             
         return m[math.random(#m)]
@@ -20,6 +21,7 @@ local randMsg = {
             "You're a barbarian. Peace is not possible with you.",
             "No.",
             "Our proud nation will not be happy until it exterminates barbarians like you.",
+            "Never!",
         }
         
         return m[math.random(#m)]

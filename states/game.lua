@@ -55,7 +55,7 @@ function game:draw()
     love.graphics.rectangle("fill", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
     love.graphics.setColor(guiColors.fg)
     love.graphics.rectangle("line", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
-    love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp, 10, the.screen.height-25, the.screen.width, "left")
+    love.graphics.printf("| "..Player.country.." | Level: "..Player.level.." | XP: "..Player.xp.."/"..Player.xpToUp.." | Money: "..Player.money.."G", 10, the.screen.height-25, the.screen.width, "left")
     
     if prefs.firstPlay then
         love.graphics.printf("Press 'Tab'", 0, the.screen.height-25, the.screen.width-15, "right")

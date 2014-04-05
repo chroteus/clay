@@ -26,6 +26,7 @@ function Country:initialize(name, color, attack, defense, hp)
     self.defense = defense
     self.hp = hp
     self.energy = 100
+    self.money = 0
     
     self.foes = {}
     self.allies = {}
@@ -176,29 +177,50 @@ function Country:war(foe)
 end
 
 function Country:peace(country)
-    if type(country) == "table" then
-        if #self.foes > 0 then
-            for i,foe in ipairs(self.foes) do
-                if country.name == foe.name then
-                    table.remove(self.foes, i)
+    local function peace(country)
+        if type(country) == "table" then
+            if #self.foes > 0 then
+                for i,foe in ipairs(self.foes) do
+                    if country.name == foe.name then
+                        table.remove(self.foes, i)
+                    end
+                end
+                
+            end
+            if #country.foes > 0 then
+                for i,foe in ipairs(country.foes) do
+                    if self.name == foe.name then
+                        table.remove(country.foes, i)
+                    end
                 end
             end
             
+            msgBox:add(self.name.." signed a peace treaty with "..country.name..".")
+        else
+            error("Country:peace method accepts the instance of the country only.")
         end
-        if #country.foes > 0 then
-            for i,foe in ipairs(country.foes) do
-                if self.name == foe.name then
-                    table.remove(country.foes, i)
-                end
-            end
-        end
-        
-        msgBox:add(self.name.." made a peace treaty with "..country.name..".")
+    end
+    
+    if country.name == Player.country then
+        DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
+            {"<< Cancel", function() end}, {"Peace!", function() peace(country) end}
+        )
     else
-        error("Country:peace method accepts the instance of the country only.")
+        peace(country)
     end
 end
 
+function Country:addMoney(amount)
+    self.money = self.money + amount
+    
+    if self.money + amount < 0 then self.money = 0 end
+
+    if self.name == Player.country then
+        Player.money = self.money
+    end
+end
+    
+    
 function Country:addSkill(argSkill, order)    
     local order = order or 1
     table.insert(self.skills, order, skills[argSkill]:clone())

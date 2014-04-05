@@ -1,6 +1,6 @@
 local msgBoxX = 5
 local msgBoxY = 5
-local msgBoxW = love.graphics.getWidth()/2
+local msgBoxW = 500
 local msgBoxH = 120
 
 local Msg = Base:subclass("Msg")

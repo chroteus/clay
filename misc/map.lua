@@ -55,6 +55,7 @@ function loadMap() -- Load an existing map.
     
     Player:returnCountry(true).attack = Player.attack
     Player:returnCountry(true).defense = Player.defense
+    Player:returnCountry(true).money = Player.money
 end
 
 function saveMap(name)
@@ -177,7 +178,6 @@ function initMap()
         if not prefs.noCanvas then
             love.graphics.setCanvas(cellCanvas)
                 cellCanvas:clear()
-                love.graphics.setBlendMode("alpha")
                 for rowIndex, row in pairs(map) do
                     for columnIndex, cell in pairs(row) do                        
                         cell:draw(rowIndex,columnIndex)
@@ -374,12 +374,12 @@ function mousepressedMap(x, y, button)
                                                 -- Note: Conquering the cell is done in battle's leave function.
                                                 -- Marking the cell as selected so that neighbor cells won't be claimed.
                                                 map[adjCell.rowIndex][adjCell.columnIndex].isSelected = true
-                                               --[[
+                                                
                                                 if adjCellCountry == "Sea" then
                                                     map[adjCell.rowIndex][adjCell.columnIndex] = country:clone()
                                                     map[adjCell.rowIndex][adjCell.columnIndex].isFaintClone = true
-                                                ]]--
-                                                if not startedBattle then
+
+                                                elseif not startedBattle then
                                                     if adjCellCountry ~= "Sea" then    
                                                         -- adding player as a foe to the country 
                                                         for _,country in pairs(countries) do

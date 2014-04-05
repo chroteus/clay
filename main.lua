@@ -25,6 +25,7 @@ require "states.options"
 require "states.diplScr"
 require "states.gameOver"
 require "states.transState"
+require "states.upg"
 
 -- Misc
 require "class.player"

@@ -4,7 +4,7 @@ Player = {
     xpToUp = 20,
     unspentPoints = 0,
     level = 1,
-    money = 100,
+    money = 0,
     attack = 0,
     defense = 0,
 }
