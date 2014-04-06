@@ -57,7 +57,13 @@ function DialogBox:hide()
     if self.enabled then
         Timer.tween(0.8, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
         for i,btn in ipairs(self.buttons) do
-            Timer.tween(0.8, btn, {x = the.screen.width+btn.width}, "out-quad", function() self.hideFunc() end)
+            Timer.tween(0.8, btn, {x = the.screen.width+btn.width}, "out-quad", 
+                function() 
+                    if self.hideFunc then
+                        self.hideFunc() 
+                    end
+                end
+            )
         end
     end
 end
