@@ -13,6 +13,7 @@ function menu:init()
     
     local function newGame()
         createMap()
+        initMap()
         Gamestate.switch(countrySelect)
     end
     

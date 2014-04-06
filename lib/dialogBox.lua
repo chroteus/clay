@@ -9,6 +9,7 @@ function DialogBox:initialize(text, ...)
     self.height = 150
     self.x = the.screen.width/2-self.width/2
     self.y = the.screen.height/2-self.height/2
+    self.hideFunc = "" -- Defined in show() method. Called after DialogBox is hidden. Often used to hide the mouse cursor again.
     self.alpha = 255
     
     self.enabled = false
@@ -33,8 +34,11 @@ function DialogBox:initialize(text, ...)
     end
 end
 
-function DialogBox:show()
+function DialogBox:show(hideFunc)
     if not self.enabled then
+        self.hideFunc = hideFunc
+        
+        love.mouse.setVisible(true)
         self.enabled = true
         self.y = -self.height
         self.x = the.screen.width/2-self.width/2
@@ -53,7 +57,7 @@ function DialogBox:hide()
     if self.enabled then
         Timer.tween(0.8, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
         for i,btn in ipairs(self.buttons) do
-            Timer.tween(0.8, btn, {x = the.screen.width+btn.width}, "out-quad")
+            Timer.tween(0.8, btn, {x = the.screen.width+btn.width}, "out-quad", function() self.hideFunc() end)
         end
     end
 end

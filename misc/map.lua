@@ -135,7 +135,7 @@ function initMap()
     gridImg:setWrap("repeat","repeat")
     gridQ = love.graphics.newQuad(0,0,mapImg:getWidth()/2,mapImg:getHeight()/2,gridImg:getWidth(),gridImg:getHeight())
     
-    mapCam.scale = math.ceil(the.screen.width/2400)
+    mapCam.scale = 1.5
 
 
     if love.filesystem.exists("map.lua") then
@@ -192,7 +192,7 @@ end
 
 function enteredMap()
     -- Clear up current adjacent cells table so that none of the cells would be selected.
-    currAdjCells = {}
+   -- currAdjCells = {}
 
     -- Camera isn't limited by borders if true.
     mapBorderCheck = true
@@ -264,10 +264,10 @@ function updateMap(dt)
     --------------
     --Lımit zoom--
 
-    if mapCam.scale < 1 then
-        mapCam.scale = 1
-    elseif mapCam.scale > 2.5 then
-        mapCam.scale = 2.5
+    if mapCam.scale < 1.5 then
+        mapCam.scale = 1.5
+    elseif mapCam.scale > 3 then
+        mapCam.scale = 3
     end
     
     ------------------------
@@ -308,7 +308,7 @@ function mousepressedMap(x, y, button)
     if button == "wu" then
         Timer.tween(0.3, mapCam, {scale = mapCam.scale + 0.1}, "out-quad")
     elseif button == "wd" then
-        if mapCam.scale > 1 then
+        if mapCam.scale > 1.5 then
             Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1}, "out-quad")
         end
     end
@@ -442,20 +442,20 @@ function drawMap()
             local cell = map[adjCell.rowIndex][adjCell.columnIndex]
             
             love.graphics.setColor(255,255,255, 100)
-            love.graphics.setLineWidth(3)
+            love.graphics.setLineWidth(2)
             if checkCollision(adjCellX, adjCellY, the.cell.width-1, the.cell.height-1, mapMouse.x, mapMouse.y, 1,1) then
-                love.graphics.rectangle("fill", adjCellX+1, adjCellY+1, the.cell.width-2, the.cell.height-2)
+                love.graphics.rectangle("fill", adjCellX+2, adjCellY+2, the.cell.width-3, the.cell.height-3)
                 love.graphics.setColor(255,255,255, 100)
-                love.graphics.rectangle("line", adjCellX+1, adjCellY+1, the.cell.width-2, the.cell.height-2)
+                love.graphics.rectangle("line", adjCellX+2, adjCellY+2, the.cell.width-3, the.cell.height-3)
                 love.graphics.setColor(cell.color)
-                love.graphics.rectangle("fill", adjCellX+1, adjCellY+1, the.cell.width-2, the.cell.height-2)
+                love.graphics.rectangle("fill", adjCellX+2, adjCellY+2, the.cell.width-3, the.cell.height-3)
                 drawSelectRect = false
             else
-                love.graphics.rectangle("fill", adjCellX+2, adjCellY+2, the.cell.width-4, the.cell.height-4)
-                love.graphics.setColor(255,255,255, 100)
-                love.graphics.rectangle("line", adjCellX+2, adjCellY+2, the.cell.width-4, the.cell.height-4)
+                love.graphics.rectangle("fill", adjCellX+3, adjCellY+3, the.cell.width-5, the.cell.height-5)
+                love.graphics.setColor(255,255,255, 120)
+                love.graphics.rectangle("line", adjCellX+3, adjCellY+3, the.cell.width-5, the.cell.height-5)
                 love.graphics.setColor(cell.color)
-                love.graphics.rectangle("fill", adjCellX+2, adjCellY+2, the.cell.width-4, the.cell.height-4)
+                love.graphics.rectangle("fill", adjCellX+3, adjCellY+3, the.cell.width-5, the.cell.height-5)
             end
             love.graphics.setLineWidth(1)
             love.graphics.setColor(255,255,255)

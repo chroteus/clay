@@ -202,10 +202,31 @@ function Country:peace(country)
     end
     
     if country.name == Player.country then
-        DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
-            {"<< Cancel", function() end}, {"Peace!", function() peace(country) end}
-        )
+        local r = math.random(2)
+        
+        if r == 1 then
+            local dbox = DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
+                {"Refuse", function() end}, {"Accept", function() peace(country) end}
+            )
+            
+            dbox:show(function() love.mouse.setVisible(false) end)
+        else
+            local moneyAmnt = math.random(self.attack, self.attack*2)
+            local dbox = DialogBoxes:new(
+                self.name.. " wants to sign a peace treaty with us. "..tostring(moneyAmnt).."G will be given as a compensation.",
+                {"Refuse", function() end}, 
+                {"Accept", 
+                    function()
+                        peace(country)
+                        country:addMoney(moneyAmnt)
+                    end
+                }
+            )
+            
+            dbox:show(function() love.mouse.setVisible(false) end)
+        end
     else
+        -- for AI
         peace(country)
     end
 end
