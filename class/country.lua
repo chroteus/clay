@@ -98,6 +98,8 @@ function Country:invade(dt)
                                             
                                             updateCellCanvas()
                                             numOfInv = numOfInv + 1
+                                            
+                                            self:addMoney(math.random(foe.attack, foe.attack*2))
                                         end
                                         
                                     --[[

@@ -47,8 +47,7 @@ randEvents = {
                 num = num + 1
             end
         end
-    end
-        
+    end,
 }
             
 local randEventTimer = math.random(5,20)

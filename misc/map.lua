@@ -4,6 +4,22 @@ map = {}
 mapW = 300
 mapH = 130
 
+function rmSpc(str)
+    local s = str
+    s = string.gsub(s, " ", "")
+    
+    return s
+end
+
+function convertStr(str)
+    -- converts a string like "UnitedStates" into "United States"
+    
+    str = string.gsub(str, "%u", " %1") -- put a space before each upper case letter
+    str = string.gsub(str, " ", "", 1) -- remove first space
+    return str
+end
+
+
 function createMap() -- Fresh map. Used to load map at first play.
     love.filesystem.remove("map.lua")
     local mapFile = love.filesystem.newFile("assets/map.lua")
@@ -26,17 +42,6 @@ function loadMap() -- Load an existing map.
         Player[k] = v
     end
     
-    
-    local function convertStr(str)
-        -- converts a string like "UnitedStates" into "United States"
-        
-        str = string.gsub(str, "%u", " %1") -- put a space before each upper case letter
-        str = string.gsub(str, " ", "", 1) -- remove first space
-
-        return str
-    end
-
-    
     for countryN,foeTable in pairs(mapTable[3]) do
         local countryName = convertStr(countryN)
     
@@ -52,6 +57,17 @@ function loadMap() -- Load an existing map.
         end
     end
     
+    
+    -- load money values
+    for countryN,moneyV in pairs(mapTable[4]) do
+        local countryName = convertStr(countryN)
+        
+        for _,country in pairs(countries) do
+            if country.name == countryName then
+                country.money = moneyV
+            end
+        end
+    end
     
     Player:returnCountry(true).attack = Player.attack
     Player:returnCountry(true).defense = Player.defense
@@ -73,7 +89,7 @@ function saveMap(name)
     
     local mapString = serialize(numMap) -- numMap converted into a string.
     love.filesystem.write(name, "return {")
-    mapString = mapString:gsub(" ", "")
+    mapString = rmSpc(mapString)
     love.filesystem.append(name, mapString)
     love.filesystem.append(name, ",".."{")
     for k,v in pairs(Player) do
@@ -97,9 +113,8 @@ function saveMap(name)
     love.filesystem.append(name, ",{")
     for _,country in pairs(countries) do
         if #country.foes > 0 then
-            local countryName = countryName
-            
-            countryName = string.gsub(country.name, " ", "")
+            local countryName = country.name
+            countryName = rmSpc(countryName)
             
             love.filesystem.append(name, countryName.."={")
             for _,foe in pairs(country.foes) do
@@ -108,8 +123,17 @@ function saveMap(name)
             love.filesystem.append(name, "},")
         end
     end
+    love.filesystem.append(name, "}")
     
-    love.filesystem.append(name, "} }")
+    -- save money for each country
+    love.filesystem.append(name, ",{")
+    for _,country in pairs(countries) do
+        love.filesystem.append(name, rmSpc(country.name).."="..tostring(country.money)..",")
+    end
+        
+    love.filesystem.append(name, "},")
+    
+    love.filesystem.append(name, "}")
 end
 
 mapImg = love.graphics.newImage("assets/image/map.jpg")
