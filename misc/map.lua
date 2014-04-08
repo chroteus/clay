@@ -13,10 +13,10 @@ end
 
 function convertStr(str)
     -- converts a string like "UnitedStates" into "United States"
-    
-    str = string.gsub(str, "%u", " %1") -- put a space before each upper case letter
-    str = string.gsub(str, " ", "", 1) -- remove first space
-    return str
+    local s = str
+    s = string.gsub(s, "%u", " %1") -- put a space before each upper case letter
+    s = string.gsub(s, " ", "", 1) -- remove first space
+    return s
 end
 
 
@@ -91,11 +91,19 @@ function saveMap(name)
     love.filesystem.write(name, "return {")
     mapString = rmSpc(mapString)
     love.filesystem.append(name, mapString)
+    
     love.filesystem.append(name, ",".."{")
     for k,v in pairs(Player) do
         local stringV = ""
         if type(v) == "string" then
             stringV = '"'..v..'"'
+        elseif type(v) == "table" then
+            stringV = "{"
+            for k,v in pairs(v) do
+                stringV = stringV..tostring(k).."="..tostring(v.name)
+            end
+            stringV = stringV.."}"
+        
         else
             stringV = tostring(v)
         end
