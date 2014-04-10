@@ -1,4 +1,6 @@
 Clay
 =========================
 
-Currently no description since the game has no gameplay yet.
+Clay - a strategy/RPG hybrid game with countryballs.
+
+Information on how to run source version: https://www.love2d.org/wiki/Getting_Started
