@@ -24,7 +24,7 @@ countries = {
     Country("Austria", {180,80,80}, 10, 4, 70),
     Country("Belarus", {0, 60, 0}, 9, 3, 80),
     Country("Poland", {220,20,60}, 8, 4, 70),
-    Country("Netherlands", {33,70,139}, 9,4, 75),
+    Country("Netherlands", {66,140,255}, 9,4, 75),
     Country("Hungary", {0,128,0}, 8, 4, 80),
 }
 
@@ -35,16 +35,12 @@ end
 function checkIfDead()
     -- checking for the number of cells a country has
     -- kills the country if there are none
+    -- [[ REWRITE ]]
+    
+    --[[
     for _,country in pairs(countries) do
         local num = 0 
         
-        for rowIndex, row in ipairs(map) do
-            for columnIndex, cell in ipairs(row) do
-                if cell.name == country.name then
-                    num = num + 1
-                end
-            end
-        end
         
         if num == 0 then 
             country.isDead = true
@@ -59,6 +55,7 @@ function checkIfDead()
             end
         end
     end
+    ]]--
 end
 
 function funcCountry(countryName, func)

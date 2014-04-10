@@ -3,21 +3,13 @@ game = {}
 function game:init()
     initMap()
     
+    
+    --[[ REWRITE ]]
     -- If death message was printed already previous game, don't print it again at the start of the game.
     for _,country in pairs(countries) do
         local num = 0
         
-        for rowIndex, row in ipairs(map) do
-            for columnIndex, cell in ipairs(row) do
-                if cell.name == country.name then
-                    num = num + 1
-                end
-            end
-        end
         
-        if num == 0 then
-            country.deadMessagePrinted = true
-        end
     end
 end
 

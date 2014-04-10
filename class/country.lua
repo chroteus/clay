@@ -1,6 +1,6 @@
-require "class.cell"
+require "class.region"
 
-Country = Cell:subclass("Country")
+Country = Base:subclass("Country")
 
 -- WARNING! The name of miniature and ball image should be the same as Country's name!
 -- Example: If we have an instance of Country with name variable "Ukraine",
@@ -44,7 +44,7 @@ function Country:initialize(name, color, attack, defense, hp)
     
     self.invadeTimer = math.random(3,6)
     
-    Cell.initialize(self, self.id, self.name, self.color)
+    Base.initialize(self)
 end
 
 
@@ -72,51 +72,14 @@ end
 local numOfInv = 0
 
 function Country:invade(dt)
+    -- [[ REWRITE ]]
     -- Used for AI invasions
     self.invadeTimer = self.invadeTimer - dt
     
     if self.invadeTimer <= 0 then
         self.invadeTimer = math.random(3,6)
-        if self.name ~= Player.country then
-            if not self.isDead then
-                for rowIndex, row in ipairs(map) do
-                    for columnIndex, cell in ipairs(row) do
-                        for _,foe in pairs(self.foes) do
-                            if numOfInv == 0 then
-                                if strongEnough(self, foe) then
-                                    if map[rowIndex][columnIndex].name == self.name then
-                                        local randRow = math.random(3)
-                                        local randCol = math.random(3)
-                                        local adj = adjCellsOf(rowIndex, columnIndex)[randRow][randCol]
-                                                            
-                                        if map[adj.rowIndex][adj.columnIndex].name == foe.name then
-                                            if map[adj.rowIndex][adj.columnIndex].name == Player.country then
-                                                msgBox:add(self.name.." took your clay!")
-                                            end
-                                            
-                                            map[adj.rowIndex][adj.columnIndex] = self:clone()
-                                            
-                                            updateCellCanvas()
-                                            numOfInv = numOfInv + 1
-                                            
-                                            self:addMoney(math.random(foe.attack, foe.attack*2))
-                                        end
-                                        
-                                    --[[
-                                    elseif map[rowIndex][columnIndex].name == foe.name then
-                                        map[rowIndex][columnIndex] = self:clone()
-                                        updateCellCanvas()
-                                        numOfInv = numOfInv + 1
-                                    end
-                                    ]]--
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+        
+        
         numOfInv = 0
     end
 end

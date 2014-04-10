@@ -251,15 +251,6 @@ end
 function battle:leave()
     -- Claim the cell that we wanted to claim but only if the enemy is defeated.
     if enemy.hp <= 0 then
-        for _,adjCellRow in ipairs(currAdjCells) do
-            for _,adjCell in ipairs(adjCellRow) do
-                if map[adjCell.rowIndex][adjCell.columnIndex].name ~= "Sea" and map[adjCell.rowIndex][adjCell.columnIndex].isSelected then
-                    map[adjCell.rowIndex][adjCell.columnIndex] = Player:returnCountry()
-                    updateCellCanvas()
-                end
-            end
-        end
-        
         winState.enemy.att = enemy.attack
         winState.enemy.def = enemy.defense
     end

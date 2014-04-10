@@ -1,4 +1,11 @@
-Before Alpha:
+Before Beta:
+
+Regions:
+    Make an editor where you would be able to set regions as polygons.
+    Editor would save the vertices.
+
+    Zooming in reveals more details about the region (its sub-regions, etc)
+end
 
 Economy: 
     Countries should be able to give money to each other.
@@ -26,6 +33,8 @@ Improve Battle System:
     Add new types of combat techniques.
     Add animations.
 end
+
+Naval warfare
 
 "Upgrade" system:
     Countries cannot attack each other over sea unless they have a navy (they must have a cell adjacent to sea). 
