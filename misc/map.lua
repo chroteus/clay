@@ -38,11 +38,11 @@ function loadMap() -- Load an existing map.
     
     map = mapTable[1]
     
-    for k,v in pairs(mapTable[2]) do
+    for k,v in pairs(mapTable[1]) do
         Player[k] = v
     end
     
-    for countryN,foeTable in pairs(mapTable[3]) do
+    for countryN,foeTable in pairs(mapTable[2]) do
         local countryName = convertStr(countryN)
     
         for _,country in pairs(countries) do
@@ -59,7 +59,7 @@ function loadMap() -- Load an existing map.
     
     
     -- load money values
-    for countryN,moneyV in pairs(mapTable[4]) do
+    for countryN,moneyV in pairs(mapTable[3]) do
         local countryName = convertStr(countryN)
         
         for _,country in pairs(countries) do
@@ -81,6 +81,8 @@ function saveMap(name)
     -- Create rows
 
     love.filesystem.write(name, "return {")
+    
+    love.filesystem.append(name, "{")
     for k,v in pairs(Player) do
         local stringV = ""
         if type(v) == "string" then
@@ -143,7 +145,19 @@ function initMap()
     editMode = {
         enabled = false,
         country = "Ukraine", -- Selected country. Paints this country on map.
-        buttons = {}
+        buttons = {},
+        
+        currPoint = {
+            x = -10,
+            y = -10,
+        },
+        
+        lastPoint = {
+            x = -5,
+            y = -5
+        },
+        
+        currPolygon = {}
     }
     
 
@@ -251,7 +265,13 @@ function mousepressedMap(x, y, button)
 
     -- [[ REWRITE ]]
     if not editMode.enabled then
+
+    end
+
+    if editMode.enabled then
         if button == "l" then
+            editMode.lastPoint.x,editMode.lastPoint.y = editMode.currPoint.x, editMode.currPoint.y
+            editMode.currPoint.x, editMode.currPoint.y = mapCam:mousepos()
         end
     end
 end
@@ -262,12 +282,25 @@ function drawMap()
     local drawSelectRect = true
     
     -- Attaches a camera. Everything from now on will be drawn from camera's perspective.
-    mapCam:attach() 
-
+    mapCam:attach()
+    
     love.graphics.push()
     love.graphics.scale(2400/mapImg:getWidth())
     love.graphics.draw(mapImg, -1,-1)
     love.graphics.pop()
+    
+    if editMode.enabled then
+        local lp = editMode.lastPoint
+        local cp = editMode.currPoint
+        
+        love.graphics.circle("fill", lp.x, lp.y, 3)
+        love.graphics.circle("fill", cp.x, cp.y, 3)
+        
+        if lp.x > 0 and cp.x > 0 then   
+            love.graphics.line(lp.x,lp.y, cp.x,cp.y)
+            love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
+        end
+    end
     
 --[[
     love.graphics.push()
