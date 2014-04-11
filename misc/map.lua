@@ -157,9 +157,27 @@ function initMap()
             y = -5
         },
         
+        firstPoint = {
+            x = -20,
+            y = -20,
+        },
+            
+        
         currPolygon = {}
     }
     
+    function editMode.pair()
+        -- pairs x,y values in a polygon table like {10,20, 30,40} into {{10,20}, {30,40}}
+    
+        local pol = editMode.currPolygon
+        local t = {}
+        for i=2,#pol, 2 do
+            table.insert(t, {pol[i-1], pol[i]})
+        end
+        
+        return t
+    end
+                
 
     -- Camera
     mapCam = Camera(2400/2, 1040/2)
@@ -270,8 +288,15 @@ function mousepressedMap(x, y, button)
 
     if editMode.enabled then
         if button == "l" then
+            if editMode.firstPoint.x < 0 then
+                editMode.firstPoint.x, editMode.firstPoint.y = mapCam:mousepos()
+            end
+            
             editMode.lastPoint.x,editMode.lastPoint.y = editMode.currPoint.x, editMode.currPoint.y
             editMode.currPoint.x, editMode.currPoint.y = mapCam:mousepos()
+            
+            table.insert(editMode.currPolygon, editMode.currPoint.x)
+            table.insert(editMode.currPolygon, editMode.currPoint.y)
         end
     end
 end
@@ -290,16 +315,38 @@ function drawMap()
     love.graphics.pop()
     
     if editMode.enabled then
+        local radius = 1.5
         local lp = editMode.lastPoint
         local cp = editMode.currPoint
+        local fp = editMode.firstPoint
         
-        love.graphics.circle("fill", lp.x, lp.y, 3)
-        love.graphics.circle("fill", cp.x, cp.y, 3)
+        love.graphics.setColor(200,200,200)
+        love.graphics.circle("fill", lp.x, lp.y, radius)
+        love.graphics.circle("fill", cp.x, cp.y, radius)
+
+        if #editMode.currPolygon >= 4 then -- at least 2 vertices are needed to draw a line
+            love.graphics.setColor(255,255,255,100)
+            love.graphics.line(editMode.currPolygon)
+            love.graphics.setColor(225,225,225)
+            love.graphics.line(editMode.currPolygon)
+        end
+        
+        local t = editMode.pair()
+        for _,vertex in pairs(t) do
+            love.graphics.circle("fill", vertex[1], vertex[2], radius)
+        end
+        
+        love.graphics.setColor(255,255,255)
         
         if lp.x > 0 and cp.x > 0 then   
             love.graphics.line(lp.x,lp.y, cp.x,cp.y)
             love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
         end
+        
+        love.graphics.setColor(200,200,200)
+        love.graphics.circle("fill", fp.x, fp.y, radius)    
+        love.graphics.setColor(225,225,225)
+    
     end
     
 --[[
