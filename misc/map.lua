@@ -161,9 +161,12 @@ function initMap()
             x = -20,
             y = -20,
         },
-            
         
-        currPolygon = {}
+        fpActive = false, -- first point
+            
+        radius = 1.5,
+        
+        currPolygon = {},
     }
     
     function editMode.pair()
@@ -267,6 +270,20 @@ function updateMap(dt)
     elseif mapCam.scale > 3 then
         mapCam.scale = 3
     end
+    
+    -------------
+    --Edit Mode--
+    
+    if editMode.enabled then
+        local fp = editMode.firstPoint
+        local radius = editMode.radius
+        
+        if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+            editMode.fpActive = true
+        else
+            editMode.fpActive = false
+        end
+    end
 end
 
 function mousepressedMap(x, y, button)
@@ -288,15 +305,26 @@ function mousepressedMap(x, y, button)
 
     if editMode.enabled then
         if button == "l" then
-            if editMode.firstPoint.x < 0 then
-                editMode.firstPoint.x, editMode.firstPoint.y = mapCam:mousepos()
+            local fp = editMode.firstPoint
+            local cp = editMode.currPoint
+            local lp = editMode.lastPoint
+            
+            local radius = editMode.radius
+
+            if fp.x < 0 then
+                fp.x, fp.y = mapCam:mousepos()
             end
+                    
+            if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+                cp.x, cp.y = fp.x, fp.y
+            else
+                cp.x, cp.y = mapCam:mousepos()
+            end
+                
+            lp.x, lp.y = cp.x, cp.y
             
-            editMode.lastPoint.x,editMode.lastPoint.y = editMode.currPoint.x, editMode.currPoint.y
-            editMode.currPoint.x, editMode.currPoint.y = mapCam:mousepos()
-            
-            table.insert(editMode.currPolygon, editMode.currPoint.x)
-            table.insert(editMode.currPolygon, editMode.currPoint.y)
+            table.insert(editMode.currPolygon, cp.x)
+            table.insert(editMode.currPolygon, cp.y)
         end
     end
 end
@@ -315,7 +343,7 @@ function drawMap()
     love.graphics.pop()
     
     if editMode.enabled then
-        local radius = 1.5
+        local radius = editMode.radius
         local lp = editMode.lastPoint
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
@@ -343,8 +371,15 @@ function drawMap()
             love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
         end
         
+        
         love.graphics.setColor(200,200,200)
-        love.graphics.circle("fill", fp.x, fp.y, radius)    
+        
+        if not editMode.fpActive then
+            love.graphics.circle("fill", fp.x, fp.y, radius)    
+        else
+            love.graphics.circle("fill", fp.x, fp.y, radius*2)
+        end
+        
         love.graphics.setColor(225,225,225)
     
     end
