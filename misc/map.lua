@@ -193,11 +193,15 @@ function initMap()
     mapCam.scale = 1.5
 
 
+--[[
     if love.filesystem.exists("map.lua") then
         loadMap()
     else
         createMap()
     end
+]]--
+
+    map = {}
 end
 
 
@@ -302,7 +306,9 @@ function mousepressedMap(x, y, button)
     if not editMode.enabled then
 
     end
+end
 
+function mousereleasedMap(x,y,button)
     if editMode.enabled then
         if button == "l" then
             local fp = editMode.firstPoint
@@ -317,6 +323,10 @@ function mousepressedMap(x, y, button)
                     
             if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
                 cp.x, cp.y = fp.x, fp.y
+                
+                if #editMode.currPolygon >= 6 then
+                    table.insert(map, Region(nameToCountry(editMode.country).color, editMode.country, editMode.currPolygon))
+                end
             else
                 cp.x, cp.y = mapCam:mousepos()
             end
@@ -341,6 +351,10 @@ function drawMap()
     love.graphics.scale(2400/mapImg:getWidth())
     love.graphics.draw(mapImg, -1,-1)
     love.graphics.pop()
+    
+    for _,region in pairs(map) do
+        region:draw()
+    end
     
     if editMode.enabled then
         local radius = editMode.radius

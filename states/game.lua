@@ -68,7 +68,11 @@ function game:mousepressed(x, y, button)
 end
 
 function game:mousereleased(x,y,button)
-    DialogBoxes:mousereleased(x,y,button)
+    if not DialogBoxes:present() then
+        mousereleasedMap(x,y,button)
+    else
+        DialogBoxes:mousereleased(x,y,button)
+    end
 end
 
 function game:keyreleased(key)
