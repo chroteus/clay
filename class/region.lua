@@ -33,7 +33,9 @@ function Region:mousereleased(x,y,button)
                 cp.x,cp.y = vertex[1],vertex[2]
                 
                 if fp.x > 0 then
-                    fp.x,fp.y = vertex[1],vertex[2]
+                    if editMode.polFin then
+                        fp.x,fp.y = vertex[1],vertex[2]
+                    end
                 end
             end
         end

@@ -313,8 +313,6 @@ end
 function mousereleasedMap(x,y,button)
     if editMode.enabled then
         if button == "l" then
-            editMode.polFin = false
-            
             local fp = editMode.firstPoint
             local cp = editMode.currPoint
             local lp = editMode.lastPoint
@@ -352,6 +350,8 @@ function mousereleasedMap(x,y,button)
                 table.insert(editMode.currPolygon, cp.x)
                 table.insert(editMode.currPolygon, cp.y)
             end
+            
+            editMode.polFin = false
         end
     end
 end
