@@ -167,6 +167,8 @@ function initMap()
         radius = 1.5,
         
         currPolygon = {},
+        
+        polFin = false
     }
     
     function editMode.pair()
@@ -311,6 +313,8 @@ end
 function mousereleasedMap(x,y,button)
     if editMode.enabled then
         if button == "l" then
+            editMode.polFin = false
+            
             local fp = editMode.firstPoint
             local cp = editMode.currPoint
             local lp = editMode.lastPoint
@@ -326,15 +330,24 @@ function mousereleasedMap(x,y,button)
                 
                 if #editMode.currPolygon >= 6 then
                     table.insert(map, Region(nameToCountry(editMode.country).color, editMode.country, editMode.currPolygon))
+                    editMode.currPolygon = {}
+                    cp.x, cp.y = -20,-20
+                    fp.x, fp.y = -10, -10
+                    lp.x, lp.y = -5, -5
+                    
+                    editMode.polFin = true
                 end
+                
             else
                 cp.x, cp.y = mapCam:mousepos()
             end
                 
             lp.x, lp.y = cp.x, cp.y
             
-            table.insert(editMode.currPolygon, cp.x)
-            table.insert(editMode.currPolygon, cp.y)
+            if not editMode.polFin then
+                table.insert(editMode.currPolygon, cp.x)
+                table.insert(editMode.currPolygon, cp.y)
+            end
         end
     end
 end
