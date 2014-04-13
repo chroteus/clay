@@ -320,11 +320,11 @@ function mousereleasedMap(x,y,button)
             local lp = editMode.lastPoint
             
             local radius = editMode.radius
-
+            
             if fp.x < 0 then
-                fp.x, fp.y = mapCam:mousepos()
+                fp.x,fp.y = mapCam:mousepos()
             end
-                    
+            
             if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
                 cp.x, cp.y = fp.x, fp.y
                 
@@ -343,6 +343,10 @@ function mousereleasedMap(x,y,button)
             end
                 
             lp.x, lp.y = cp.x, cp.y
+                        
+            for _,region in pairs(map) do
+                region:mousereleased(x,y,button)
+            end
             
             if not editMode.polFin then
                 table.insert(editMode.currPolygon, cp.x)
@@ -375,7 +379,7 @@ function drawMap()
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
         
-        love.graphics.setColor(200,200,200)
+       -- love.graphics.setColor(20,20,200)
         love.graphics.circle("fill", lp.x, lp.y, radius)
         love.graphics.circle("fill", cp.x, cp.y, radius)
 
@@ -399,7 +403,7 @@ function drawMap()
         end
         
         
-        love.graphics.setColor(200,200,200)
+        love.graphics.setColor(255,0,0)
         
         if not editMode.fpActive then
             love.graphics.circle("fill", fp.x, fp.y, radius)    

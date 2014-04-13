@@ -17,9 +17,31 @@ function Region:initialize(color, name, ...)
         self.convex = false
         self.triangles = love.math.triangulate(self.vertices)
     end
+    
+    self.pairedVertices = editMode.pair(self.vertices)
+    self.vertRadius = 2 
+end
+
+function Region:mousereleased(x,y,button)
+    if editMode.enabled then
+        local radius = self.vertRadius
+        local cp = editMode.currPoint
+        local fp = editMode.firstPoint
+        
+        for _,vertex in pairs(self.pairedVertices) do
+            if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+                cp.x,cp.y = vertex[1],vertex[2]
+                
+                if fp.x > 0 then
+                    fp.x,fp.y = vertex[1],vertex[2]
+                end
+            end
+        end
+    end
 end
 
 function Region:draw()
+    self.color[4] = 128
     love.graphics.setColor(self.color)
    
     if self.convex then
@@ -29,6 +51,20 @@ function Region:draw()
             love.graphics.polygon("fill", triangle)
         end
     end
+    
+    if editMode.enabled then
+        love.graphics.setColor(255,255,255)    
+        
+        local radius = self.vertRadius
+        for _,vertex in pairs(self.pairedVertices) do
+            if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+                love.graphics.circle("fill", vertex[1], vertex[2], radius+1, 100)
+            else
+                love.graphics.circle("line", vertex[1], vertex[2], radius, 100)
+            end
+        end
+    end
+            
          
     love.graphics.setColor(255,255,255)
 end
