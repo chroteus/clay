@@ -157,6 +157,11 @@ function initMap()
             y = -5
         },
         
+        prevLastPoint = {
+            x = -30,
+            y = -30,
+        },
+        
         firstPoint = {
             x = -20,
             y = -20,
@@ -316,6 +321,8 @@ function mousereleasedMap(x,y,button)
         local fp = editMode.firstPoint
         local cp = editMode.currPoint
         local lp = editMode.lastPoint
+        local plp = editMode.prevLastPoint
+        
         local radius = editMode.radius
         
         if button == "l" then
@@ -339,7 +346,8 @@ function mousereleasedMap(x,y,button)
             else
                 cp.x, cp.y = mapCam:mousepos()
             end
-                
+            
+            plp.x, plp.y = lp.x, lp.y
             lp.x, lp.y = cp.x, cp.y
                         
             for _,region in pairs(map) do
@@ -355,9 +363,10 @@ function mousereleasedMap(x,y,button)
         
         elseif button == "r" then
             if #editMode.currPolygon >= 2 then
-                cp.x, cp.y = -30, -30
-                lp.x, lp.y = -20, -20
+                lp.x, lp.y = plp.x, plp.y
+                cp.x, cp.y = lp.x, lp.y
                 
+            
                 table.remove(editMode.currPolygon)
                 table.remove(editMode.currPolygon)
             end
@@ -406,11 +415,14 @@ function drawMap()
         
         love.graphics.setColor(255,255,255)
         
-        if lp.x > 0 and cp.x > 0 then   
+        if lp.x > 0 then   
             love.graphics.line(lp.x,lp.y, cp.x,cp.y)
-            love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
+            
         end
         
+        if cp.x > 0 then
+            love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
+        end
         
         love.graphics.setColor(255,0,0)
         
