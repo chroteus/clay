@@ -69,9 +69,16 @@ function funcCountry(countryName, func)
 end
 
 function nameToCountry(name)
-    -- returns country based on name
     for _,country in pairs(countries) do
         if country.name == name then
+            return country
+        end
+    end
+end
+
+function idToCountry(id)
+    for _,country in pairs(countries) do
+        if country.id == id then
             return country
         end
     end

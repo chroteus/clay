@@ -27,22 +27,28 @@ function createMap() -- Fresh map. Used to load map at first play.
     local mapString = mapFile:read()
     local mapTable = assert(loadstring(mapString))()
     
-    map = mapTable[1]
+    for _,region in pairs(mapTable[1]) do
+        local country = idToCountry(region[1])
+        table.insert(map, Region(country.id, country.color, country.name, region[2]))
+    end
+    
     mapFile:close()
 end
 
 function loadMap() -- Load an existing map.
     local mapFile = love.filesystem.load("map.lua")
-    -- mapTable's first item is the map itself, and second items is the Player's country.
     local mapTable = mapFile() -- Call the return of mapFile
     
-    map = mapTable[1]
+    for _,region in pairs(mapTable[1]) do
+        local country = idToCountry(region[1])
+        table.insert(map, Region(country.id, country.color, country.name, region[2]))
+    end
     
-    for k,v in pairs(mapTable[1]) do
+    for k,v in pairs(mapTable[2]) do
         Player[k] = v
     end
     
-    for countryN,foeTable in pairs(mapTable[2]) do
+    for countryN,foeTable in pairs(mapTable[3]) do
         local countryName = convertStr(countryN)
     
         for _,country in pairs(countries) do
@@ -59,7 +65,7 @@ function loadMap() -- Load an existing map.
     
     
     -- load money values
-    for countryN,moneyV in pairs(mapTable[3]) do
+    for countryN,moneyV in pairs(mapTable[4]) do
         local countryName = convertStr(countryN)
         
         for _,country in pairs(countries) do
@@ -84,7 +90,21 @@ function saveMap(name)
     
     append("return {")
     
-    append(",{")
+    append("{")
+    for k,region in pairs(map) do
+        append("{"..region.id..",")
+        
+        append("{")
+        for k,vertex in pairs(region.vertices) do
+            append(vertex..",")
+        end
+        
+        append("}")
+        append("},")
+    end
+    append("},")
+    
+    append("{")
     for k,v in pairs(Player) do
         local stringV = ""
         if type(v) == "string" then
@@ -107,10 +127,10 @@ function saveMap(name)
     
 
     
-    append("}")
+    append("},")
 
     -- save foes
-    append(",{")
+    append("{")
     for _,country in pairs(countries) do
         if #country.foes > 0 then
             local countryName = country.name
@@ -123,10 +143,10 @@ function saveMap(name)
             append("},")
         end
     end
-    append("}")
+    append("},")
     
     -- save money for each country
-    append(",{")
+    append("{")
     for _,country in pairs(countries) do
         append(rmSpc(country.name).."="..tostring(country.money)..",")
     end
@@ -204,15 +224,11 @@ function initMap()
     mapCam.scale = 1.5
 
 
---[[
     if love.filesystem.exists("map.lua") then
         loadMap()
     else
         createMap()
     end
-]]--
-
-    map = {}
 end
 
 
@@ -331,7 +347,7 @@ function mousereleasedMap(x,y,button)
         
         if button == "l" then
             if fp.x < 0 then
-                fp.x,fp.y = mapCam:mousepos()
+                fp.x,fp.y = math.floor(mapMouse.x), math.floor(mapMouse.y)
             end
             
             if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
@@ -350,7 +366,7 @@ function mousereleasedMap(x,y,button)
                 end
                 
             else
-                cp.x, cp.y = mapCam:mousepos()
+                cp.x, cp.y = math.floor(mapMouse.x), math.floor(mapMouse.y)
             end
             
             plp.x, plp.y = lp.x, lp.y
