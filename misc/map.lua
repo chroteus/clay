@@ -75,14 +75,16 @@ function loadMap() -- Load an existing map.
 end
 
 function saveMap(name)
-    -- Turn the map into a table of numbers which represent countries.
-    local numMap = {}
-    name = name or "map.lua" -- An optional name for map.
-    -- Create rows
+    local mapFile = name or "map.lua" -- An optional name for map.
 
-    love.filesystem.write(name, "return {")
+    local strToApp = ""
+    local function append(str)
+        strToApp = strToApp..str
+    end
     
-    love.filesystem.append(name, "{")
+    append("return {")
+    
+    append(",{")
     for k,v in pairs(Player) do
         local stringV = ""
         if type(v) == "string" then
@@ -99,39 +101,41 @@ function saveMap(name)
         end
         
         if type(v) ~= "function" then
-            love.filesystem.append(name, tostring(k).."="..stringV..",")
+            append(tostring(k).."="..stringV..",")
         end
     end
     
 
     
-    love.filesystem.append(name, "}")
+    append("}")
 
     -- save foes
-    love.filesystem.append(name, ",{")
+    append(",{")
     for _,country in pairs(countries) do
         if #country.foes > 0 then
             local countryName = country.name
             countryName = rmSpc(countryName)
             
-            love.filesystem.append(name, countryName.."={")
+            append(countryName.."={")
             for _,foe in pairs(country.foes) do
-                love.filesystem.append(name, foe.id..",")
+                append(foe.id..",")
             end
-            love.filesystem.append(name, "},")
+            append("},")
         end
     end
-    love.filesystem.append(name, "}")
+    append("}")
     
     -- save money for each country
-    love.filesystem.append(name, ",{")
+    append(",{")
     for _,country in pairs(countries) do
-        love.filesystem.append(name, rmSpc(country.name).."="..tostring(country.money)..",")
+        append(rmSpc(country.name).."="..tostring(country.money)..",")
     end
         
-    love.filesystem.append(name, "},")
+    append("},")
     
-    love.filesystem.append(name, "}")
+    append("}")
+    
+    love.filesystem.write(mapFile, strToApp)
 end
 
 mapImg = love.graphics.newImage("assets/image/map.jpg")
@@ -334,7 +338,9 @@ function mousereleasedMap(x,y,button)
                 cp.x, cp.y = fp.x, fp.y
                 
                 if #editMode.currPolygon >= 6 then
-                    table.insert(map, Region(nameToCountry(editMode.country).color, editMode.country, editMode.currPolygon))
+                    local country = nameToCountry(editMode.country)
+                    
+                    table.insert(map, Region(country.id, country.color, editMode.country, editMode.currPolygon))
                     editMode.currPolygon = {}
                     cp.x, cp.y = -20,-20
                     fp.x, fp.y = -10, -10
@@ -366,7 +372,6 @@ function mousereleasedMap(x,y,button)
                 lp.x, lp.y = plp.x, plp.y
                 cp.x, cp.y = lp.x, lp.y
                 
-            
                 table.remove(editMode.currPolygon)
                 table.remove(editMode.currPolygon)
             end
@@ -421,7 +426,9 @@ function drawMap()
         end
         
         if cp.x > 0 then
-            love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
+            if #editMode.currPolygon > 0 then
+                love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
+            end
         end
         
         love.graphics.setColor(255,0,0)

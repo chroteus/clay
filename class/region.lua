@@ -1,6 +1,7 @@
 Region = Base:subclass("Region")
 
-function Region:initialize(color, name, ...)
+function Region:initialize(id, color, name, ...)
+    self.id = id -- id which will link a region to a country
     self.color = color
     self.name = tostring(name)
     self.convex = true
