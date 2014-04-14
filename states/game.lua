@@ -52,11 +52,11 @@ function game:draw()
     msgBox:draw()
     
     if editMode.enabled then
-        love.graphics.printf("Edit Mode: Q - Select Country, E - Exit out of edit mode, B - Disable borders", 0, 0, the.screen.width, "left")
-        love.graphics.printf("Current chosen country: "..editMode.country, 0, 20, the.screen.width, "left")
+        bgPrintf("Edit Mode: Q - Select Country, E - Exit out of edit mode, B - Disable cam borders, LMB - Place a point, RMB - Undo", 1, 0, the.screen.width, "left")
+        bgPrintf("Current chosen country: "..editMode.country, 0, 20, the.screen.width, "left")
     else
         if DEBUG then
-            love.graphics.printf("E - Enter edit mode.", 0, 0, the.screen.width, "left")
+            bgPrintf("E - Enter edit mode.", 0, 0, the.screen.width, "left")
         end
     end
 end

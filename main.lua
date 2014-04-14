@@ -188,3 +188,12 @@ function serialize(t)
   end
   return string.format("{ %s }", table.concat(serializedValues, ', ') )
 end
+
+function bgPrintf(str, x, y, limit, alignment)
+    -- prints with a dark background behind the text
+    love.graphics.setColor(50,50,50)
+    love.graphics.printf(str, x+1, y+1, limit, alignment)
+    love.graphics.setColor(255,255,255)
+    love.graphics.printf(str, x, y, limit, alignment)
+end
+    

@@ -312,13 +312,13 @@ end
 
 function mousereleasedMap(x,y,button)
     if editMode.enabled then
+    
+        local fp = editMode.firstPoint
+        local cp = editMode.currPoint
+        local lp = editMode.lastPoint
+        local radius = editMode.radius
+        
         if button == "l" then
-            local fp = editMode.firstPoint
-            local cp = editMode.currPoint
-            local lp = editMode.lastPoint
-            
-            local radius = editMode.radius
-            
             if fp.x < 0 then
                 fp.x,fp.y = mapCam:mousepos()
             end
@@ -352,6 +352,15 @@ function mousereleasedMap(x,y,button)
             end
             
             editMode.polFin = false
+        
+        elseif button == "r" then
+            if #editMode.currPolygon >= 2 then
+                cp.x, cp.y = -30, -30
+                lp.x, lp.y = -20, -20
+                
+                table.remove(editMode.currPolygon)
+                table.remove(editMode.currPolygon)
+            end
         end
     end
 end

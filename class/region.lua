@@ -65,8 +65,14 @@ function Region:draw()
                 love.graphics.circle("line", vertex[1], vertex[2], radius, 100)
             end
         end
+        
+        love.graphics.polygon("line",self.vertices)
+    else
+        self.color[4] = 255
+        love.graphics.polygon("line",self.vertices)
+        love.graphics.setColor(255,255,255,64)
+        love.graphics.polygon("line",self.vertices)
     end
-            
-         
+        
     love.graphics.setColor(255,255,255)
 end
