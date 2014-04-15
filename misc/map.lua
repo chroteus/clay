@@ -65,6 +65,9 @@ function initMap()
     else
         createMap()
     end
+
+    -- Region collision
+    RegionCollider = HC()
 end
 
 
@@ -112,10 +115,10 @@ function updateMap(dt)
     
     if mapBorderCheck then
         local mapWidth, mapHeight = mapCam:worldCoords(the.screen.width, the.screen.height)        
-        local mapX, mapY = mapCam:cameraCoords(2400,1040) -- 2400, 1040: Halves of width and height of map image
+        local mapX, mapY = mapCam:cameraCoords(mapImg:getWidth()/2, mapImg:getHeight()/2)
 
-        if mapCam.x < (the.screen.width/2/mapCam.scale)-1 then
-            mapCam.x = (the.screen.width/2/mapCam.scale)-1
+        if mapCam.x < (the.screen.width/2/mapCam.scale) then
+            mapCam.x = (the.screen.width/2/mapCam.scale)
         elseif the.screen.width > mapX then
             mapCam.x,_ = mapCam:worldCoords(mapX/2, mapY)
             mapCam.x = mapCam.x - cameraSpeed/2*dt
@@ -153,6 +156,8 @@ function updateMap(dt)
             editMode.fpActive = false
         end
     end
+    
+    RegionCollider:update(dt)
 end
 
 function mousepressedMap(x, y, button)
@@ -209,11 +214,6 @@ function mousereleasedMap(x,y,button)
             
             plp.x, plp.y = lp.x, lp.y
             lp.x, lp.y = cp.x, cp.y
-
-            if not editMode.polFin then
-                table.insert(editMode.currPolygon, cp.x)
-                table.insert(editMode.currPolygon, cp.y)
-            end
             
         elseif button == "r" then
             if #editMode.currPolygon >= 2 then
@@ -229,6 +229,13 @@ function mousereleasedMap(x,y,button)
             region:mousereleased(x,y,button)
         end
         
+        if button == "l" then
+           if not editMode.polFin then
+                table.insert(editMode.currPolygon, cp.x)
+                table.insert(editMode.currPolygon, cp.y)
+            end
+        end
+            
         editMode.polFin = false
     end
 end

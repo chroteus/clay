@@ -78,7 +78,6 @@ function love.load()
     bgLineImg:setWrap("repeat", "repeat")
     bgLineQ = love.graphics.newQuad(0,0,the.screen.width,the.screen.height,bgLineImg:getWidth(),bgLineImg:getHeight())
     
-    
     randBg()
     loadPrefs()
     

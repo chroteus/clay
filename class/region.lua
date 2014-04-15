@@ -82,6 +82,7 @@ function Region:draw()
             love.graphics.polygon("line",self.vertices)
         else
             self.color[4] = 255
+            love.graphics.setColor(self.color)
             love.graphics.polygon("line",self.vertices)
             love.graphics.setColor(255,255,255,64)
             love.graphics.polygon("line",self.vertices)
