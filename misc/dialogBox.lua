@@ -43,21 +43,21 @@ function DialogBox:show(hideFunc)
         self.y = -self.height
         self.x = the.screen.width/2-self.width/2
         
-        Timer.tween(0.8, self, {y = the.screen.height/2-self.height/2}, "out-quad")
+        Timer.tween(0.4, self, {y = the.screen.height/2-self.height/2}, "out-quad")
         
         for i,btn in ipairs(self.buttons) do
             btn.y = -btn.height
             btn.x = self.x + (btn.width*(i-1))
-            Timer.tween(0.8, btn, {y = (the.screen.height/2-self.height/2)+self.height}, "out-quad")
+            Timer.tween(0.4, btn, {y = (the.screen.height/2-self.height/2)+self.height}, "out-quad")
         end
     end
 end
 
 function DialogBox:hide()
     if self.enabled then
-        Timer.tween(0.8, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
+        Timer.tween(0.3, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
         for i,btn in ipairs(self.buttons) do
-            Timer.tween(0.8, btn, {x = the.screen.width+btn.width}, "out-quad", 
+            Timer.tween(0.3, btn, {x = the.screen.width+btn.width}, "out-quad", 
                 function() 
                     if self.hideFunc then
                         self.hideFunc() 

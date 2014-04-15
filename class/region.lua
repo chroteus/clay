@@ -23,7 +23,7 @@ function Region:initialize(id, color, name, ...)
     end
     
     self.pairedVertices = pairVertices(self.vertices)
-    self.vertRadius = 2 
+    self.vertRadius = 1
 end
 
 function Region:mousereleased(x,y,button)

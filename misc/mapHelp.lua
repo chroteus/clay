@@ -37,7 +37,7 @@ function createMap() -- Fresh map. Used to load map at first play.
     for _,region in pairs(mapTable[1]) do
         local country = idToCountry(region[1])
         table.insert(map, Region(country.id, country.color, country.name, region[2]))
-        map[#map].pairedVertices = editMode.pair(map[#map].vertices)
+        map[#map].pairedVertices = pairVertices(map[#map].vertices)
     end
     
     mapFile:close()

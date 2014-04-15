@@ -39,7 +39,7 @@ require "objects.items"
 require "misc.map"
 require "misc.mapHelp"
 require "misc.msgBox"
-require "lib.dialogBox"
+require "misc.dialogBox"
 require "misc.randEvent"
 require "misc.screenBtn"
 

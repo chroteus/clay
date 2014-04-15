@@ -132,10 +132,12 @@ function updateMap(dt)
     --------------
     --Lımit zoom--
 
-    if mapCam.scale < 1.5 then
-        mapCam.scale = 1.5
-    elseif mapCam.scale > 3 then
-        mapCam.scale = 3
+    if not DEBUG then
+        if mapCam.scale < 1.5 then
+            mapCam.scale = 1.5
+        elseif mapCam.scale > 3 then
+            mapCam.scale = 3
+        end
     end
     
     -------------
@@ -156,7 +158,7 @@ end
 function mousepressedMap(x, y, button)
     --------------
     --Zooming in--
-       
+    
     if button == "wu" then
         Timer.tween(0.3, mapCam, {scale = mapCam.scale + 0.1}, "out-quad")
     elseif button == "wd" then
