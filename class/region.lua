@@ -19,7 +19,7 @@ function Region:initialize(id, color, name, ...)
         self.triangles = love.math.triangulate(self.vertices)
     end
     
-    self.pairedVertices = editMode.pair(self.vertices)
+    self.pairedVertices = pairVertices(self.vertices)
     self.vertRadius = 2 
 end
 
