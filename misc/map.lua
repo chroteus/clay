@@ -207,18 +207,12 @@ function mousereleasedMap(x,y,button)
             
             plp.x, plp.y = lp.x, lp.y
             lp.x, lp.y = cp.x, cp.y
-                        
-            for _,region in pairs(map) do
-                region:mousereleased(x,y,button)
-            end
-            
+
             if not editMode.polFin then
                 table.insert(editMode.currPolygon, cp.x)
                 table.insert(editMode.currPolygon, cp.y)
             end
             
-            editMode.polFin = false
-        
         elseif button == "r" then
             if #editMode.currPolygon >= 2 then
                 lp.x, lp.y = plp.x, plp.y
@@ -228,6 +222,12 @@ function mousereleasedMap(x,y,button)
                 table.remove(editMode.currPolygon)
             end
         end
+        
+        for _,region in pairs(map) do
+            region:mousereleased(x,y,button)
+        end
+        
+        editMode.polFin = false
     end
 end
 
