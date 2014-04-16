@@ -5,7 +5,7 @@ function Region:initialize(id, color, name, ...)
     self.color = color
     self.name = tostring(name)
     self.convex = true
-    
+        
     local arg = {...}
     
     if type(arg[1]) == "table" then

@@ -12,7 +12,7 @@ function menu:init()
     end
     
     local function newGame()
-        createMap()
+        mapNewGame = true
         Gamestate.switch(countrySelect)
     end
     
@@ -25,7 +25,8 @@ function menu:init()
     }
     
     
-    menuConfirmBox = DialogBoxes:new("You have a saved game. Continue?", 
+    menuConfirmBox = DialogBoxes:new(
+        "You have a saved game. Continue?", 
         {"Cancel", function() end}, {"Continue >>", function() newGame() end}
     )
 end

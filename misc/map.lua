@@ -1,5 +1,7 @@
 require "objects.countries"
 
+mapNewGame = false
+
 map = {}
 mapW = 300
 mapH = 130
@@ -59,15 +61,14 @@ function initMap()
     
     mapCam.scale = 1.5
 
+    mapMouse = {}
+    mapMouse.x, mapMouse.y = mapCam:mousepos()
 
-    if love.filesystem.exists("map.lua") then
+    if not mapNewGame then
         loadMap()
     else
         createMap()
     end
-
-    -- Region collision
-    RegionCollider = HC()
 end
 
 
@@ -82,7 +83,6 @@ end
 
 function updateMap(dt)
     -- Converting camera to mouse coordinates.
-    mapMouse = {}
     mapMouse.x, mapMouse.y = mapCam:mousepos()
     
     for _,country in pairs(countries) do
@@ -313,7 +313,7 @@ function drawMap()
 
     
     
-    love.graphics.draw(gridImg,gridQ,0,0)
+   -- love.graphics.draw(gridImg,gridQ,0,0)
         
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
     -- GUI should be drawn after this function is called. (or in game's draw func)
