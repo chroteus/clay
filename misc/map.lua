@@ -156,8 +156,6 @@ function updateMap(dt)
             editMode.fpActive = false
         end
     end
-    
-    RegionCollider:update(dt)
 end
 
 function mousepressedMap(x, y, button)

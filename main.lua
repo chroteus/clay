@@ -5,7 +5,6 @@ Timer = require "lib.hump.timer"
 Camera = require "lib.hump.camera"
 Gamestate = require "lib.hump.gamestate"
 class = require "lib.middleclass"
-HC = require "lib.hardoncollider"
 
 require "lib.the" -- Gives easy access info on such things as screen width, height, fps, etc.
 require "lib.gui" -- GUI lib.
@@ -42,6 +41,8 @@ require "misc.msgBox"
 require "misc.dialogBox"
 require "misc.randEvent"
 require "misc.screenBtn"
+require "lib.collision"
+require "lib.math"
 
 function love.load()
     math.randomseed(os.time())
