@@ -1,10 +1,17 @@
 -- map's helper functions
 -- added here so that map.lua won't be cluttered.
 
-function pairVertices(pol)
+function pairVertices(pol, name)
+    local name = name or false
+    
+    
     local t = {}
     for i=2,#pol, 2 do
-        table.insert(t, {pol[i-1], pol[i]})
+        if name then
+            table.insert(t, {x = pol[i-1], y = pol[i]})
+        else
+            table.insert(t, {pol[i-1], pol[i]})
+        end
     end
     
     return t

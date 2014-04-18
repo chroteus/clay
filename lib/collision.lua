@@ -1,4 +1,17 @@
-function PointWithinShape(shape, tx, ty)
+function PointWithinShape(argShape, tx, ty)
+    local shape = argShape
+    
+    if type(shape[1]) == "number" then
+        shape = pairVertices(shape, true)
+    elseif type(shape[1][1]) == "number" then
+        local t = {}
+        for _,vertex in pairs(shape) do
+            table.insert(t, {x = vertex[1], y = vertex[2]})
+        end
+        
+        shape = t
+    end
+    
     if #shape == 0 then
         return false
     elseif #shape == 1 then

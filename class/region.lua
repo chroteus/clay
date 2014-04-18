@@ -33,7 +33,7 @@ function Region:mousereleased(x,y,button)
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
         
-        if button == "l" then            
+        if button == "l" then
             for _,vertex in pairs(self.pairedVertices) do
                 if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
                     cp.x,cp.y = vertex[1],vertex[2]
