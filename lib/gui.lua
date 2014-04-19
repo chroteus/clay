@@ -11,6 +11,14 @@ guiColors = {
     fg = {50, 50, 50}
 }
 
+function guiRect(x,y,width,height)
+    love.graphics.setColor(guiColors.bg)
+    love.graphics.rectangle("fill",x,y,width,height)
+    love.graphics.setColor(guiColors.fg)
+    love.graphics.rectangle("line",x,y,width,height)
+    love.graphics.setColor(255,255,255)
+end
+
 function Button:initialize(x, y, width, height, text, func)
     self.x = x
     self.y = y

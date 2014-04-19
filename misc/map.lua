@@ -156,6 +156,10 @@ function updateMap(dt)
             editMode.fpActive = false
         end
     end
+    
+    for _,region in pairs(map) do
+        region:update(dt)
+    end
 end
 
 function mousepressedMap(x, y, button)
@@ -316,6 +320,10 @@ function drawMap()
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
     -- GUI should be drawn after this function is called. (or in game's draw func)
     mapCam:detach()
+    
+    for _,region in pairs(map) do
+        region:drawInfoBox()
+    end
     
     local radius = 4
     love.graphics.setColor(100,100,100)

@@ -5,6 +5,7 @@ Regions:
     Editor would save the vertices.
 
     Zooming in reveals more details about the region (its sub-regions, etc)
+    A countryball would be shown in the middle of a country/region.
 end
 
 Economy: 
@@ -12,7 +13,7 @@ Economy:
 end
 
 Diplomacy:  
-    Peace for resources, money.
+    Peace for resources, money.se
 end
 
 Random events:
