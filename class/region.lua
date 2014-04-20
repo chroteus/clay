@@ -1,28 +1,3 @@
-local infoBox = {}
-infoBox.delay = 0.5
-infoBox.delayReset = infoBox.delay
-infoBox.width = 150
-infoBox.height = 200
-
-function infoBox:update(dt, vertices)
-    if PointWithinShape(vertices, mapMouse.x, mapMouse.y) then
-        self.delay = self.delay - dt
-        if self.delay <= 0 then
-            self.show = true
-        end
-    else
-        self.show = false
-        self.delay = self.delayReset
-    end
-end
-
-function infoBox:draw(name, countryName)
-    if self.show then
-        guiRect(the.mouse.x, the.mouse.y, self.width, self.height)
-        love.graphics.printf(countryName, the.mouse.x+5, the.mouse.y+5, self.width, "left")
-    end
-end
-        
 Region = Base:subclass("Region")
 
 function Region:initialize(id, color, name, ...)
@@ -49,10 +24,6 @@ function Region:initialize(id, color, name, ...)
     
     self.pairedVertices = pairVertices(self.vertices)
     self.vertRadius = 1
-end
-
-function Region:update(dt)
-    infoBox:update(dt, self.vertices)
 end
 
 function Region:mousereleased(x,y,button)
@@ -152,9 +123,4 @@ function Region:draw()
             
         
     love.graphics.setColor(255,255,255)
-end
-
-function Region:drawInfoBox()
-    -- info box shouldn't be scaled by map cam, and thus is called after mapCam:detach()
-    infoBox:draw(self.name, countries[self.id].name)
 end

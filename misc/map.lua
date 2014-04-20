@@ -156,10 +156,6 @@ function updateMap(dt)
             editMode.fpActive = false
         end
     end
-    
-    for _,region in pairs(map) do
-        region:update(dt)
-    end
 end
 
 function mousepressedMap(x, y, button)
@@ -321,10 +317,6 @@ function drawMap()
     -- GUI should be drawn after this function is called. (or in game's draw func)
     mapCam:detach()
     
-    for _,region in pairs(map) do
-        region:drawInfoBox()
-    end
-    
     local radius = 4
     love.graphics.setColor(100,100,100)
     love.graphics.setLineWidth(2)
@@ -332,13 +324,4 @@ function drawMap()
     love.graphics.setLineWidth(1) 
     love.graphics.setColor(255,255,255)
     love.graphics.circle("fill", the.mouse.x, the.mouse.y, radius, 100)
- 
-    -- Country's name
-    local rectW = 150
-    local rectH = 25
-    local fontHeight = (love.graphics.getFont():getHeight())/2
-    love.graphics.setColor(guiColors.bg)
-    love.graphics.rectangle("fill", the.screen.width/2-rectW/2, 25-fontHeight, rectW, rectH)
-    love.graphics.setColor(guiColors.fg)
-    love.graphics.rectangle("line", the.screen.width/2-rectW/2, 25-fontHeight, rectW, rectH)
 end
