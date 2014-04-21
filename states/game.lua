@@ -142,6 +142,10 @@ function game:keyreleased(key)
     end
 end
 
+function game:keypressed(key)
+    DialogBoxes:keypressed(key)
+end
+
 function game:textinput(t)
     DialogBoxes:textinput(t)
 end

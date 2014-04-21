@@ -76,10 +76,23 @@ function DialogBox:hide()
     end
 end
 
-function DialogBox:update()
+function DialogBox:update(dt)
     if self.enabled then
         for _,btn in pairs(self.buttons) do
             btn:update()
+        end
+        
+        if self:isInstanceOf(InputDBox) then
+            self.beamDelay = self.beamDelay - dt
+            if self.beamDelay <= 0 then
+                if self.drawBeam then
+                    self.drawBeam = false
+                else
+                    self.drawBeam = true
+                end
+                
+                self.beamDelay = self.beamDelayReset
+            end
         end
     end
 end
@@ -91,6 +104,13 @@ function DialogBox:draw()
         love.graphics.setColor(guiColors.fg)
         love.graphics.rectangle("line",self.x,self.y,self.width,self.height)    
         love.graphics.printf(self.text,self.x+padding,self.y+padding,self.width-padding,"left")
+        
+        if self:isInstanceOf(InputDBox) then
+            love.graphics.printf("Character limit: "..#self.text.."/"..self.charLimit,self.x-padding,self.y+self.height-padding-love.graphics.getFont():getHeight(),self.width-padding,"right")
+            if self.drawBeam then
+                love.graphics.rectangle("fill", self.x+padding+gameFont:getWidth(self.text), self.y+padding, 1, love.graphics.getFont():getHeight())
+            end
+        end
         
         for _,btn in pairs(self.buttons) do
             btn:draw()
@@ -116,12 +136,26 @@ function InputDBox:initialize(charLimit, func)
     self.charLimit = charLimit
     self.func = assert(func)
     
+    self.drawBeam = false
+    self.beamDelay = 0.5
+    self.beamDelayReset = self.beamDelay
+    
+    
     DialogBox.initialize(self, self.text, {"Cancel", function() end}, {"Enter", function() self.enteredData = true end})
 end
 
 function InputDBox:textinput(t)
-    if #self.text <= self.charLimit then
+    if #self.text < self.charLimit then
         self.text = self.text..t
+    end
+end
+
+function InputDBox:keypressed(key)
+    if key == "backspace" then
+        self.text = self.text:sub(1, -2)
+    elseif key == "return" then
+        self.enteredData = true
+        self:hide()
     end
 end
 
@@ -144,9 +178,9 @@ function DialogBoxes:newInputDBox(charLimit, func)
     return DialogBoxes.list[#DialogBoxes.list]
 end
 
-function DialogBoxes:update()
+function DialogBoxes:update(dt)
     for _,box in pairs(DialogBoxes.list) do
-        box:update()
+        box:update(dt)
     end
 end
 
@@ -180,6 +214,14 @@ function DialogBoxes:textinput(t)
     for _,box in pairs(DialogBoxes.list) do
         if box:isInstanceOf(InputDBox) then
             box:textinput(t)
+        end
+    end
+end
+
+function DialogBoxes:keypressed(key)
+    for _,box in pairs(DialogBoxes.list) do
+        if box:isInstanceOf(InputDBox) then
+            box:keypressed(key)
         end
     end
 end

@@ -90,7 +90,7 @@ end
 
 function love.update(dt)
     updateThe()
-    DialogBoxes:update()
+    DialogBoxes:update(dt)
     Timer.update(dt)
     TEsound.cleanup()
 end
