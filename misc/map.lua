@@ -197,11 +197,17 @@ function mousereleasedMap(x,y,button)
                 if #editMode.currPolygon >= 6 then
                     local country = nameToCountry(editMode.country)
                     
-                    table.insert(map, Region(country.id, country.color, editMode.country, editMode.currPolygon))
-                    editMode.currPolygon = {}
-                    cp.x, cp.y = -20,-20
-                    fp.x, fp.y = -10, -10
-                    lp.x, lp.y = -5, -5
+                    local function dboxFunc()
+                        table.insert(map, Region(country.id, country.color, InputDBoxText, editMode.currPolygon))
+                                            
+                        editMode.currPolygon = {}
+                        cp.x, cp.y = -20,-20
+                        fp.x, fp.y = -10, -10
+                        lp.x, lp.y = -5, -5
+                    end
+                    
+                    local dbox = DialogBoxes:newInputDBox(15, function() dboxFunc() end)
+                    dbox:show(function() love.mouse.setVisible(false) end)
                     
                     editMode.polFin = true
                 end

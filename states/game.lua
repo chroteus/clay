@@ -38,7 +38,9 @@ function game:init()
     function infoBox:draw()
         guiRect(self.x, self.y, self.width, self.height)
         love.graphics.setColor(guiColors.fg)
-        love.graphics.printf(self.name..", "..self.countryName, self.x+5, self.y+5, self.width, "left")
+        if self.name ~= "" then
+            love.graphics.printf(self.name..", "..self.countryName, self.x+5, self.y+5, self.width, "left")
+        end
         love.graphics.setColor(255,255,255)
     end
 end
@@ -138,6 +140,10 @@ function game:keyreleased(key)
             end
         end
     end
+end
+
+function game:textinput(t)
+    DialogBoxes:textinput(t)
 end
 
 function game:leave()

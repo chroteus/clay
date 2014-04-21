@@ -55,6 +55,14 @@ end
 
 function DialogBox:hide()
     if self.enabled then
+        
+        if self:isInstanceOf(InputDBox) then
+            if self.enteredData then
+                InputDBoxText = self.text
+                self.func()
+            end
+        end
+        
         Timer.tween(0.5, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
         for i,btn in ipairs(self.buttons) do
             Timer.tween(0.5, btn, {x = the.screen.width+btn.width}, "out-quad", 
@@ -100,11 +108,37 @@ function DialogBox:mousereleased(x,y,button)
     end
 end
 
+InputDBoxText = ""
+
+InputDBox = DialogBox:subclass("InputDBox")
+function InputDBox:initialize(charLimit, func)
+    self.text = ""
+    self.charLimit = charLimit
+    self.func = assert(func)
+    
+    DialogBox.initialize(self, self.text, {"Cancel", function() end}, {"Enter", function() self.enteredData = true end})
+end
+
+function InputDBox:textinput(t)
+    if #self.text <= self.charLimit then
+        self.text = self.text..t
+    end
+end
+
+
+
 DialogBoxes = {}
 DialogBoxes.list = {}
 
 function DialogBoxes:new(text, ...)
     local box = DialogBox(text, ...)
+    table.insert(DialogBoxes.list, box)
+    
+    return DialogBoxes.list[#DialogBoxes.list]
+end
+
+function DialogBoxes:newInputDBox(charLimit, func)
+    local box = InputDBox(charLimit, func)
     table.insert(DialogBoxes.list, box)
     
     return DialogBoxes.list[#DialogBoxes.list]
@@ -141,11 +175,11 @@ function DialogBoxes:mousereleased(x,y,button)
         box:mousereleased(x,y,button)
     end
 end
-    
-        
-    
 
-
-        
-
-    
+function DialogBoxes:textinput(t)
+    for _,box in pairs(DialogBoxes.list) do
+        if box:isInstanceOf(InputDBox) then
+            box:textinput(t)
+        end
+    end
+end
