@@ -56,7 +56,7 @@ function loadMap() -- Load an existing map.
     
     for _,region in pairs(mapTable[1]) do
         local country = idToCountry(region[1])
-        table.insert(map, Region(country.id, country.color, country.name, region[2]))
+        table.insert(map, Region(country.id, country.color, region[2], region[3]))
     end
     
     for k,v in pairs(mapTable[2]) do
@@ -108,6 +108,7 @@ function saveMap(name)
     append("{")
     for k,region in pairs(map) do
         append("{"..region.id..",")
+        append('"'..region.name..'"'..",")
         
         append("{")
         for k,vertex in pairs(region.vertices) do

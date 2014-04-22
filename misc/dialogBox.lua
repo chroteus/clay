@@ -108,7 +108,7 @@ function DialogBox:draw()
         if self:isInstanceOf(InputDBox) then
             love.graphics.printf("Character limit: "..#self.text.."/"..self.charLimit,self.x-padding,self.y+self.height-padding-love.graphics.getFont():getHeight(),self.width-padding,"right")
             if self.drawBeam then
-                love.graphics.rectangle("fill", self.x+padding+gameFont:getWidth(self.text), self.y+padding, 1, love.graphics.getFont():getHeight())
+                love.graphics.rectangle("fill", self.x+padding+gameFont:getWidth(self.text), self.y+padding, 2, love.graphics.getFont():getHeight())
             end
         end
         
@@ -137,7 +137,7 @@ function InputDBox:initialize(charLimit, func)
     self.func = assert(func)
     
     self.drawBeam = false
-    self.beamDelay = 0.5
+    self.beamDelay = 1
     self.beamDelayReset = self.beamDelay
     
     
@@ -157,6 +157,9 @@ function InputDBox:keypressed(key)
         self.enteredData = true
         self:hide()
     end
+    
+    self.drawBeam = true
+    self.beamDelay = self.beamDelayReset
 end
 
 
