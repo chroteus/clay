@@ -3,9 +3,8 @@ require "objects.countries"
 mapNewGame = false
 
 map = {}
-mapW = 300
-mapH = 130
-mapImg = love.graphics.newImage("assets/image/map.jpg")
+mapW = 10800
+mapH = 4480
 
 function initMap()    
     currAdjCells = {} -- adjacent cells of the selected cell.
@@ -55,9 +54,9 @@ function initMap()
     mapCam = Camera(2400/2, 1040/2)
 
     -- mapImg outside of init function because it might be changed in options before init function gets called.
-    gridImg = love.graphics.newImage("assets/image/grid.png")
-    gridImg:setWrap("repeat","repeat")
-    gridQ = love.graphics.newQuad(0,0,mapImg:getWidth()/2,mapImg:getHeight()/2,gridImg:getWidth(),gridImg:getHeight())
+  -- gridImg = love.graphics.newImage("assets/image/grid.png")
+ --   gridImg:setWrap("repeat","repeat")
+    --gridQ = love.graphics.newQuad(0,0,mapImg:getWidth()/2,mapImg:getHeight()/2,gridImg:getWidth(),gridImg:getHeight())
     
     mapCam.scale = 1.5
 
@@ -69,7 +68,32 @@ function initMap()
     else
         createMap()
     end
-end
+    
+    -- Map images "stitching"
+    local t = #love.filesystem.getDirectoryItems("assets/image/map")
+    local mapImgTable = {}
+    
+    for i=1,t do
+        mapImgTable[i] = love.graphics.newImage("assets/image/map/"..i..".jpg")
+    end
+    
+    local width,height = mapImgTable[1]:getWidth(),mapImgTable[1]:getHeight()
+    
+    function drawMapImg()
+        local xOrder = -1
+        local yOrder = 0
+
+        for i,img in ipairs(mapImgTable) do
+            xOrder = xOrder + 1
+            love.graphics.draw(img, xOrder*width, yOrder*height)
+            
+            if i % 4 == 0 then
+                yOrder = yOrder + 1
+                xOrder = -1
+            end
+        end
+    end
+end 
 
 
 function enteredMap()
@@ -115,20 +139,20 @@ function updateMap(dt)
     
     if mapBorderCheck then
         local mapWidth, mapHeight = mapCam:worldCoords(the.screen.width, the.screen.height)        
-        local mapX, mapY = mapCam:cameraCoords(mapImg:getWidth()/2, mapImg:getHeight()/2)
+        local mapX, mapY = mapCam:cameraCoords(mapW/4, mapH/4)
 
-        if mapCam.x < (the.screen.width/2/mapCam.scale) then
-            mapCam.x = (the.screen.width/2/mapCam.scale)
+        if mapCam.x < (the.screen.width/4/mapCam.scale) then
+            mapCam.x = (the.screen.width/4/mapCam.scale)
         elseif the.screen.width > mapX then
-            mapCam.x,_ = mapCam:worldCoords(mapX/2, mapY)
-            mapCam.x = mapCam.x - cameraSpeed/2*dt
+            mapCam.x,_ = mapCam:worldCoords(mapX/4, mapY)
+            mapCam.x = mapCam.x - cameraSpeed/4*dt
         end
         
-        if mapCam.y < (the.screen.height/2/mapCam.scale)-1 then
-            mapCam.y = (the.screen.height/2/mapCam.scale)-1
+        if mapCam.y < (the.screen.height/4/mapCam.scale)-1 then
+            mapCam.y = (the.screen.height/4/mapCam.scale)-1
         elseif the.screen.height > mapY then
-            _,mapCam.y = mapCam:worldCoords(mapX, mapY/2)
-            mapCam.y = mapCam.y - cameraSpeed/2*dt
+            _,mapCam.y = mapCam:worldCoords(mapX, mapY/4)
+            mapCam.y = mapCam.y - cameraSpeed/4*dt
         end
     end
     
@@ -138,8 +162,8 @@ function updateMap(dt)
     if not DEBUG then
         if mapCam.scale < 1.5 then
             mapCam.scale = 1.5
-        elseif mapCam.scale > 3 then
-            mapCam.scale = 3
+        elseif mapCam.scale > 5 then
+            mapCam.scale = 5
         end
     end
     
@@ -163,10 +187,10 @@ function mousepressedMap(x, y, button)
     --Zooming in--
     
     if button == "wu" then
-        Timer.tween(0.3, mapCam, {scale = mapCam.scale + 0.1}, "out-quad")
+        Timer.tween(0.3, mapCam, {scale = mapCam.scale + 0.1*mapCam.scale}, "out-quad")
     elseif button == "wd" then
         if mapCam.scale > 1.5 then
-            Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1}, "out-quad")
+            Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1*mapCam.scale}, "out-quad")
         end
     end
 
@@ -253,8 +277,9 @@ function drawMap()
     mapCam:attach()
     
     love.graphics.push()
-    love.graphics.scale(2400/mapImg:getWidth())
-    love.graphics.draw(mapImg, -1,-1)
+    love.graphics.scale(2700/10800)
+    --love.graphics.draw(mapImg, -1,-1)
+    drawMapImg()
     love.graphics.pop()
     
     for _,region in pairs(map) do
