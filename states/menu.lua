@@ -13,13 +13,13 @@ function menu:init()
     
     local function newGame()
         mapNewGame = true
-        Gamestate.switch(countrySelect)
+        switchState(countrySelect)
     end
     
     menuButtons = {
         -- GenericButton(order, text, action)
         start = GenericButton(1, "New Game", function() newGame() end),
-        options = GenericButton(2, "Options", function() Gamestate.switch(options) end),
+        options = GenericButton(2, "Options", function() switchState(options) end),
         quit = GenericButton(3, "Exit", function() love.event.quit() end),
         debugBtn = GenericButton(4, "Dev Mode: OFF", function() debugBtnFunc() end),
     }
@@ -40,7 +40,7 @@ function menu:enter()
         
         menuButtons.start.action = function() menuConfirmBox:show() end
     
-        table.insert(menuButtons, GenericButton(1, "Continue", function() Gamestate.switch(game) end))
+        table.insert(menuButtons, GenericButton(1, "Continue", function() switchState(game) end))
     end
 end
 

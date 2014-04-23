@@ -14,7 +14,7 @@ function tutorial:init()
     Hotkey (or click) - Skill
      ]]
     
-    tutGameBtn = GenericButton(4, "Start >>", function() Gamestate.switch(game) end)
+    tutGameBtn = GenericButton(4, "Start >>", function() switchState(game) end)
 end
 
 function tutorial:enter()
@@ -35,5 +35,4 @@ function tutorial:mousereleased(x,y,button)
 end
 
 function tutorial:leave()
-    love.graphics.setFont(gameFont)
 end

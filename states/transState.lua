@@ -14,5 +14,8 @@ function transState:enter()
         savePrefs()
     end
     
-    Gamestate.switch(transState.lastState)
+    switchState(transState.lastState)
+end
+
+function transState:draw()
 end

@@ -3,11 +3,6 @@ game = {}
 function game:init()
     initMap()
 
-    if not love.filesystem.exists("map.lua") then
-        msgBox:add("TAB - Character screen")
-        msgBox:add("Welcome to Clay!")
-    end
-
     --[[ REWRITE ]]
     -- If death message was printed already previous game, don't print it again at the start of the game.
     for _,country in pairs(countries) do
@@ -46,6 +41,8 @@ function game:init()
 end
 
 function game:enter()
+    love.graphics.setFont(gameFont)
+    
     enteredMap()
     game.timerHandle = Timer.addPeriodic(2, function() checkIfDead() end)
     
@@ -112,7 +109,7 @@ end
 
 function game:keyreleased(key)
     if key == "escape" then
-        Gamestate.switch(pause)
+        switchState(pause)
     elseif key == "tab" then
         Gamestate.switch(transState)
     end
@@ -136,7 +133,7 @@ function game:keyreleased(key)
         
         if editMode.enabled then
             if key == "q" then
-                Gamestate.switch(selection)
+                switchState(selection)
             end
         end
     end

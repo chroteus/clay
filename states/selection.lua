@@ -59,6 +59,6 @@ end
 
 function selection:keyreleased(key)
     if key == "q" then
-        Gamestate.switch(game)
+        switchState(game)
     end
 end

@@ -26,6 +26,7 @@ require "states.diplScr"
 require "states.gameOver"
 require "states.transState"
 require "states.upg"
+require "states.fade"
 
 -- Misc
 require "class.player"
@@ -86,6 +87,9 @@ function love.load()
     TEsound.playLooping("assets/sounds/music.ogg", "music")
     musicPaused = false
     
+    
+    msgBox:add("TAB - Character screen")
+    msgBox:add("Welcome to Clay!")
 end
 
 function love.update(dt)

@@ -167,7 +167,7 @@ end
 
 function diplScr:keyreleased(key)
     if key == "tab" or key == "escape" then
-        Gamestate.switch(game)
+        switchState(game)
     end
 end
 
