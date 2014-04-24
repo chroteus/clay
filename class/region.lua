@@ -65,7 +65,7 @@ function Region:mousereleased(x,y,button)
 end
 
 function Region:draw()
-    self.color[4] = 128
+    self.color[4] = 80
     love.graphics.setColor(self.color)
    
     if #self.pairedVertices > 2 then

@@ -41,6 +41,11 @@ function game:init()
 end
 
 function game:enter()
+    if prefs.firstPlay then
+        prefs.firstPlay = false
+        savePrefs()
+    end
+
     love.graphics.setFont(gameFont)
     
     enteredMap()
@@ -111,7 +116,7 @@ function game:keyreleased(key)
     if key == "escape" then
         switchState(pause)
     elseif key == "tab" then
-        Gamestate.switch(transState)
+        switchState(transState.lastState)
     end
 
     if DEBUG then

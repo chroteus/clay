@@ -65,6 +65,7 @@ function love.load()
     
     gameFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
     bigFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 22)
+    hugeFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 52)
     love.graphics.setFont(gameFont)
     
     -- Backgrounds
@@ -140,27 +141,6 @@ function love.quit()
     if Gamestate.current() == game then
         saveMap() -- save on quit
     end
-end
-
-function adjCellsOf(rowInd, columnInd)
-    local adj = {{0,0,0},
-                 {0,0,0},
-                 {0,0,0}
-                }
-                
-    adj[1][1] = {rowIndex=rowInd-1, columnIndex=columnInd-1}
-    adj[1][2] = {rowIndex=rowInd-1, columnIndex=columnInd}
-    adj[1][3] = {rowIndex=rowInd-1, columnIndex=columnInd+1}
-                            
-    adj[2][1] = {rowIndex=rowInd, columnIndex=columnInd-1}
-    adj[2][2] = {rowIndex=rowInd, columnIndex=columnInd}
-    adj[2][3] = {rowIndex=rowInd, columnIndex=columnInd+1}
-                            
-    adj[3][1] = {rowIndex=rowInd+1, columnIndex=columnInd-1}
-    adj[3][2] = {rowIndex=rowInd+1, columnIndex=columnInd}
-    adj[3][3] = {rowIndex=rowInd+1, columnIndex=columnInd+1}
-
-    return adj
 end
 
 -- Collision detection function.

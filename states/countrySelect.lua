@@ -1,4 +1,6 @@
 countrySelect = {}
+countrySelect.fadeInit = true
+
 
 function countrySelect:init()
     SelectBtn = Button:subclass("CountrySelectBtn")
@@ -57,6 +59,7 @@ function countrySelect:init()
     
     countryCam = Camera(the.screen.width/2, the.screen.height/2)
 end
+
 
 function countrySelect:update(dt)
     -- Converting camera to mouse coordinates.

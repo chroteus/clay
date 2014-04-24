@@ -5,6 +5,7 @@ mapNewGame = false
 map = {}
 mapW = 10800
 mapH = 4480
+mapImgScale = 2700/10800
 
 function initMap()    
     currAdjCells = {} -- adjacent cells of the selected cell.
@@ -51,7 +52,7 @@ function initMap()
                 
 
     -- Camera
-    mapCam = Camera(2400/2, 1040/2)
+    mapCam = Camera((mapW/2)*mapImgScale, (mapH/2)*mapImgScale)
 
     -- mapImg outside of init function because it might be changed in options before init function gets called.
   -- gridImg = love.graphics.newImage("assets/image/grid.png")
@@ -137,22 +138,21 @@ function updateMap(dt)
     -----------------------------------
     --Limiting the movement of camera--
     
-    if mapBorderCheck then
-        local mapWidth, mapHeight = mapCam:worldCoords(the.screen.width, the.screen.height)        
-        local mapX, mapY = mapCam:cameraCoords(mapW/4, mapH/4)
+    if mapBorderCheck then 
+        local mapX, mapY = mapCam:cameraCoords(mapW*mapImgScale, mapH*mapImgScale)
 
-        if mapCam.x < (the.screen.width/4/mapCam.scale) then
-            mapCam.x = (the.screen.width/4/mapCam.scale)
-        elseif the.screen.width > mapX then
-            mapCam.x,_ = mapCam:worldCoords(mapX/4, mapY)
-            mapCam.x = mapCam.x - cameraSpeed/4*dt
+        local zero,_ = mapCam:worldCoords(0,0)
+        if mapCam.x < zero then
+            mapCam.x = zero
+        elseif the.screen.width > mapX-20 then
+            mapCam.x,_ = mapCam:worldCoords(((mapX-15)/2), 0)
         end
         
-        if mapCam.y < (the.screen.height/4/mapCam.scale)-1 then
-            mapCam.y = (the.screen.height/4/mapCam.scale)-1
-        elseif the.screen.height > mapY then
-            _,mapCam.y = mapCam:worldCoords(mapX, mapY/4)
-            mapCam.y = mapCam.y - cameraSpeed/4*dt
+        if mapCam.y < (the.screen.height*mapImgScale/mapCam.scale)-1 then
+            mapCam.y = (the.screen.height*mapImgScale/mapCam.scale)-1
+        elseif the.screen.height > mapY-10 then
+            _,mapCam.y = mapCam:worldCoords(0, ((mapY-10)/2)-10)
+       --     mapCam.y = mapCam.y - cameraSpeed*dt
         end
     end
     
@@ -277,7 +277,7 @@ function drawMap()
     mapCam:attach()
     
     love.graphics.push()
-    love.graphics.scale(2700/10800)
+    love.graphics.scale(mapImgScale)
     --love.graphics.draw(mapImg, -1,-1)
     drawMapImg()
     love.graphics.pop()

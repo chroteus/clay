@@ -35,19 +35,21 @@ end
 
 
 function createMap() -- Fresh map. Used to load map at first play.
-    love.filesystem.remove("map.lua")
-    local mapFile = love.filesystem.newFile("assets/map.lua")
-    mapFile:open("r")
-    local mapString = mapFile:read()
-    local mapTable = assert(loadstring(mapString))()
-    
-    for _,region in pairs(mapTable[1]) do
-        local country = idToCountry(region[1])
-        table.insert(map, Region(country.id, country.color, country.name, region[2]))
-        map[#map].pairedVertices = pairVertices(map[#map].vertices)
+    if love.filesystem.exists("assets/map.lua") then
+        love.filesystem.remove("map.lua")
+        local mapFile = love.filesystem.newFile("assets/map.lua")
+        mapFile:open("r")
+        local mapString = mapFile:read()
+        local mapTable = assert(loadstring(mapString))()
+        
+        for _,region in pairs(mapTable[1]) do
+            local country = idToCountry(region[1])
+            table.insert(map, Region(country.id, country.color, region[2], region[3]))
+            map[#map].pairedVertices = pairVertices(map[#map].vertices)
+        end
+        
+        mapFile:close()
     end
-    
-    mapFile:close()
 end
 
 function loadMap() -- Load an existing map.

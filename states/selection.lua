@@ -16,7 +16,7 @@ function selection:init()
         self.func = function()
                         editMode.country = self.country.name
                         editMode.enabled = true
-                        Gamestate.switch(game)
+                        switchState(game)
                       end
         
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)

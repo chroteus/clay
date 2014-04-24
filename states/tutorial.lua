@@ -1,4 +1,5 @@
 tutorial = {}
+tutorial.fadeInit = true
 
 function tutorial:init()
     tutText = [[

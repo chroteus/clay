@@ -2,9 +2,9 @@ pause = {}
 
 function pause:init()
     pauseButtons = {
-        back = GenericButton(1, "Back", function() Gamestate.switch(game) end),
+        back = GenericButton(1, "Back", function() switchState(game) end),
         save = GenericButton(2.5, "Save", function() saveMap() gameSaved = true end),
-        menuBtn = GenericButton(4, "Menu", function() Gamestate.switch(menu) end)
+        menuBtn = GenericButton(4, "Menu", function() switchState(menu) end)
     }
     
     gameSaved = false
@@ -14,8 +14,6 @@ function pause:enter()
     love.mouse.setVisible(true)
     love.mouse.setGrabbed(false)
     gameSaved = false
-    
-    randBg()
 end
 
 function pause:update(dt)
@@ -47,6 +45,6 @@ end
 
 function pause:keyreleased(key)
     if key == "escape" then
-        Gamestate.switch(game)
+        switchState(game)
     end
 end
