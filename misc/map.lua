@@ -7,7 +7,9 @@ mapW = 10800
 mapH = 4480
 mapImgScale = 2700/10800
 
-function initMap()    
+function initMap()
+    game.finishedLoading = false
+    
     currAdjCells = {} -- adjacent cells of the selected cell.
 
     -----------------------
@@ -70,31 +72,42 @@ function initMap()
         createMap()
     end
     
+    loader.start(
+        function()
+            game.finishedLoading = true
+            Timer.tween(0.35 , game.fadeRect,  {alpha = 0}, "in-quad")
+        end
+    )
+    
     -- Map images "stitching"
     local t = #love.filesystem.getDirectoryItems("assets/image/map")
-    local mapImgTable = {}
+    mapImgTable = {}
     
     for i=1,t do
         mapImgTable[i] = love.graphics.newImage("assets/image/map/"..i..".jpg")
+        --loader.newImage(mapImgTable, "mapImg"..i, "assets/image/map/"..i..".jpg")
     end
     
-    local width,height = mapImgTable[1]:getWidth(),mapImgTable[1]:getHeight()
+    local width,height = 2700,1120 --mapImgTable[1]:getWidth(),mapImgTable[1]:getHeight()
     
     function drawMapImg()
-        local xOrder = -1
-        local yOrder = 0
+        if game.finishedLoading then
+            local xOrder = -1
+            local yOrder = 0
 
-        for i,img in ipairs(mapImgTable) do
-            xOrder = xOrder + 1
-            love.graphics.draw(img, xOrder*width, yOrder*height)
-            
-            if i % 4 == 0 then
-                yOrder = yOrder + 1
-                xOrder = -1
+            for i,img in ipairs(mapImgTable) do
+                xOrder = xOrder + 1
+                love.graphics.draw(img, xOrder*width, yOrder*height)
+                
+                if i % 4 == 0 then
+                    yOrder = yOrder + 1
+                    xOrder = -1
+                end
             end
         end
     end
-end 
+end         
+    
 
 
 function enteredMap()
@@ -179,6 +192,11 @@ function updateMap(dt)
         else
             editMode.fpActive = false
         end
+    end
+    
+    -- loader
+    if not game.finishedLoading then
+        loader.update()
     end
 end
 

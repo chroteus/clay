@@ -5,6 +5,7 @@ Timer = require "lib.hump.timer"
 Camera = require "lib.hump.camera"
 Gamestate = require "lib.hump.gamestate"
 class = require "lib.middleclass"
+loader = require "lib.love-loader"
 
 require "lib.the" -- Gives easy access info on such things as screen width, height, fps, etc.
 require "lib.gui" -- GUI lib.
