@@ -2,6 +2,8 @@
 
 fade = {}
 
+fade.switchedToGame = false
+
 function switchState(state)
     Gamestate.switch(fade)
     fade.nextState = state
@@ -9,7 +11,10 @@ function switchState(state)
     if state == game then 
         -- Since map takes quite a while to load, there's no fade out.
         -- toGame disables fade out and draws "Loading" text. game state has its own fade in.
-        fade.toGame = true
+        
+        if not fade.switchedToGame then
+            fade.toGame = true
+        end
     end
 end
 
@@ -46,7 +51,8 @@ function fade:enter(prev)
         
         if not fade.toGame then
             Timer.tween(0.30, fade.rect,  {alpha = 0}, "in-quad", function() Gamestate.switch(fade.nextState) end)
-        else
+        elseif fade.switchedToGame then
+            fade.switchedToGame = true
             Gamestate.switch(fade.nextState)
         end
     end
@@ -66,7 +72,7 @@ function fade:draw()
     love.graphics.rectangle("fill", rect.x, rect.y, rect.width, rect.height)
     love.graphics.setColor(255,255,255)
     
-    if fade.toGame then
+    if fade.toGame and not fade.switchedToGame then
         love.graphics.setFont(hugeFont)
         love.graphics.printf("Loading", 0, the.screen.height-love.graphics.getFont():getHeight()-30, the.screen.width-20, "right")
         love.graphics.setFont(gameFont)

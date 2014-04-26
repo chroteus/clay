@@ -102,10 +102,15 @@ function game:draw()
     
     infoBox:draw()
     
-    local rect = game.fadeRect
-    love.graphics.setColor(rect.color[1], rect.color[2], rect.color[3], rect.alpha)
-    love.graphics.rectangle("fill", 0, 0, the.screen.width, the.screen.height)
-    love.graphics.setColor(255,255,255)
+    if game.fadeRect.alpha > 0 then
+        local rect = game.fadeRect
+        love.graphics.setColor(rect.color[1], rect.color[2], rect.color[3], rect.alpha)
+        love.graphics.rectangle("fill", 0, 0, the.screen.width, the.screen.height)
+        love.graphics.setColor(255,255,255, rect.alpha)
+        love.graphics.setFont(hugeFont)
+        love.graphics.printf("Loading", 0, the.screen.height-love.graphics.getFont():getHeight()-30, the.screen.width-20, "right")
+        love.graphics.setFont(gameFont)
+    end
 end
 
 function game:mousepressed(x, y, button)

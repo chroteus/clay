@@ -10,6 +10,7 @@ end
 
 Economy: 
     Countries should be able to give money to each other.
+    A simulation of an economy.
 end
 
 Diplomacy:  
@@ -38,7 +39,11 @@ end
 Naval warfare
 
 "Upgrade" system:
-    Countries cannot attack each other over sea unless they have a navy (they must have a cell adjacent to sea). 
+    Countries cannot attack each other over sea unless they have a navy (they must have a region adjacent to water). 
+end
+
+Bonus stage:
+    One of your soldiers gets stuck up in an 8bit world. You guide him back to Earth.
 end
 
 Refactor the code

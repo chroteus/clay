@@ -1,4 +1,6 @@
 charScr = {}
+charScr.fadeInit = true
+charScr.fadeEnter = true
 
 function charScr:init()
     charScr.char = Player:returnCountry()

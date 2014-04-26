@@ -85,7 +85,7 @@ function initMap()
     
     for i=1,t do
         mapImgTable[i] = love.graphics.newImage("assets/image/map/"..i..".jpg")
-        --loader.newImage(mapImgTable, "mapImg"..i, "assets/image/map/"..i..".jpg")
+        loader.newImage(mapImgTable, "mapImg"..i, "assets/image/map/"..i..".jpg")
     end
     
     local width,height = 2700,1120 --mapImgTable[1]:getWidth(),mapImgTable[1]:getHeight()
