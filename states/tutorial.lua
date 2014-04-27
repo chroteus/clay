@@ -15,7 +15,7 @@ function tutorial:init()
     Hotkey (or click) - Skill
      ]]
     
-    tutGameBtn = GenericButton(4, "Start >>", function() switchState(game) end)
+    tutGameBtn = GenericButton(4, "Start >>", function() Gamestate.switch(game) end)
 end
 
 function tutorial:enter()

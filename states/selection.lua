@@ -16,7 +16,7 @@ function selection:init()
         self.func = function()
                         editMode.country = self.country.name
                         editMode.enabled = true
-                        switchState(game)
+                        Gamestate.switch(game)
                       end
         
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
@@ -59,6 +59,6 @@ end
 
 function selection:keyreleased(key)
     if key == "q" then
-        switchState(game)
+        Gamestate.switch(game)
     end
 end

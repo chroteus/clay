@@ -45,7 +45,7 @@ function countrySelect:init()
                     function() 
                         Player.country = country.name
                         Player.attack, Player.defense = country.attack, country.defense 
-                        switchState(tutorial)
+                        Gamestate.switch(tutorial)
                     end)
             )
             

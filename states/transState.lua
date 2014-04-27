@@ -8,7 +8,7 @@ end
 
 function transState:enter()
     randBg()
-    switchState(transState.lastState)
+    Gamestate.switch(transState.lastState)
 end
 
 function transState:draw()

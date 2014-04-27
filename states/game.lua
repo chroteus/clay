@@ -129,9 +129,9 @@ end
 
 function game:keyreleased(key)
     if key == "escape" then
-        switchState(pause)
+        Gamestate.switch(pause)
     elseif key == "tab" then
-        switchState(transState.lastState)
+        Gamestate.switch(transState.lastState)
     end
 
     if DEBUG then
@@ -153,7 +153,7 @@ function game:keyreleased(key)
         
         if editMode.enabled then
             if key == "q" then
-                switchState(selection)
+                Gamestate.switch(selection)
             end
         end
     end
