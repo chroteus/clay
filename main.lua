@@ -3,7 +3,9 @@ DEBUG = false
 -- Libraries
 Timer = require "lib.hump.timer"
 Camera = require "lib.hump.camera"
-Gamestate = require "lib.hump.gamestate"
+require "lib.venus"
+
+Gamestate = venus
 class = require "lib.middleclass"
 loader = require "lib.love-loader"
 
@@ -54,8 +56,12 @@ function love.load()
 
     loadThe()
     screenBtn:initialize()
-    
-    Gamestate.registerEvents()
+        
+        
+    fadeRect = {
+        color = {10,10,10},
+        alpha = 0,    
+    }
     
     if DEBUG then
         Gamestate.switch(game)
@@ -98,12 +104,14 @@ function love.update(dt)
     DialogBoxes:update(dt)
     Timer.update(dt)
     TEsound.cleanup()
+    Gamestate.update(dt)
 end
 
 function love.draw()
-    if Gamestate.current() ~= battle and Gamestate.current() ~= winState and Gamestate.current() ~= loseState then
+    if venus.current ~= battle and venus.current ~= winState and venus.current ~= loseState then
         love.graphics.setBackgroundColor(45,45,55)
         local imgW, imgH = scrBgImg:getWidth(), scrBgImg:getHeight()
+        
         -- draw the image at the right bottom corner.
         love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
         
@@ -116,6 +124,11 @@ function love.draw()
     
         love.graphics.setColor(255,255,255)
     end
+    
+    venus.draw()
+    love.graphics.setColor(fadeRect.color[1],fadeRect.color[2],fadeRect.color[3], fadeRect.alpha)
+    love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
+    love.graphics.setColor(255,255,255)
 end
 
 function love.keypressed(key, u)
@@ -130,15 +143,31 @@ function love.keypressed(key, u)
     elseif key == "home" then
         debug.debug()
     end
+    
+    venus.keypressed(key, u)
 end
 
+function love.keyreleased(key, u)
+    venus.keyreleased(key, u)
+end
 
+function love.mousepressed(x,y,button)
+    venus.mousepressed(x,y,button)
+end
+    
 function love.mousereleased(x, y, button)
     DialogBoxes:mousereleased(x,y,button)
+    if not DialogBoxes:present() then
+        venus.mousereleased(x,y,button)
+    end
+end
+
+function love.textinput(t)
+    venus.textinput(t)
 end
 
 function love.quit()
-    if Gamestate.current() == game then
+    if venus.current == game then
         saveMap() -- save on quit
     end
 end

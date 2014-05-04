@@ -67,7 +67,7 @@ end
 local all_callbacks = {
 	'update', 'draw', 'focus', 'keypressed', 'keyreleased',
 	'mousepressed', 'mousereleased', 'joystickpressed',
-	'joystickreleased', 'textinput', 'quit'
+	'joystickreleased', 'quit'
 }
 
 function GS.registerEvents(callbacks)

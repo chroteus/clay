@@ -72,37 +72,27 @@ function initMap()
         createMap()
     end
     
-    loader.start(
-        function()
-            game.finishedLoading = true
-            Timer.tween(0.35 , game.fadeRect,  {alpha = 0}, "in-quad")
-        end
-    )
-    
     -- Map images "stitching"
     local t = #love.filesystem.getDirectoryItems("assets/image/map")
     mapImgTable = {}
     
     for i=1,t do
         mapImgTable[i] = love.graphics.newImage("assets/image/map/"..i..".jpg")
-        loader.newImage(mapImgTable, "mapImg"..i, "assets/image/map/"..i..".jpg")
     end
     
     local width,height = 2700,1120 --mapImgTable[1]:getWidth(),mapImgTable[1]:getHeight()
     
     function drawMapImg()
-        if game.finishedLoading then
-            local xOrder = -1
-            local yOrder = 0
-
-            for i,img in ipairs(mapImgTable) do
-                xOrder = xOrder + 1
-                love.graphics.draw(img, xOrder*width, yOrder*height)
-                
-                if i % 4 == 0 then
-                    yOrder = yOrder + 1
-                    xOrder = -1
-                end
+        local xOrder = -1
+        local yOrder = 0
+            
+        for i,img in ipairs(mapImgTable) do
+            xOrder = xOrder + 1
+            love.graphics.draw(img, xOrder*width, yOrder*height)
+            
+            if i % 4 == 0 then
+                yOrder = yOrder + 1
+                xOrder = -1
             end
         end
     end
@@ -155,8 +145,8 @@ function updateMap(dt)
         local mapX, mapY = mapCam:cameraCoords(mapW*mapImgScale, mapH*mapImgScale)
 
         local zero,_ = mapCam:worldCoords(0,0)
-        if mapCam.x < zero then
-            mapCam.x = zero
+        if mapCam.x < 0 then
+            mapCam.x = 0+mapImgTable[1]:getWidth()
         elseif the.screen.width > mapX-20 then
             mapCam.x,_ = mapCam:worldCoords(((mapX-15)/2), 0)
         end
