@@ -1,6 +1,7 @@
 game = {}
 
 function game:init()
+    game.mapDrawn = true
     initMap()
 
     --[[ REWRITE ]]
@@ -67,8 +68,9 @@ function game:update(dt)
 end
 
 function game:draw()
-    drawMap()
     
+    if game.mapDrawn then drawMap() end
+     
     -- GUI
     local guiRectH = 30
     love.graphics.setColor(guiColors.bg)
@@ -116,6 +118,7 @@ function game:keyreleased(key)
     if key == "escape" then
         Gamestate.switch(pause)
     elseif key == "tab" then
+        game.mapDrawn = false
         Gamestate.switch(transState.lastState)
     end
 

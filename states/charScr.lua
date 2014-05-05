@@ -4,6 +4,7 @@ charScr.fadeEnter = true
 
 function charScr:init()
     charScr.char = Player:returnCountry()
+    charScr.text = ""
     
     local function skillBtn(xOrder, yOrder, variable, amount)
         local numText = ""
@@ -33,7 +34,7 @@ function charScr:init()
     end
     
     charScr.btn = {
-        cont = GenericButton(the.screen.height/2 + 200, "Continue >>", function() Gamestate.switch(game) end),
+        cont = GenericButton(the.screen.height/2 + 200, "Continue >>", function() venus.switch(game); game.mapDrawn = true end),
     }
     
     local c = charScr.btn
@@ -57,8 +58,6 @@ function charScr:update(dt)
     elseif checkCollision(the.mouse.x,the.mouse.y,1,1, c.minusDef.x, c.minusDef.y, (c.plusDef.x+c.plusDef.width)-c.minusDef.x, c.minusDef.height) then
         charScr.text = "Defense: Decreases the chance of your clay being taken. Decreases the damage in battles."
     end
-    
-    screenBtn:update()
 end
 
 function charScr:draw()
@@ -88,21 +87,11 @@ function charScr:draw()
     drawText(charScr.btn.minusDef, "Defense")
 
     love.graphics.printf(charScr.text, the.screen.width/3, charScr.btn.minusDef.y + 80, the.screen.width/3, "center")
-    
-    screenBtn:draw()
 end
 
 function charScr:mousereleased(x,y,button)
     for _,btn in pairs(charScr.btn) do
         btn:mousereleased(x,y,button)
-    end
-    
-    screenBtn:mousereleased(x,y,button)
-end
-
-function charScr:keyreleased(key)
-    if key == "tab" or key == "escape" then
-        Gamestate.switch(game)
     end
 end
 

@@ -44,6 +44,24 @@ function diplScr:init()
                     end
                 ),
     }
+    
+    diplScr.initBtn = function()
+        diplScr.btn = {}
+        local btnH = 30
+        for i,foe in ipairs(Player:returnCountry(true).foes) do
+            table.insert(diplScr.btn,
+                Button(the.screen.width/2-rectW/2, ((rectH*1.5)*i)+rectH, rectW, btnH, "Talk", 
+                    function() 
+                        diplScr.country = foe
+                        diplScr.enabled = true
+                        diplScr.message = randMsg.foe(foe)
+                    end
+                )
+            )
+        end
+    end
+    
+    diplScr.initBtn()
 end
 
 function diplScr:enter()
@@ -57,19 +75,7 @@ function diplScr:enter()
         diplScr.noFoes = false
     end
     
-    diplScr.btn = {}
-    local btnH = 30
-    for i,foe in ipairs(Player:returnCountry(true).foes) do
-        table.insert(diplScr.btn,
-            Button(the.screen.width/2-rectW/2, ((rectH*1.5)*i)+rectH, rectW, btnH, "Talk", 
-                function() 
-                    diplScr.country = foe
-                    diplScr.enabled = true
-                    diplScr.message = randMsg.foe(foe)
-                end
-            )
-        )
-    end
+    diplScr.initBtn()
 end
 
 function diplScr:update(dt)
@@ -85,8 +91,6 @@ function diplScr:update(dt)
             btn:update()
         end
     end
-    
-    screenBtn:update()
 end
 
 
@@ -139,8 +143,6 @@ function diplScr:draw()
             btn:draw()
         end
     end
-    
-    screenBtn:draw()
 end
 
 function diplScr:mousepressed(x,y,button)
@@ -151,9 +153,7 @@ function diplScr:mousepressed(x,y,button)
     end
 end
 
-function diplScr:mousereleased(x,y,button)
-    screenBtn:mousereleased(x,y,button)
-    
+function diplScr:mousereleased(x,y,button)    
     if not diplScr.enabled then
         for _,btn in pairs(diplScr.btn) do
             btn:mousereleased(x,y,button)
@@ -162,12 +162,6 @@ function diplScr:mousereleased(x,y,button)
         for _,btn in pairs(diplScr.cBtn) do
             btn:mousereleased(x,y,button)
         end
-    end
-end
-
-function diplScr:keyreleased(key)
-    if key == "tab" or key == "escape" then
-        Gamestate.switch(game)
     end
 end
 

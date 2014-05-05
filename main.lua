@@ -83,6 +83,23 @@ function love.load()
         scrBgImg = love.graphics.newImage("assets/image/bg/"..randBg)
     end
     
+    function drawBallBg()
+        love.graphics.setBackgroundColor(45,45,55)
+        local imgW, imgH = scrBgImg:getWidth(), scrBgImg:getHeight()
+        
+        -- draw the image at the right bottom corner.
+        love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
+        
+        -- tint
+        love.graphics.setColor(45,45,55,150)
+        love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
+            
+        -- lines
+        love.graphics.draw(bgLineImg,bgLineQ,0,0)
+    
+        love.graphics.setColor(255,255,255)
+    end
+    
     bgLineImg = love.graphics.newImage("assets/image/bgLine.png")
     bgLineImg:setWrap("repeat", "repeat")
     bgLineQ = love.graphics.newQuad(0,0,the.screen.width,the.screen.height,bgLineImg:getWidth(),bgLineImg:getHeight())
@@ -104,27 +121,11 @@ function love.update(dt)
     DialogBoxes:update(dt)
     Timer.update(dt)
     TEsound.cleanup()
-    Gamestate.update(dt)
+    venus.update(dt)
 end
 
 function love.draw()
-    if venus.current ~= battle and venus.current ~= winState and venus.current ~= loseState then
-        love.graphics.setBackgroundColor(45,45,55)
-        local imgW, imgH = scrBgImg:getWidth(), scrBgImg:getHeight()
-        
-        -- draw the image at the right bottom corner.
-        love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
-        
-        -- tint
-        love.graphics.setColor(45,45,55,150)
-        love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
-            
-        -- lines
-        love.graphics.draw(bgLineImg,bgLineQ,0,0)
-    
-        love.graphics.setColor(255,255,255)
-    end
-    
+    drawBallBg()
     venus.draw()
     love.graphics.setColor(fadeRect.color[1],fadeRect.color[2],fadeRect.color[3], fadeRect.alpha)
     love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)

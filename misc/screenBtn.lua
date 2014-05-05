@@ -23,6 +23,26 @@ function screenBtn:initialize()
             )
         )
     end
+    
+    --local scrBtnCallbacks = {"update", "draw", "mousereleased", "keyreleased"}
+    
+    -- Assignment of screenBtn's function to states
+    for key,value in pairs(screenBtn) do
+        if type(value) == "function" then
+            if key ~= "initialize" then
+                
+                for _,stateTable in pairs(screenBtn.states) do
+                    local state = stateTable[2]
+                    local backupFunc = state[key]
+                    print(state[key])
+                    state[key] = function(...)
+                        if backupFunc then backupFunc(...) end
+                        screenBtn[key](...)
+                    end
+                end
+            end
+        end
+    end
 end
 
 function screenBtn:update()
@@ -42,5 +62,12 @@ end
 function screenBtn:mousereleased(x,y,button)
     for _,btn in pairs(screenBtn.list) do
         btn:mousereleased(x,y,button)
+    end
+end
+
+function screenBtn:keyreleased(key)
+    if key == "tab" or key == "escape" then
+        venus.switch(game)
+        game.mapDrawn = true
     end
 end

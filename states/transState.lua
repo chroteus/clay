@@ -1,5 +1,5 @@
 -- transition state
--- used to save the last state of screenBtn states.
+-- used to save the last state of screenBtn states, and perform various functions.
 transState = {}
 transState.lastState = charScr -- set in screenBtn
 
@@ -8,7 +8,7 @@ end
 
 function transState:enter()
     randBg()
-    Gamestate.switch(transState.lastState)
+    venus.switch(transState.lastState)
 end
 
 function transState:draw()
