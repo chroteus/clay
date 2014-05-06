@@ -115,32 +115,34 @@ function game:mousereleased(x,y,button)
 end
 
 function game:keyreleased(key)
-    if key == "escape" then
-        venus.switch(pause)
-    elseif key == "tab" then
-        venus.switch(transState.lastState)
-    end
+    if not DialogBoxes:present() then
+        if key == "escape" then
+            venus.switch(pause)
+        elseif key == "tab" then
+            venus.switch(transState.lastState)
+        end
 
-    if DEBUG then
-        if key == "b" then
-            if mapBorderCheck then
-                mapBorderCheck = false
-            else
-                mapBorderCheck = true
+        if DEBUG then
+            if key == "b" then
+                if mapBorderCheck then
+                    mapBorderCheck = false
+                else
+                    mapBorderCheck = true
+                end
             end
-        end
-    
-        if key == "e" then
-            if editMode.enabled then
-                editMode.enabled = false
-            else
-                editMode.enabled = true
-            end
-        end
         
-        if editMode.enabled then
-            if key == "q" then
-                venus.switch(selection)
+            if key == "e" then
+                if editMode.enabled then
+                    editMode.enabled = false
+                else
+                    editMode.enabled = true
+                end
+            end
+            
+            if editMode.enabled then
+                if key == "q" then
+                    venus.switch(selection)
+                end
             end
         end
     end

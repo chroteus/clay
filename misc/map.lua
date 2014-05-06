@@ -231,7 +231,7 @@ function mousereleasedMap(x,y,button)
                     
                     local function dboxFunc()
                         table.insert(map, Region(country.id, country.color, InputDBoxText, editMode.currPolygon))
-                                            
+                        
                         editMode.currPolygon = {}
                         cp.x, cp.y = -20,-20
                         fp.x, fp.y = -10, -10
@@ -265,13 +265,14 @@ function mousereleasedMap(x,y,button)
             region:mousereleased(x,y,button)
         end
         
+        
         if button == "l" then
            if not editMode.polFin then
                 table.insert(editMode.currPolygon, cp.x)
                 table.insert(editMode.currPolygon, cp.y)
             end
         end
-            
+        
         editMode.polFin = false
     end
 end
