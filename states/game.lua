@@ -69,7 +69,7 @@ end
 
 function game:draw()
     
-    if game.mapDrawn then drawMap() end
+    drawMap() 
      
     -- GUI
     local guiRectH = 30
@@ -116,10 +116,9 @@ end
 
 function game:keyreleased(key)
     if key == "escape" then
-        Gamestate.switch(pause)
+        venus.switch(pause)
     elseif key == "tab" then
-        game.mapDrawn = false
-        Gamestate.switch(transState.lastState)
+        venus.switch(transState.lastState)
     end
 
     if DEBUG then
@@ -141,7 +140,7 @@ function game:keyreleased(key)
         
         if editMode.enabled then
             if key == "q" then
-                Gamestate.switch(selection)
+                venus.switch(selection)
             end
         end
     end

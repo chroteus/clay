@@ -34,7 +34,7 @@ function screenBtn:initialize()
                 for _,stateTable in pairs(screenBtn.states) do
                     local state = stateTable[2]
                     local backupFunc = state[key]
-                    print(state[key])
+
                     state[key] = function(...)
                         if backupFunc then backupFunc(...) end
                         screenBtn[key](...)
@@ -68,6 +68,5 @@ end
 function screenBtn:keyreleased(key)
     if key == "tab" or key == "escape" then
         venus.switch(game)
-        game.mapDrawn = true
     end
 end

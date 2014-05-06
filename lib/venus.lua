@@ -1,7 +1,7 @@
 venus = {}
 venus.current = "No state"
 venus.noState = true
-venus.currentFx = "slide"
+venus.currentFx = "fade"
 
 local all_callbacks = {
 	"update", "draw", "focus", "keypressed", "keyreleased",
@@ -11,14 +11,15 @@ local all_callbacks = {
 
 
 -- globalCalls: Add your functions which you want to be called with every state's callback
+-- NOTE: Must be one of the callbacks from the all_callbacks list
 --[[ Example: 
     venus.globalCalls = {
-        enter = function() print("test...") end,
+        update = function() print("test...") end, -- this will call print("test...") every frame.
     }
 ]]--
 
-venus.globalCalls = {}
-
+venus.globalCalls = {
+}
 
 local transitions = require "lib.venus_trans"
 
@@ -73,4 +74,3 @@ function venus.switch(to, effect)
         transitions[effect].switch(to)
     end
 end
-    

@@ -1,5 +1,6 @@
 local transitions = {}
 
+-- SLIDE ----------------------
 transitions.slide = {}
 local ts = transitions.slide
 
@@ -34,6 +35,54 @@ end
 
 transitions.slide.draw = function()
     ts.state:draw()
+end
+
+
+-- FADE ----------------------
+transitions.fade = {}
+local tf = transitions.fade
+
+tf.rect = {
+    color = {10,10,10},
+    alpha = 0
+}
+
+tf.state = {}
+
+function tf.state:draw()
+    if tf.switched then
+        if tf.to then 
+            if tf.to.draw then tf.to:draw() end
+        end
+    else
+        if tf.pre then
+            if tf.pre.draw then tf.pre:draw() end
+        end
+    end
+    
+    love.graphics.setColor(tf.rect.color[1], tf.rect.color[2], tf.rect.color[3], tf.rect.alpha)
+    love.graphics.rectangle("fill", 0, 0, love.window.getDimensions())
+    love.graphics.setColor(255,255,255)
+end
+
+transitions.fade.switch = function(to, ...)
+    tf.switched = false
+    tf.pre = venus.current
+    tf.to = to
+    
+    if to.init then to.init(); to.init = nil end
+    venus._switch(tf.state)
+    
+    Timer.tween(0.3, tf.rect, {alpha = 255}, "out-quad", 
+        function() 
+            tf.switched = true 
+            Timer.tween(0.3, tf.rect, {alpha = 0}, "out-quad", function() venus._switch(to) end)
+        end
+    )
+end
+
+transitions.fade.draw = function()
+    tf.state:draw()
 end
 
 return transitions
