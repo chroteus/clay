@@ -23,7 +23,7 @@ function Region:initialize(id, color, name, ...)
     end
     
     self.pairedVertices = pairVertices(self.vertices)
-    self.vertRadius = 1
+    self.vertRadius = 0.5
     
     self.neighbours = {} -- filled after all regions are initialized
 end
@@ -116,7 +116,7 @@ function Region:draw()
         local radius = self.vertRadius
         for _,vertex in pairs(self.pairedVertices) do
             if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
-                love.graphics.circle("fill", vertex[1], vertex[2], radius+1, 100)
+                love.graphics.circle("line", vertex[1], vertex[2], radius+0.5, 100)
             else
                 love.graphics.circle("line", vertex[1], vertex[2], radius, 100)
             end

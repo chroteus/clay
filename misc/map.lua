@@ -42,7 +42,7 @@ function initMap()
         
         fpActive = false, -- first point
             
-        radius = 1.5,
+        radius = 4,
         
         currPolygon = {},
         
@@ -189,7 +189,7 @@ function updateMap(dt)
     
     if editMode.enabled then
         local fp = editMode.firstPoint
-        local radius = editMode.radius
+        local radius = editMode.radius/mapCam.scale
         
         if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
             editMode.fpActive = true
@@ -230,7 +230,7 @@ function mousereleasedMap(x,y,button)
         local lp = editMode.lastPoint
         local plp = editMode.prevLastPoint
         
-        local radius = editMode.radius
+        local radius = editMode.radius/mapCam.scale -- scaling because drawed circle is scaled too
         
         if button == "l" then
             if fp.x < 0 then
@@ -257,7 +257,7 @@ function mousereleasedMap(x,y,button)
                 end
                 
             else
-                cp.x, cp.y = math.floor(mapMouse.x), math.floor(mapMouse.y)
+                cp.x, cp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
             end
             
             plp.x, plp.y = lp.x, lp.y
@@ -308,13 +308,16 @@ function drawMap()
     drawMapImg()
     love.graphics.pop()
     
+    love.graphics.setLineWidth(0.2)
     for _,region in pairs(map) do
         region:draw()
     end
+    love.graphics.setLineWidth(1)
     
     if editMode.enabled then
-        love.graphics.setLineWidth(5)
-        local radius = editMode.radius
+        love.graphics.setLineWidth(2/mapCam.scale)
+        
+        local radius = editMode.radius/mapCam.scale
         local lp = editMode.lastPoint
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
@@ -357,6 +360,8 @@ function drawMap()
         end
         
         love.graphics.setColor(225,225,225)
+    else -- if not editMode
+        love.graphics.setLineWidth(1)
     end
     
 --[[
