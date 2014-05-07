@@ -24,6 +24,8 @@ function Region:initialize(id, color, name, ...)
     
     self.pairedVertices = pairVertices(self.vertices)
     self.vertRadius = 1
+    
+    self.neighbours = {} -- filled after all regions are initialized
 end
 
 function Region:mousereleased(x,y,button)

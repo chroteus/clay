@@ -46,8 +46,22 @@ function initMap()
         
         currPolygon = {},
         
-        polFin = false
+        polFin = false,
+        
     }
+    
+    function editMode.resetPoints()
+        local fp = editMode.firstPoint
+        local cp = editMode.currPoint
+        local lp = editMode.lastPoint
+        local plp = editMode.prevLastPoint
+        
+        fp.x,fp.y = -10,-10
+        cp.x,cp.y = -20,-20
+        lp.x,lp.y = -30,-30
+        plp.x,plp.y = -40,-40
+    end
+        
     
     function editMode.pair() pairVertices(editMode.currPolygon) end
 
@@ -233,9 +247,7 @@ function mousereleasedMap(x,y,button)
                         table.insert(map, Region(country.id, country.color, InputDBoxText, editMode.currPolygon))
                         
                         editMode.currPolygon = {}
-                        cp.x, cp.y = -20,-20
-                        fp.x, fp.y = -10, -10
-                        lp.x, lp.y = -5, -5
+                        editMode.resetPoints()
                     end
                     
                     local dbox = DialogBoxes:newInputDBox(15, function() dboxFunc() end)
@@ -252,6 +264,11 @@ function mousereleasedMap(x,y,button)
             lp.x, lp.y = cp.x, cp.y
             
         elseif button == "r" then
+            if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+                editMode.currPolygon = {}
+                editMode.resetPoints()
+            end
+            
             if #editMode.currPolygon >= 2 then
                 lp.x, lp.y = plp.x, plp.y
                 cp.x, cp.y = lp.x, lp.y
@@ -296,6 +313,7 @@ function drawMap()
     end
     
     if editMode.enabled then
+        love.graphics.setLineWidth(5)
         local radius = editMode.radius
         local lp = editMode.lastPoint
         local cp = editMode.currPoint
@@ -339,7 +357,6 @@ function drawMap()
         end
         
         love.graphics.setColor(225,225,225)
-    
     end
     
 --[[

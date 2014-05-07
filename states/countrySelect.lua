@@ -1,6 +1,4 @@
 countrySelect = {}
-countrySelect.fadeInit = true
-
 
 function countrySelect:init()
     SelectBtn = Button:subclass("CountrySelectBtn")
@@ -29,8 +27,8 @@ function countrySelect:init()
     
     function SelectBtn:drawBall()
         local padding = 5
-        local ballX = (self.x - self.ball:getWidth() - padding*3) / 3
-        local ballY = (self.y + self.ball:getHeight() + padding) / 3
+        local ballX = (self.x - self.ball:getWidth() - padding*2) / 2
+        local ballY = (self.y + self.ball:getHeight() + padding*2) / 2
         love.graphics.draw(self.ball, ballX, ballY)
     end
     

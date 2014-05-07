@@ -19,7 +19,6 @@ function tutorial:init()
 end
 
 function tutorial:enter()
-    love.graphics.setFont(bigFont)
 end
 
 function tutorial:update(dt)

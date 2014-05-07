@@ -114,7 +114,7 @@ function Button:draw(rgba)
     
     if self:isInstanceOf(SelectBtn) then
         love.graphics.push()
-        love.graphics.scale(3)
+        love.graphics.scale(2)
         self:drawBall()
         love.graphics.pop()
     end
