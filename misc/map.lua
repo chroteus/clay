@@ -234,7 +234,7 @@ function mousereleasedMap(x,y,button)
         
         if button == "l" then
             if fp.x < 0 then
-                fp.x,fp.y = math.floor(mapMouse.x), math.floor(mapMouse.y)
+                fp.x,fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
             end
             
             if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
