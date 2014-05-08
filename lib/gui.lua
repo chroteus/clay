@@ -59,11 +59,10 @@ function Button:update(dt)
     end
 end
 
-function Button:mousereleased(x, y, button)
-    -- To be used in mousereleased callback functions.
-    
-    if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
-        self:action() -- Executes action of the button.
+function Button:mousereleased(x, y, button)    
+    if checkCol(self, the.mouse) then
+        self:action()
+        TEsound.play("assets/sounds/mouseclick.wav")
     end
 end
 

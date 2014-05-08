@@ -108,7 +108,10 @@ function love.load()
     loadPrefs()
     
     -- Music
-    TEsound.playLooping("assets/sounds/music.ogg", "music")
+    local musicFiles = love.filesystem.getDirectoryItems("assets/music/")
+    for i=1,#musicFiles do musicFiles[i] = "/assets/music/"..musicFiles[i] end
+        
+    TEsound.playLooping(musicFiles, "music")
     musicPaused = false
     
     
