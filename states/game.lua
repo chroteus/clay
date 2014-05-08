@@ -39,6 +39,8 @@ function game:init()
         end
         love.graphics.setColor(255,255,255)
     end
+    
+    game.editModeString = "Q: Select country, E: Exit, B: Disable cam limits, LMB: Place a point, RMB: Undo/Remove point, LShift + RMB: Delete a region"
 end
 
 function game:enter()
@@ -89,7 +91,7 @@ function game:draw()
     msgBox:draw()
     
     if editMode.enabled then
-        bgPrintf("Edit Mode: Q - Select Country, E - Exit out of edit mode, B - Disable cam borders, LMB - Place a point, RMB - Undo/Remove point", 1, the.screen.height-50, the.screen.width, "left")
+        bgPrintf(game.editModeString, 1, the.screen.height-50, the.screen.width, "left")
         bgPrintf("Current chosen country: "..editMode.country, 0, the.screen.height-70, the.screen.width, "left")
     else
         if DEBUG then

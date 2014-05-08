@@ -62,7 +62,23 @@ function Region:mousereleased(x,y,button)
                 
                 end
             end
-        end
+        
+            
+            if love.keyboard.isDown("lshift") then
+                if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+                    DialogBoxes:new(
+                        "Delete region?",
+                        {"Cancel", function() end},
+                        {"Yes", function()
+                                    for k,region in pairs(map) do
+                                        if region.name == self.name then map[k] = nil end
+                                    end
+                                end
+                        }
+                    ):show()
+                end
+            end
+        end             
     end
 end
 
@@ -113,12 +129,14 @@ function Region:draw()
     end
     
     if editMode.enabled then
-        local radius = self.vertRadius
-        for _,vertex in pairs(self.pairedVertices) do
-            if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
-                love.graphics.circle("line", vertex[1], vertex[2], radius+0.5, 100)
-            else
-                love.graphics.circle("line", vertex[1], vertex[2], radius, 100)
+        if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+            local radius = self.vertRadius
+            for _,vertex in pairs(self.pairedVertices) do
+                if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+                    love.graphics.circle("line", vertex[1], vertex[2], radius+0.5, 100)
+                else
+                    love.graphics.circle("line", vertex[1], vertex[2], radius, 100)
+                end
             end
         end
     end

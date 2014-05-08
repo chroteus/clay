@@ -270,11 +270,11 @@ function mousereleasedMap(x,y,button)
             end
             
             if #editMode.currPolygon >= 2 then
+                table.remove(editMode.currPolygon)
+                table.remove(editMode.currPolygon)
+                
                 lp.x, lp.y = plp.x, plp.y
                 cp.x, cp.y = lp.x, lp.y
-                
-                table.remove(editMode.currPolygon)
-                table.remove(editMode.currPolygon)
             end
         end
         
