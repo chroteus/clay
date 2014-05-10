@@ -363,20 +363,9 @@ function drawMap()
     else -- if not editMode
         love.graphics.setLineWidth(1)
     end
-    
---[[
-    love.graphics.push()
-    love.graphics.scale(0.25)
-    love.graphics.draw(gridImg, -1*mapCam.scale, -1*mapCam.scale)
-    love.graphics.pop()
-]]--
-
-    
-    
-   -- love.graphics.draw(gridImg,gridQ,0,0)
         
     -- Detaches the camera. Things drawn after detach() will not be from camera's perspective.
-    -- GUI should be drawn after this function is called. (or in game's draw func)
+    -- GUI should be drawn after this function is called. (or in game's draw func after drawMap())
     mapCam:detach()
     
     local radius = 4

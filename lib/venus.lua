@@ -21,7 +21,7 @@ local all_callbacks = {
 venus.globalCalls = {
 }
 
-local transitions = require "lib.venus_trans"
+local transitions = require "lib.venus_transitions"
 
 function venus._switch(to, ...)
     -- internal switch function which directly switches without any transitions

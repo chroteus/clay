@@ -55,25 +55,7 @@ function love.load()
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
-    screenBtn:initialize()
-        
-        
-    fadeRect = {
-        color = {10,10,10},
-        alpha = 0,    
-    }
-    
-    if DEBUG then
-        Gamestate.switch(game)
-    else
-        Gamestate.switch(menu)
-    end
-    
-    gameFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
-    bigFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 22)
-    hugeFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 52)
-    love.graphics.setFont(gameFont)
-    
+
     -- Backgrounds
     local bgTable = love.filesystem.getDirectoryItems("assets/image/bg")
     
@@ -105,6 +87,26 @@ function love.load()
     bgLineQ = love.graphics.newQuad(0,0,the.screen.width,the.screen.height,bgLineImg:getWidth(),bgLineImg:getHeight())
     
     randBg()
+    
+    screenBtn:initialize()
+        
+        
+    fadeRect = {
+        color = {10,10,10},
+        alpha = 0,    
+    }
+    
+    if DEBUG then
+        Gamestate.switch(game)
+    else
+        Gamestate.switch(menu)
+    end
+    
+    gameFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
+    bigFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 22)
+    hugeFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 52)
+    love.graphics.setFont(gameFont)
+    
     loadPrefs()
     
     -- Music
