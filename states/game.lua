@@ -27,6 +27,7 @@ function game:init()
             if PointWithinShape(region.vertices, mapMouse.x, mapMouse.y) then
                 self.countryName = countries[region.id].name
                 self.name = region.name
+                self.region = region
             end
         end
     end
@@ -49,7 +50,7 @@ function game:enter()
         savePrefs()
     end
 
-    love.graphics.setFont(gameFont)
+    love.graphics.setFont(gameFont[16])
     
     enteredMap()
     game.timerHandle = Timer.addPeriodic(2, function() checkIfDead() end)

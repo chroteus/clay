@@ -86,6 +86,27 @@ function initMap()
         createMap()
     end
     
+    -- Generating neighbours for regions
+    -- NOTE: Must be called AFTER map's regions are loaded.
+    for _,region in pairs(map) do
+        for _,vertex in pairs(region.pairedVertices) do
+            for _,regionB in pairs(map) do
+                for _,vertexB in pairs(regionB.pairedVertices) do
+                    if vertexB[1] == vertex[1] and vertexB[2] == vertex[2] then
+                        if region.name ~= regionB.name then
+                            table.insert(region.neighbours, regionB.name)
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    for _,region in pairs(map) do
+        region.neighbours = removeDuplicates(region.neighbours)
+    end
+            
+    
     -- Map images "stitching"
     local t = #love.filesystem.getDirectoryItems("assets/image/map")
     mapImgTable = {}
@@ -312,8 +333,9 @@ function drawMap()
     for _,region in pairs(map) do
         region:draw()
     end
-    love.graphics.setLineWidth(1)
     
+    -- EDITOR
+    love.graphics.setLineWidth(1)
     if editMode.enabled then
         love.graphics.setLineWidth(2/mapCam.scale)
         

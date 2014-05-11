@@ -67,7 +67,7 @@ end
 function diplScr:enter()
     love.mouse.setVisible(true)
     
-    love.graphics.setFont(bigFont)
+    love.graphics.setFont(gameFont[22])
     
     if #nameToCountry(Player.country).foes == 0 then
         diplScr.noFoes = true
@@ -116,7 +116,7 @@ function diplScr:draw()
             love.graphics.pop()
         end
         
-        love.graphics.setFont(bigFont)
+        love.graphics.setFont(gameFont[22])
         if diplScr.noFoes then
             love.graphics.printf("You have no enemies!", 0, diplScr.margin+50, the.screen.width, "center")
             
@@ -124,7 +124,7 @@ function diplScr:draw()
              love.graphics.printf("Foes", 0, diplScr.margin, the.screen.width, "center")
         end
         
-        love.graphics.setFont(gameFont)
+        love.graphics.setFont(gameFont[16])
         
         for _,btn in pairs(diplScr.btn) do
             btn:draw()
@@ -166,5 +166,5 @@ function diplScr:mousereleased(x,y,button)
 end
 
 function diplScr:leave()
-    love.graphics.setFont(gameFont)
+    love.graphics.setFont(gameFont[16])
 end

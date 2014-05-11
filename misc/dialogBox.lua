@@ -108,7 +108,7 @@ function DialogBox:draw()
         if self:isInstanceOf(InputDBox) then
             love.graphics.printf("Character limit: "..#self.text.."/"..self.charLimit,self.x-padding,self.y+self.height-padding-love.graphics.getFont():getHeight(),self.width-padding,"right")
             if self.drawBeam then
-                love.graphics.rectangle("fill", self.x+padding+gameFont:getWidth(self.text), self.y+padding, 2, love.graphics.getFont():getHeight())
+                love.graphics.rectangle("fill", self.x+padding+gameFont[16]:getWidth(self.text), self.y+padding, 2, love.graphics.getFont():getHeight())
             end
         end
         

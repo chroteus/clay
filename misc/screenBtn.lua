@@ -52,11 +52,11 @@ function screenBtn:update()
 end
 
 function screenBtn:draw()
-    love.graphics.setFont(bigFont)
+    love.graphics.setFont(gameFont[22])
     for _,btn in pairs(screenBtn.list) do
         btn:draw()
     end
-    love.graphics.setFont(gameFont)
+    love.graphics.setFont(gameFont[16])
 end
 
 function screenBtn:mousereleased(x,y,button)

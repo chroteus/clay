@@ -102,18 +102,19 @@ function love.load()
         Gamestate.switch(menu)
     end
     
-    gameFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
-    bigFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 22)
-    hugeFont = love.graphics.newFont("assets/Sansation_Regular.ttf", 52)
-    love.graphics.setFont(gameFont)
+    gameFont = {}
+    gameFont[16] = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
+    gameFont[22] = love.graphics.newFont("assets/Sansation_Regular.ttf", 22)
+    gameFont[52] = love.graphics.newFont("assets/Sansation_Regular.ttf", 52)
+    love.graphics.setFont(gameFont[16])
     
     loadPrefs()
     
     -- Music
-    local musicFiles = love.filesystem.getDirectoryItems("assets/music/")
-    for i=1,#musicFiles do musicFiles[i] = "/assets/music/"..musicFiles[i] end
+    local musicFiles = love.filesystem.getDirectoryItems("assets/music/main")
+    for i=1,#musicFiles do musicFiles[i] = "/assets/music/main/"..musicFiles[i] end
         
-    TEsound.playLooping(musicFiles, "music")
+    TEsound.playLooping(musicFiles, "music", math.huge, .7)
     musicPaused = false
     
     
@@ -216,4 +217,25 @@ function bgPrintf(str, x, y, limit, alignment)
     love.graphics.setColor(255,255,255)
     love.graphics.printf(str, x, y, limit, alignment)
 end
-    
+
+
+-- Count the number of times a value occurs in a table.
+-- Counts values equal to item via the equality operator.
+function table_count(tt, value)
+  local count = 0
+  for ii,xx in pairs(tt) do
+    if xx == value then count = count + 1 end
+  end
+  return count
+end
+
+-- Removes duplicates from a table
+function removeDuplicates(tt)
+  local newtable = {}
+  for ii,xx in ipairs(tt) do
+    if table_count(newtable, xx) == 0 then
+      newtable[#newtable+1] = xx
+    end
+  end
+  return newtable
+end
