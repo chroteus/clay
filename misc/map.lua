@@ -217,6 +217,20 @@ function updateMap(dt)
         else
             editMode.fpActive = false
         end
+        
+        -- point movement
+        local radius = map[1].vertRadius
+        if love.mouse.isDown("l") and love.keyboard.isDown("lalt") then
+            for _,region in pairs(map) do
+                for i,vertex in ipairs(region.pairedVertices) do
+                    if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+                        vertex[1],vertex[2] = mapCam:mousepos()
+                        region.vertices[(i*2)-1] = mapMouse.x
+                        region.vertices[i*2] = mapMouse.y
+                    end
+                end
+            end
+        end
     end
     
     -- loader
@@ -245,6 +259,21 @@ end
 
 function mousereleasedMap(x,y,button)
     if editMode.enabled then
+        
+        -- todo after movement of the point
+        if button == "l" and love.keyboard.isDown("lalt") then
+            for _,region in pairs(map) do
+                region.triangles = love.math.triangulate(region.vertices)
+            
+                for _,vertex in pairs(region.pairedVertices) do
+                    vertex[1],vertex[2] = math.round(vertex[1], 1), math.round(vertex[2], 1)
+                end
+                
+                for _,vertex in pairs(region.vertices) do
+                    vertex = math.round(vertex, 1)
+                end
+            end
+        end
     
         local fp = editMode.firstPoint
         local cp = editMode.currPoint
@@ -253,7 +282,7 @@ function mousereleasedMap(x,y,button)
         
         local radius = editMode.radius/mapCam.scale -- scaling because drawed circle is scaled too
         
-        if button == "l" then
+        if button == "l" and not love.keyboard.isDown("lalt") then
             if fp.x < 0 then
                 fp.x,fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
             end
@@ -304,7 +333,7 @@ function mousereleasedMap(x,y,button)
         end
         
         
-        if button == "l" then
+        if button == "l" and not love.keyboard.isDown("lalt") then
            if not editMode.polFin then
                 table.insert(editMode.currPolygon, cp.x)
                 table.insert(editMode.currPolygon, cp.y)

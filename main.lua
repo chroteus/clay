@@ -114,7 +114,7 @@ function love.load()
     local musicFiles = love.filesystem.getDirectoryItems("assets/music/main")
     for i=1,#musicFiles do musicFiles[i] = "/assets/music/main/"..musicFiles[i] end
         
-    TEsound.playLooping(musicFiles, "music", math.huge, .7)
+    TEsound.playLooping(musicFiles, "music", math.huge, .6)
     musicPaused = false
     
     

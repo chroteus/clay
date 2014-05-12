@@ -41,7 +41,7 @@ function game:init()
         love.graphics.setColor(255,255,255)
     end
     
-    game.editModeString = "Q: Select country, E: Exit, B: Disable cam limits, LMB: Place a point, RMB: Undo/Remove point, LShift + RMB: Delete a region"
+    game.editModeString = "Q: Select country, E: Exit, B: Disable cam limits, LMB: Place a point, RMB: Undo/Remove point, LShift + RMB: Delete a region, LAlt + LMB: Move a point"
 end
 
 function game:enter()
