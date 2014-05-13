@@ -219,7 +219,7 @@ function updateMap(dt)
         end
         
         -- point movement
-        local radius = map[1].vertRadius
+        local radius = map[1].radius or 0.25
         if love.mouse.isDown("l") and love.keyboard.isDown("lalt") then
             for _,region in pairs(map) do
                 for i,vertex in ipairs(region.pairedVertices) do
@@ -280,7 +280,7 @@ function mousereleasedMap(x,y,button)
         local lp = editMode.lastPoint
         local plp = editMode.prevLastPoint
         
-        local radius = editMode.radius/mapCam.scale -- scaling because drawed circle is scaled too
+        local radius = editMode.radius/mapCam.scale
         
         if button == "l" and not love.keyboard.isDown("lalt") then
             if fp.x < 0 then

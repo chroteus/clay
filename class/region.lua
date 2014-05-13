@@ -31,7 +31,7 @@ end
 function Region:mousereleased(x,y,button)
     if editMode.enabled then
     
-        local radius = self.vertRadius/mapCam.scale
+        local radius = self.vertRadius
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
         
@@ -79,12 +79,6 @@ function Region:mousereleased(x,y,button)
                 end
             end
         end             
-    end
-end
-
-function Region:update(dt)
-    if editMode.enabled then
-
     end
 end
 
