@@ -88,6 +88,9 @@ function initMap()
     
     -- Generating neighbours for regions
     -- NOTE: Must be called AFTER map's regions are loaded.
+    
+    -- It is checked if regions share points and add those who share it to neighbors table.
+    -- Since multiple points are shared, duplicates are removed later on.
     for _,region in pairs(map) do
         for _,vertex in pairs(region.pairedVertices) do
             for _,regionB in pairs(map) do
@@ -180,8 +183,9 @@ function updateMap(dt)
         local mapX, mapY = mapCam:cameraCoords(mapW*mapImgScale, mapH*mapImgScale)
 
         local zero,_ = mapCam:worldCoords(0,0)
-        if mapCam.x < 0 then
-            mapCam.x = 0+mapImgTable[1]:getWidth()
+        local camZero,_ = mapCam:cameraCoords(0,0)
+        if zero < camZero then
+           mapCam.x,_ = mapCam:cameraCoords(mapX/4, 0)
         elseif the.screen.width > mapX-20 then
             mapCam.x,_ = mapCam:worldCoords(((mapX-15)/2), 0)
         end
@@ -258,6 +262,11 @@ function mousepressedMap(x, y, button)
 end
 
 function mousereleasedMap(x,y,button)
+    local fp = editMode.firstPoint
+    local cp = editMode.currPoint
+    local lp = editMode.lastPoint
+    local plp = editMode.prevLastPoint
+
     if editMode.enabled then
         
         -- todo after movement of the point
@@ -274,11 +283,6 @@ function mousereleasedMap(x,y,button)
                 end
             end
         end
-    
-        local fp = editMode.firstPoint
-        local cp = editMode.currPoint
-        local lp = editMode.lastPoint
-        local plp = editMode.prevLastPoint
         
         local radius = editMode.radius/mapCam.scale
         
@@ -300,7 +304,7 @@ function mousereleasedMap(x,y,button)
                         editMode.resetPoints()
                     end
                     
-                    local dbox = DialogBoxes:newInputDBox(15, function() dboxFunc() end)
+                    local dbox = DialogBoxes:newInputDBox(20, function() dboxFunc() end)
                     dbox:show(function() love.mouse.setVisible(false) end)
                     
                     editMode.polFin = true
@@ -327,12 +331,13 @@ function mousereleasedMap(x,y,button)
                 cp.x, cp.y = lp.x, lp.y
             end
         end
+    end
+    
+    for _,region in pairs(map) do
+        region:mousereleased(x,y,button)
+    end
         
-        for _,region in pairs(map) do
-            region:mousereleased(x,y,button)
-        end
-        
-        
+    if editMode.enabled then
         if button == "l" and not love.keyboard.isDown("lalt") then
            if not editMode.polFin then
                 table.insert(editMode.currPolygon, cp.x)

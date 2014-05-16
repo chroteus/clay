@@ -9,7 +9,6 @@ local all_callbacks = {
 	"joystickreleased", "textinput", "quit"
 }
 
-
 -- globalCalls: Add your functions which you want to be called with every state's callback
 -- NOTE: Must be one of the callbacks from the all_callbacks list
 --[[ Example: 

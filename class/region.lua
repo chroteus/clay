@@ -5,7 +5,9 @@ function Region:initialize(id, color, name, ...)
     self.color = color
     self.name = tostring(name)
     self.convex = true
-        
+    
+    self.selected = false
+    
     local arg = {...}
     
     if type(arg[1]) == "table" then
@@ -25,10 +27,29 @@ function Region:initialize(id, color, name, ...)
     self.pairedVertices = pairVertices(self.vertices)
     self.vertRadius = 0.25
     
+    
     self.neighbours = {} -- filled after all regions are initialized
 end
 
 function Region:mousereleased(x,y,button)
+    if button == "l" then
+        if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+            for _,region in pairs(map) do
+                region.selected = false
+                
+                for _,neighbour in pairs(self.neighbours) do
+                    if region.name == neighbour then
+                        region.selected = true
+                    end
+                end
+            end
+            
+            self.selected = true
+        else
+            self.selected = false
+        end
+    end
+    
     if editMode.enabled then
     
         local radius = self.vertRadius
@@ -75,7 +96,7 @@ function Region:mousereleased(x,y,button)
                                     end
                                 end
                         }
-                    ):show()
+                    ):show(love.mouse.setVisible(false))
                 end
             end
         end             
@@ -85,6 +106,7 @@ end
 function Region:draw()
     self.color[4] = 80
     love.graphics.setColor(self.color)
+    
    
     if #self.pairedVertices > 2 then
         if self.convex then
@@ -123,6 +145,20 @@ function Region:draw()
             end
             love.graphics.setColor(255,255,255)
         end
+        
+        if self.selected then
+            love.graphics.setColor(255,255,255,64)
+            if self.convex then
+                love.graphics.polygon("fill", self.vertices)
+            else
+                for _,triangle in pairs(self.triangles) do
+                    love.graphics.polygon("fill", triangle)
+                end
+            end
+            love.graphics.setColor(255,255,255)
+        end
+        
+        
                    
     elseif #self.pairedVertices == 2 then
         love.graphics.line(self.vertices)
