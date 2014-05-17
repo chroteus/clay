@@ -8,9 +8,16 @@ mapH = 4480
 mapImgScale = 2700/10800
 
 function initMap()
+    if not mapNewGame then
+        loadMap()
+    else
+        createMap()
+    end
+    
     game.finishedLoading = false
     
-    currAdjCells = {} -- adjacent cells of the selected cell.
+    
+    game.neighbours = {} -- adjacent cells of the selected cell.
 
     -----------------------
     --Edit Mode variables--
@@ -79,12 +86,6 @@ function initMap()
 
     mapMouse = {}
     mapMouse.x, mapMouse.y = mapCam:mousepos()
-
-    if not mapNewGame then
-        loadMap()
-    else
-        createMap()
-    end
     
     -- Generating neighbours for regions
     -- NOTE: Must be called AFTER map's regions are loaded.
@@ -336,7 +337,8 @@ function mousereleasedMap(x,y,button)
     for _,region in pairs(map) do
         region:mousereleased(x,y,button)
     end
-        
+    
+    
     if editMode.enabled then
         if button == "l" and not love.keyboard.isDown("lalt") then
            if not editMode.polFin then
@@ -367,6 +369,8 @@ function drawMap()
     for _,region in pairs(map) do
         region:draw()
     end
+    
+    --neighbours
     
     -- EDITOR
     love.graphics.setLineWidth(1)

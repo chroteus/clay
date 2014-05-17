@@ -36,22 +36,14 @@ function Region:mousereleased(x,y,button)
         if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
             for _,region in pairs(map) do
                 region.selected = false
-                
-                for _,neighbour in pairs(self.neighbours) do
-                    if region.name == neighbour then
-                        region.selected = true
-                    end
-                end
             end
             
             self.selected = true
-        else
-            self.selected = false
+            game.neighbours = self.neighbours
         end
     end
-    
-    if editMode.enabled then
-    
+
+    if editMode.enabled then    
         local radius = self.vertRadius
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
@@ -158,7 +150,20 @@ function Region:draw()
             love.graphics.setColor(255,255,255)
         end
         
-        
+        for _,neighbour in pairs(game.neighbours) do
+            if self.name == neighbour then
+            
+                love.graphics.setColor(255,255,255,64)
+                if self.convex then
+                    love.graphics.polygon("fill", self.vertices)
+                else
+                    for _,triangle in pairs(self.triangles) do
+                        love.graphics.polygon("fill", triangle)
+                    end
+                end
+                love.graphics.setColor(255,255,255)
+            end
+        end
                    
     elseif #self.pairedVertices == 2 then
         love.graphics.line(self.vertices)
