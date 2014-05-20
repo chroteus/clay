@@ -2,7 +2,7 @@ DEBUG = false
 
 -- Libraries
 Timer = require "lib.hump.timer"
-Camera = require "lib.hump.camera"
+Camera = require "lib.amo" --require "lib.hump.camera"
 require "lib.venus"
 
 Gamestate = venus
@@ -50,7 +50,7 @@ require "lib.math"
 function love.load()
     math.randomseed(os.time())
 
-    love.window.setMode(800, 576, {fullscreen=true, fullscreentype="desktop", vsync=true})
+    love.window.setMode(0, 0, {fullscreen=true, fullscreentype="desktop", vsync=true})
     love.window.setTitle("Clay")
     --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
@@ -89,12 +89,6 @@ function love.load()
     randBg()
     
     screenBtn:initialize()
-        
-        
-    fadeRect = {
-        color = {10,10,10},
-        alpha = 0,    
-    }
     
     if DEBUG then
         Gamestate.switch(game)
@@ -133,9 +127,6 @@ end
 function love.draw()
     drawBallBg()
     venus.draw()
-    love.graphics.setColor(fadeRect.color[1],fadeRect.color[2],fadeRect.color[3], fadeRect.alpha)
-    love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
-    love.graphics.setColor(255,255,255)
 end
 
 function love.keypressed(key, u)

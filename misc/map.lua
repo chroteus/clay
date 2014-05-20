@@ -68,30 +68,13 @@ function initMap()
         lp.x,lp.y = -30,-30
         plp.x,plp.y = -40,-40
     end
-        
-    
+
     function editMode.pair() pairVertices(editMode.currPolygon) end
-
-                
-
-    -- Camera
-    mapCam = Camera((mapW/2)*mapImgScale, (mapH/2)*mapImgScale)
-
-    -- mapImg outside of init function because it might be changed in options before init function gets called.
-  -- gridImg = love.graphics.newImage("assets/image/grid.png")
- --   gridImg:setWrap("repeat","repeat")
-    --gridQ = love.graphics.newQuad(0,0,mapImg:getWidth()/2,mapImg:getHeight()/2,gridImg:getWidth(),gridImg:getHeight())
-    
-    mapCam.scale = 1.5
-
-    mapMouse = {}
-    mapMouse.x, mapMouse.y = mapCam:mousepos()
     
     -- Generating neighbours for regions
     -- NOTE: Must be called AFTER map's regions are loaded.
-    
-    -- It is checked if regions share points and add those who share it to neighbors table.
-    -- Since multiple points are shared, duplicates are removed later on.
+    -- It is checked if regions share points and add those who share it are added to neighbors table.
+    -- Since multiple points can be shared, duplicates are removed later on.
     for _,region in pairs(map) do
         for _,vertex in pairs(region.pairedVertices) do
             for _,regionB in pairs(map) do
@@ -135,9 +118,22 @@ function initMap()
             end
         end
     end
-end         
     
+    -- Camera
+    mapCam = Camera(mapW*mapImgScale/2, mapH*mapImgScale/2)
+    
+    function setCamB()
+        local x1,y1 = 1,1
+        local x2, y2 = mapW*mapImgScale, mapH*mapImgScale
+        mapCam:setBounds(x1,y1, x2,y2)
+    end
+    
+    setCamB()
+    mapCam:zoomTo(1)
 
+    mapMouse = {}
+    mapMouse.x, mapMouse.y = mapCam:mousepos()
+end         
 
 function enteredMap()
     -- Clear up current adjacent cells table so that none of the cells would be selected.
@@ -149,8 +145,11 @@ end
 
 
 function updateMap(dt)
+   -- setCamB()
+    mapCam:update()
     -- Converting camera to mouse coordinates.
     mapMouse.x, mapMouse.y = mapCam:mousepos()
+    
     
     for _,country in pairs(countries) do
         if #country.foes > 0 then
@@ -160,51 +159,26 @@ function updateMap(dt)
     
     ---------------------
     --Moving the camera--
-    
     local cameraSpeed = 600/mapCam.scale
     local borderSize = 2
-
-    if love.keyboard.isDown("d") or the.mouse.x > the.screen.width-borderSize then 
-        mapCam.x = mapCam.x + cameraSpeed*dt
+    if love.keyboard.isDown("d") or the.mouse.x > the.screen.width-borderSize then
+        mapCam:setX(mapCam.x + cameraSpeed*dt)
     elseif  love.keyboard.isDown("a") or the.mouse.x < borderSize then
-        mapCam.x = mapCam.x - cameraSpeed*dt
+        mapCam:setX(mapCam.x - cameraSpeed*dt)
     end
     
     if love.keyboard.isDown("s") or the.mouse.y > the.screen.height-borderSize then 
-        mapCam.y = mapCam.y + cameraSpeed*dt
+        mapCam:setY(mapCam.y + cameraSpeed*dt)
     elseif love.keyboard.isDown("w") or the.mouse.y < borderSize then
-        mapCam.y = mapCam.y - cameraSpeed*dt
+        mapCam:setY(mapCam.y - cameraSpeed*dt)
     end
 
-    
-    -----------------------------------
-    --Limiting the movement of camera--
-    
-    if mapBorderCheck then 
-        local mapX, mapY = mapCam:cameraCoords(mapW*mapImgScale, mapH*mapImgScale)
-
-        local zero,_ = mapCam:worldCoords(0,0)
-        local camZero,_ = mapCam:cameraCoords(0,0)
-        if zero < camZero then
-           mapCam.x,_ = mapCam:cameraCoords(mapX/4, 0)
-        elseif the.screen.width > mapX-20 then
-            mapCam.x,_ = mapCam:worldCoords(((mapX-15)/2), 0)
-        end
-        
-        if mapCam.y < (the.screen.height*mapImgScale/mapCam.scale)-1 then
-            mapCam.y = (the.screen.height*mapImgScale/mapCam.scale)-1
-        elseif the.screen.height > mapY-10 then
-            _,mapCam.y = mapCam:worldCoords(0, ((mapY-10)/2)-10)
-       --     mapCam.y = mapCam.y - cameraSpeed*dt
-        end
-    end
-    
     --------------
     --Lımit zoom--
 
     if not DEBUG then
-        if mapCam.scale < 1.5 then
-            mapCam.scale = 1.5
+        if mapCam.scale < 1 then
+            mapCam.scale = 1
         elseif mapCam.scale > 5 then
             mapCam.scale = 5
         end
@@ -251,10 +225,11 @@ function mousepressedMap(x, y, button)
     if button == "wu" then
         Timer.tween(0.3, mapCam, {scale = mapCam.scale + 0.1*mapCam.scale}, "out-quad")
     elseif button == "wd" then
-        if mapCam.scale > 1.5 then
+        if mapCam.scale > 1 then
             Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1*mapCam.scale}, "out-quad")
         end
     end
+    mapCam:update()
 
     -- [[ REWRITE ]]
     if not editMode.enabled then
@@ -306,7 +281,15 @@ function mousereleasedMap(x,y,button)
                     end
                     
                     local dbox = DialogBoxes:newInputDBox(20, function() dboxFunc() end)
-                    dbox:show(function() love.mouse.setVisible(false) end)
+                    
+                    if editMode.country == "Sea" then
+                        table.insert(map, Region(1, countries[1].color, "", editMode.currPolygon))
+                        
+                        editMode.currPolygon = {}
+                        editMode.resetPoints()
+                    else
+                        dbox:show(function() love.mouse.setVisible(false) end)
+                    end
                     
                     editMode.polFin = true
                 end
@@ -369,8 +352,6 @@ function drawMap()
     for _,region in pairs(map) do
         region:draw()
     end
-    
-    --neighbours
     
     -- EDITOR
     love.graphics.setLineWidth(1)

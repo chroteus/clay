@@ -6,6 +6,8 @@ function Region:initialize(id, color, name, ...)
     self.name = tostring(name)
     self.convex = true
     
+    self.country = countries[self.id]
+    
     self.selected = false
     
     local arg = {...}
@@ -33,13 +35,17 @@ end
 
 function Region:mousereleased(x,y,button)
     if button == "l" then
+        
+        
         if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
             for _,region in pairs(map) do
                 region.selected = false
             end
             
-            self.selected = true
-            game.neighbours = self.neighbours
+            if Player.country == self.country.name or self.country.name == "Sea" then
+                self.selected = true
+                game.neighbours = self.neighbours
+            end
         end
     end
 
@@ -88,7 +94,7 @@ function Region:mousereleased(x,y,button)
                                     end
                                 end
                         }
-                    ):show(love.mouse.setVisible(false))
+                    ):show(function() love.mouse.setVisible(false) end)
                 end
             end
         end             

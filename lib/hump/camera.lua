@@ -37,13 +37,30 @@ local function new(x,y, zoom, rot)
 	return setmetatable({x = x, y = y, scale = zoom, rot = rot}, camera)
 end
 
+function camera:setBounds(x1,y1, x2,y2)
+    self.bounds = {min = {x=x1, y=y1}, max = {x=x2, y=y2}}
+end
+
+function camera:setX(x)
+    self.x = math.clamp(self.bounds.min.x, x, self.bounds.max.x)
+    return self
+end
+
+function camera:setY(y)
+    self.y = math.clamp(self.bounds.min.y, y, self.bounds.max.y)
+    return self
+end
+
+
 function camera:lookAt(x,y)
-	self.x, self.y = x,y
+	self:setX(x) 
+    self:setY(y)
 	return self
 end
 
 function camera:move(x,y)
-	self.x, self.y = self.x + x, self.y + y
+	self:setX(self.x + x) 
+    self:setY(self.y + y)
 	return self
 end
 

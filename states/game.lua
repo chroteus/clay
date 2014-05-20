@@ -37,7 +37,10 @@ function game:init()
         love.graphics.setColor(guiColors.fg)
         if self.name ~= "" then
             love.graphics.printf(self.name..", "..self.countryName, self.x+5, self.y+5, self.width, "left")
+        else
+            love.graphics.printf(self.countryName, self.x+5, self.y+5, self.width, "left")
         end
+        
         love.graphics.setColor(255,255,255)
     end
     
