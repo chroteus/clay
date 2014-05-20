@@ -27,7 +27,7 @@ function Region:initialize(id, color, name, ...)
     end
     
     self.pairedVertices = pairVertices(self.vertices)
-    self.vertRadius = 0.25
+    self.vertRadius = 5
     
     
     self.neighbours = {} -- filled after all regions are initialized
@@ -50,7 +50,7 @@ function Region:mousereleased(x,y,button)
     end
 
     if editMode.enabled then    
-        local radius = self.vertRadius
+        local radius = self.vertRadius/mapCam.scale
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
         
@@ -178,7 +178,7 @@ function Region:draw()
     if editMode.enabled then
         love.graphics.setColor(255,50,50)
         if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
-            local radius = self.vertRadius
+            local radius = self.vertRadius/mapCam.scale
             for _,vertex in pairs(self.pairedVertices) do
                 if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
                     love.graphics.circle("line", vertex[1], vertex[2], radius+0.2, 100)

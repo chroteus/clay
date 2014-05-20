@@ -129,7 +129,7 @@ function initMap()
     end
     
     setCamB()
-    mapCam:zoomTo(1)
+    mapCam:zoomTo(1.5)
 
     mapMouse = {}
     mapMouse.x, mapMouse.y = mapCam:mousepos()
@@ -177,8 +177,8 @@ function updateMap(dt)
     --Lımit zoom--
 
     if not DEBUG then
-        if mapCam.scale < 1 then
-            mapCam.scale = 1
+        if mapCam.scale < 1.5 then
+            mapCam.scale = 1.5
         elseif mapCam.scale > 5 then
             mapCam.scale = 5
         end
@@ -198,7 +198,7 @@ function updateMap(dt)
         end
         
         -- point movement
-        local radius = map[1].radius or 0.25
+        local radius = map[1].vertRadius or 5
         if love.mouse.isDown("l") and love.keyboard.isDown("lalt") then
             for _,region in pairs(map) do
                 for i,vertex in ipairs(region.pairedVertices) do
@@ -225,7 +225,7 @@ function mousepressedMap(x, y, button)
     if button == "wu" then
         Timer.tween(0.3, mapCam, {scale = mapCam.scale + 0.1*mapCam.scale}, "out-quad")
     elseif button == "wd" then
-        if mapCam.scale > 1 then
+        if mapCam.scale > 1.5 then
             Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1*mapCam.scale}, "out-quad")
         end
     end

@@ -91,6 +91,8 @@ function diplScr:update(dt)
             btn:update()
         end
     end
+    
+    the.mouse.x, the.mouse.y = love.mouse.getPosition()
 end
 
 
