@@ -30,6 +30,9 @@ function amo:update()
     self.bounds.max.x = (self.bounds.max.x)/self.scale
     self.bounds.min.y = (self.bounds.min.y)/self.scale
     self.bounds.max.y = (self.bounds.max.y)/self.scale
+    
+    self.x = math.clamp(self.bounds.min.x, self.x, self.bounds.max.x)
+    self.y = math.clamp(self.bounds.min.y, self.y, self.bounds.max.y)
 end
 
 function amo:zoomTo(zoom)
