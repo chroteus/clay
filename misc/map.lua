@@ -124,7 +124,7 @@ function initMap()
     
     function setCamB()
         local x1,y1 = 1,1
-        local x2, y2 = mapW*mapImgScale, mapH*mapImgScale
+        local x2, y2 = mapW*mapImgScale-3, mapH*mapImgScale-3
         mapCam:setBounds(x1,y1, x2,y2)
     end
     
@@ -145,7 +145,7 @@ end
 
 
 function updateMap(dt)
-   -- setCamB()
+    setCamB()
     mapCam:update()
     -- Converting camera to mouse coordinates.
     mapMouse.x, mapMouse.y = mapCam:mousepos()
@@ -229,7 +229,6 @@ function mousepressedMap(x, y, button)
             Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1*mapCam.scale}, "out-quad")
         end
     end
-    mapCam:update()
 
     -- [[ REWRITE ]]
     if not editMode.enabled then
