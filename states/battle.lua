@@ -17,18 +17,15 @@ end
 
 battle = {}
 
-function battle:enter()
-    love.mouse.setGrabbed(false)
-    love.mouse.setVisible(true)
-    -- Shortcuts
+function battle:init()
     player = leftCountry:clone()
     enemy = rightCountry:clone()
-    
+
     player:addSkill("attack")
     enemy:addSkill("aiAttack")    
     
-
     globalAttackName = "Attack"
+    
     barWidth = 300
     barHeight = 20
     
@@ -50,14 +47,10 @@ function battle:enter()
     enemy.y = player.y
     enemy.isRight = true
     enemy.image = {
-        data = enemy.leftImage,
-        --x = enemy.x,
-        --y = enemy.y
+        data = enemy.leftImage
     }
-    
     enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
     enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
-    
     enemy.image.x = enemy.x
     
     SkillBtn = Button:subclass("SkillBtn")
@@ -146,6 +139,123 @@ function battle:enter()
             skill.slider.y = player.hpBar.y + player.hpBar.height + 5
         end
     end
+        
+    fighters = {player, enemy}
+    
+    battleCam = Camera(the.screen.width/2, the.screen.height/2)
+end
+
+function battle:enter()
+    love.mouse.setGrabbed(false)
+    love.mouse.setVisible(true)
+    -- Shortcuts
+    player = leftCountry:clone()
+    enemy = rightCountry:clone()
+    
+    player.x = 130
+    player.y = the.screen.height/2 - 250
+    player.isLeft = true
+    player.buttons = {}
+    
+    player.image = {
+        data = player.rightImage,
+        --x = player.x-250/2,
+        --y = player.y
+    }
+    
+    player.image.x = player.x-player.image.data:getWidth()/2 + 50
+    player.image.y = the.screen.height/2 - player.image.data:getHeight()/2 - 100
+    
+    enemy.x = the.screen.width - 330
+    enemy.y = player.y
+    enemy.isRight = true
+    enemy.image = {
+        data = enemy.leftImage
+    }
+    enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
+    enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
+    enemy.image.x = enemy.x
+    
+    
+    local padding = 100
+    player.hpBar = {
+        x = ((player.x + 250) / 2) - barWidth/2,
+        y = player.y - padding,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth/ player.maxHP) * player.hp
+    } 
+    
+    player.energyBar = {
+        x = player.hpBar.x,
+        y = player.y+250+padding,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth / player.maxEnergy) * player.energy,
+        
+    }
+
+    enemy.hpBar = {
+        x = enemy.x + 250/2 - barWidth/2,
+        y = enemy.y - padding,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth / enemy.maxHP) * enemy.hp
+    }
+    
+    enemy.energyBar = {
+        x = enemy.hpBar.x,
+        y = enemy.y+250+padding,
+        width = barWidth,
+        height = barHeight,
+        fillWidth = (barWidth / enemy.maxEnergy) * enemy.energy
+    } 
+    
+
+    globalAttackName = "Attack"
+    barWidth = 300
+    barHeight = 20
+    
+    player.x = 130
+    player.y = the.screen.height/2 - 250
+    player.isLeft = true
+    player.buttons = {}
+    
+    player.image = {
+        data = player.rightImage,
+        --x = player.x-250/2,
+        --y = player.y
+    }
+    
+    player.image.x = player.x-player.image.data:getWidth()/2 + 50
+    player.image.y = the.screen.height/2 - player.image.data:getHeight()/2 - 100
+    
+    enemy.x = the.screen.width - 330
+    enemy.y = player.y
+    enemy.isRight = true
+    enemy.image = {
+        data = enemy.leftImage,
+        --x = enemy.x,
+        --y = enemy.y
+    }
+    
+    enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
+    enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
+    enemy.image.x = enemy.x
+    
+    -- Create buttons according to what skills player has.
+    for i,skill in ipairs(player.skills) do
+        table.insert(player.buttons, SkillBtn(i, skill, function() skill:exec(player, enemy) end))
+        
+        -- Fills the button depending on this variable.
+        player.buttons[i].cooldown = skill.cooldownReset
+    end
+    
+    for i,btn in ipairs(player.buttons) do
+        if btn.name == globalAttackName then
+            btn.hotkey = " "
+        end
+    end
     
     -- fighers: A table which is used to reduce duplicate code.
     fighters = {player, enemy}
@@ -159,8 +269,6 @@ function battle:enter()
             end
         end
     )
-    
-    battleCam = Camera(the.screen.width/2, the.screen.height/2)
 end
 
 function battle:update(dt)
@@ -249,10 +357,17 @@ function battle:draw()
 end
 
 function battle:leave()
-    -- Claim the cell that we wanted to claim but only if the enemy is defeated.
     if enemy.hp <= 0 then
         winState.enemy.att = enemy.attack
         winState.enemy.def = enemy.defense
+        
+        for i,region in ipairs(map) do
+            if region.name == battle.attackedRegion then
+                local player = Player:returnCountry() 
+                region.id = player.id
+                region.color = player.color
+            end
+        end
     end
     
     -- Set lose message

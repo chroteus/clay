@@ -45,6 +45,9 @@ function Region:mousereleased(x,y,button)
             if Player.country == self.country.name or self.country.name == "Sea" then
                 self.selected = true
                 game.neighbours = self.neighbours
+            else
+                startBattle(Player.country, self.country.name)
+                battle.attackedRegion = self.name
             end
         end
     end
@@ -107,11 +110,13 @@ function Region:draw()
     
    
     if #self.pairedVertices > 2 then
-        if self.convex then
-            love.graphics.polygon("fill", self.vertices)
-        else
-            for _,triangle in pairs(self.triangles) do
-                love.graphics.polygon("fill", triangle)
+        if self.name ~= "" then -- Sea regions have no name
+            if self.convex then
+                love.graphics.polygon("fill", self.vertices)
+            else
+                for _,triangle in pairs(self.triangles) do
+                    love.graphics.polygon("fill", triangle)
+                end
             end
         end
         
@@ -119,17 +124,19 @@ function Region:draw()
             love.graphics.setColor(255,255,255)    
             love.graphics.polygon("line",self.vertices)
         else
-            self.color[4] = 255
-            love.graphics.setColor(self.color)
-            love.graphics.polygon("line",self.vertices)
-            
-            if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
-                love.graphics.setColor(255,255,255,64)
-            else
-                love.graphics.setColor(255,255,255,32)
+            if self.name ~= "" then
+                self.color[4] = 255
+                love.graphics.setColor(self.color)
+                love.graphics.polygon("line",self.vertices)
+                
+                if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+                    love.graphics.setColor(255,255,255,64)
+                else
+                    love.graphics.setColor(255,255,255,32)
+                end
+                
+                love.graphics.polygon("line",self.vertices)
             end
-            
-            love.graphics.polygon("line",self.vertices)
         end
         
         if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then

@@ -17,6 +17,9 @@ function winState:init()
         height = 40,
         color = {100, 100, 255}
     }
+    
+    winResultXp = 0
+    winMoneyAmnt = 0
 end
 
 
@@ -60,9 +63,9 @@ function winState:draw()
         love.graphics.printf("Level up!", winXpRect.x, winXpRect.y - winXpRect.height/2 - fontHeight, winXpRect.width, "left")
     end
     
-    love.graphics.setFont(bigFont)
+    love.graphics.setFont(gameFont[22])
     love.graphics.printf("You've gained "..tostring(winMoneyAmnt).."G !", 0, winXpRect.y+50, the.screen.width, "center")
-    love.graphics.setFont(gameFont)
+    love.graphics.setFont(gameFont[16])
         
     love.graphics.setColor(255,255,255)
 end
