@@ -21,6 +21,7 @@ function game:init()
     infoBox.y = 5
     infoBox.countryName = ""
     infoBox.name = ""
+    infoBox.id = 1
 
     function infoBox:update(dt)
         for _,region in pairs(map) do
@@ -28,6 +29,7 @@ function game:init()
                 self.countryName = countries[region.id].name
                 self.name = region.name
                 self.region = region
+                self.id = region.id
             end
         end
     end
@@ -35,7 +37,7 @@ function game:init()
     function infoBox:draw()
         guiRect(self.x, self.y, self.width, self.height)
         love.graphics.setColor(guiColors.fg)
-        if self.name ~= "" then
+        if countries[self.id].name ~= "Sea" then
             love.graphics.printf(self.name..", "..self.countryName, self.x+5, self.y+5, self.width, "left")
         else
             love.graphics.printf(self.countryName, self.x+5, self.y+5, self.width, "left")

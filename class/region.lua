@@ -110,7 +110,7 @@ function Region:draw()
     
    
     if #self.pairedVertices > 2 then
-        if self.name ~= "" then -- Sea regions have no name
+        if self.country.name ~= "Sea" then
             if self.convex then
                 love.graphics.polygon("fill", self.vertices)
             else
@@ -124,7 +124,7 @@ function Region:draw()
             love.graphics.setColor(255,255,255)    
             love.graphics.polygon("line",self.vertices)
         else
-            if self.name ~= "" then
+            if self.country.name ~= "Sea" then
                 self.color[4] = 255
                 love.graphics.setColor(self.color)
                 love.graphics.polygon("line",self.vertices)

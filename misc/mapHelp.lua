@@ -56,16 +56,16 @@ function loadMap() -- Load an existing map.
     local mapFile = love.filesystem.load("map.lua")
     local mapTable = mapFile() -- Call the return of mapFile
     
-    for _,region in pairs(mapTable[1]) do
+    for _,region in pairs(mapTable.map) do
         local country = idToCountry(region[1])
         table.insert(map, Region(country.id, country.color, region[2], region[3]))
     end
     
-    for k,v in pairs(mapTable[2]) do
+    for k,v in pairs(mapTable.player) do
         Player[k] = v
     end
     
-    for countryN,foeTable in pairs(mapTable[3]) do
+    for countryN,foeTable in pairs(mapTable.foes) do
         local countryName = convertStr(countryN)
     
         for _,country in pairs(countries) do
@@ -82,7 +82,7 @@ function loadMap() -- Load an existing map.
     
     
     -- load money values
-    for countryN,moneyV in pairs(mapTable[4]) do
+    for countryN,moneyV in pairs(mapTable.money) do
         local countryName = convertStr(countryN)
         
         for _,country in pairs(countries) do
@@ -91,7 +91,10 @@ function loadMap() -- Load an existing map.
             end
         end
     end
-    
+
+    -- load sea id
+    game.seaId = mapTable.seaId
+
     Player:returnCountry(true).attack = Player.attack
     Player:returnCountry(true).defense = Player.defense
     Player:returnCountry(true).money = Player.money
@@ -107,7 +110,7 @@ function saveMap(name)
     
     append("return {")
     
-    append("{")
+    append("map = {")
     for k,region in pairs(map) do
         append("{"..region.id..",")
         append('"'..region.name..'"'..",")
@@ -122,7 +125,7 @@ function saveMap(name)
     end
     append("},")
     
-    append("{")
+    append("player = {")
     for k,v in pairs(Player) do
         local stringV = ""
         if type(v) == "string" then
@@ -148,7 +151,7 @@ function saveMap(name)
     append("},")
 
     -- save foes
-    append("{")
+    append("foes = {")
     for _,country in pairs(countries) do
         if #country.foes > 0 then
             local countryName = country.name
@@ -164,13 +167,15 @@ function saveMap(name)
     append("},")
     
     -- save money for each country
-    append("{")
+    append("money = {")
     for _,country in pairs(countries) do
         append(rmSpc(country.name).."="..tostring(country.money)..",")
     end
-        
     append("},")
     
+    --save latest sea id
+    append("seaId = "..game.seaId..",")
+    -- finish
     append("}")
     
     love.filesystem.write(mapFile, strToApp)

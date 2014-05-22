@@ -8,6 +8,8 @@ mapH = 4480
 mapImgScale = 2700/10800
 
 function initMap()
+    game.seaId = 0 -- used to give id to sea regions
+
     if not mapNewGame then
         loadMap()
     else
@@ -15,8 +17,6 @@ function initMap()
     end
     
     game.finishedLoading = false
-    
-    
     game.neighbours = {} -- adjacent cells of the selected cell.
 
     -----------------------
@@ -282,7 +282,8 @@ function mousereleasedMap(x,y,button)
                     local dbox = DialogBoxes:newInputDBox(20, function() dboxFunc() end)
                     
                     if editMode.country == "Sea" then
-                        table.insert(map, Region(1, countries[1].color, "", editMode.currPolygon))
+                        game.seaId = game.seaId + 1
+                        table.insert(map, Region(1, countries[1].color, "sea"..game.seaId, editMode.currPolygon))
                         
                         editMode.currPolygon = {}
                         editMode.resetPoints()
