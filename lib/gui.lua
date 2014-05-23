@@ -182,7 +182,36 @@ function ShopButton:drawIcon()
     love.graphics.print(self.variable, self.x - (23*scaleFactor), self.y)
 end
     
+SkillBtn = Button:subclass("SkillBtn")
+    
+function SkillBtn:initialize(yOrder, skill, func)
+    self.width = 150
+    self.x = player.x + self.width + self.width/2 --player.x/2 + self.width/3
+    self.y = player.y + 40 + 40*yOrder --(player.y + 250+40) + 40*yOrder
+    self.fillWidth = self.width
+    self.height = 30
+    self.func = func
+    self.name = skill.name
+    self.text = skill.name.." ["..-skill.energy.."]"
+    self.hotkey = string.match(skill.name, "%((.?)%)")
+    if self.hotkey then self.hotkey = string.lower(self.hotkey) end
+        
+    Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
+end
 
+function SkillBtn:action()
+    Button.action(self)
+    if self.fillWidth >= self.width-1 then -- Checking for equality doesn't work properly for some reason.
+        self.fillWidth = 0
+        Timer.tween(self.cooldown, self, {fillWidth = self.width}, "out-quad")
+    end
+end
+
+function SkillBtn:keypressed(key)
+    if self.hotkey and string.lower(key) == self.hotkey then
+        self:action()
+    end
+end
     
     
     

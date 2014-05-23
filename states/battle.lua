@@ -18,129 +18,102 @@ end
 battle = {}
 
 function battle:init()
-    player = leftCountry:clone()
-    enemy = rightCountry:clone()
+    function battle.load()
+    
+        player = leftCountry:clone()
+        enemy = rightCountry:clone()
+        
+        globalAttackName = "Attack"
+        
+        barWidth = 300
+        barHeight = 20
+        
+        player.x = 130
+        player.y = the.screen.height/2 - 250
+        player.isLeft = true
+        player.buttons = {}
+        
+        player.image = {
+            data = player.rightImage,
+            --x = player.x-250/2,
+            --y = player.y
+        }
+        
+        player.image.x = player.x-player.image.data:getWidth()/2 + 50
+        player.image.y = the.screen.height/2 - player.image.data:getHeight()/2 - 100
+        
+        enemy.x = the.screen.width - 330
+        enemy.y = player.y
+        enemy.isRight = true
+        enemy.image = {
+            data = enemy.leftImage
+        }
+        enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
+        enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
+        enemy.image.x = enemy.x
+        
+         -- Create buttons according to what skills player has.
+        for i,skill in ipairs(player.skills) do
+            table.insert(player.buttons, SkillBtn(i, skill, function() skill:exec(player, enemy) end))
+            
+            -- Fills the button depending on this variable.
+            player.buttons[i].cooldown = skill.cooldownReset
+        end
+        
+        for i,btn in ipairs(player.buttons) do
+            if btn.name == globalAttackName then
+                btn.hotkey = " "
+            end
+        end
+              
+        local padding = 100
+        player.hpBar = {
+            x = ((player.x + 250) / 2) - barWidth/2,
+            y = player.y - padding,
+            width = barWidth,
+            height = barHeight,
+            fillWidth = (barWidth/ player.maxHP) * player.hp
+        } 
+        
+        player.energyBar = {
+            x = player.hpBar.x,
+            y = player.y+250+padding,
+            width = barWidth,
+            height = barHeight,
+            fillWidth = (barWidth / player.maxEnergy) * player.energy,
+            
+        }
+
+        enemy.hpBar = {
+            x = enemy.x + 250/2 - barWidth/2,
+            y = enemy.y - padding,
+            width = barWidth,
+            height = barHeight,
+            fillWidth = (barWidth / enemy.maxHP) * enemy.hp
+        }
+        
+        enemy.energyBar = {
+            x = enemy.hpBar.x,
+            y = enemy.y+250+padding,
+            width = barWidth,
+            height = barHeight,
+            fillWidth = (barWidth / enemy.maxEnergy) * enemy.energy
+        } 
+        
+        for _,skill in pairs(player.skills) do
+            if skill.name == globalAttackName then
+                skill.slider.x = player.hpBar.x
+                skill.slider.y = player.hpBar.y + player.hpBar.height + 5
+            end
+        end
+            
+        fighters = {player, enemy}
+    end
+
+    battle.load()
 
     player:addSkill("attack")
     enemy:addSkill("aiAttack")    
-    
-    globalAttackName = "Attack"
-    
-    barWidth = 300
-    barHeight = 20
-    
-    player.x = 130
-    player.y = the.screen.height/2 - 250
-    player.isLeft = true
-    player.buttons = {}
-    
-    player.image = {
-        data = player.rightImage,
-        --x = player.x-250/2,
-        --y = player.y
-    }
-    
-    player.image.x = player.x-player.image.data:getWidth()/2 + 50
-    player.image.y = the.screen.height/2 - player.image.data:getHeight()/2 - 100
-    
-    enemy.x = the.screen.width - 330
-    enemy.y = player.y
-    enemy.isRight = true
-    enemy.image = {
-        data = enemy.leftImage
-    }
-    enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
-    enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
-    enemy.image.x = enemy.x
-    
-    SkillBtn = Button:subclass("SkillBtn")
-    
-    function SkillBtn:initialize(yOrder, skill, func)
-        self.width = 150
-        self.x = player.x + self.width + self.width/2 --player.x/2 + self.width/3
-        self.y = player.y + 40 + 40*yOrder --(player.y + 250+40) + 40*yOrder
-        self.fillWidth = self.width
-        self.height = 30
-        self.func = func
-        self.name = skill.name
-        self.text = skill.name.." ["..-skill.energy.."]"
-        self.hotkey = string.match(skill.name, "%((.?)%)")
-        if self.hotkey then self.hotkey = string.lower(self.hotkey) end
-        
-        Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
-
-    end
-
-    function SkillBtn:action()
-        Button.action(self)
-        if self.fillWidth >= self.width-1 then -- Checking for equality doesn't work properly for some reason.
-            self.fillWidth = 0
-            Timer.tween(self.cooldown, self, {fillWidth = self.width}, "out-quad")
-        end
-    end
-
-    function SkillBtn:keypressed(key)
-        if self.hotkey and string.lower(key) == self.hotkey then
-            self:action()
-        end
-    end
-    
-    -- Create buttons according to what skills player has.
-    for i,skill in ipairs(player.skills) do
-        table.insert(player.buttons, SkillBtn(i, skill, function() skill:exec(player, enemy) end))
-        
-        -- Fills the button depending on this variable.
-        player.buttons[i].cooldown = skill.cooldownReset
-    end
-    
-    for i,btn in ipairs(player.buttons) do
-        if btn.name == globalAttackName then
-            btn.hotkey = " "
-        end
-    end
-          
-    local padding = 100
-    player.hpBar = {
-        x = ((player.x + 250) / 2) - barWidth/2,
-        y = player.y - padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth/ player.maxHP) * player.hp
-    } 
-    
-    player.energyBar = {
-        x = player.hpBar.x,
-        y = player.y+250+padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth / player.maxEnergy) * player.energy,
-        
-    }
-
-    enemy.hpBar = {
-        x = enemy.x + 250/2 - barWidth/2,
-        y = enemy.y - padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth / enemy.maxHP) * enemy.hp
-    }
-    
-    enemy.energyBar = {
-        x = enemy.hpBar.x,
-        y = enemy.y+250+padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth / enemy.maxEnergy) * enemy.energy
-    } 
-    
-    for _,skill in pairs(player.skills) do
-        if skill.name == globalAttackName then
-            skill.slider.x = player.hpBar.x
-            skill.slider.y = player.hpBar.y + player.hpBar.height + 5
-        end
-    end
-        
-    fighters = {player, enemy}
     
     battleCam = Camera(the.screen.width/2, the.screen.height/2)
 end
@@ -148,117 +121,8 @@ end
 function battle:enter()
     love.mouse.setGrabbed(false)
     love.mouse.setVisible(true)
-    -- Shortcuts
-    player = leftCountry:clone()
-    enemy = rightCountry:clone()
     
-    player.x = 130
-    player.y = the.screen.height/2 - 250
-    player.isLeft = true
-    player.buttons = {}
-    
-    player.image = {
-        data = player.rightImage,
-        --x = player.x-250/2,
-        --y = player.y
-    }
-    
-    player.image.x = player.x-player.image.data:getWidth()/2 + 50
-    player.image.y = the.screen.height/2 - player.image.data:getHeight()/2 - 100
-    
-    enemy.x = the.screen.width - 330
-    enemy.y = player.y
-    enemy.isRight = true
-    enemy.image = {
-        data = enemy.leftImage
-    }
-    enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
-    enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
-    enemy.image.x = enemy.x
-    
-    
-    local padding = 100
-    player.hpBar = {
-        x = ((player.x + 250) / 2) - barWidth/2,
-        y = player.y - padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth/ player.maxHP) * player.hp
-    } 
-    
-    player.energyBar = {
-        x = player.hpBar.x,
-        y = player.y+250+padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth / player.maxEnergy) * player.energy,
-        
-    }
-
-    enemy.hpBar = {
-        x = enemy.x + 250/2 - barWidth/2,
-        y = enemy.y - padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth / enemy.maxHP) * enemy.hp
-    }
-    
-    enemy.energyBar = {
-        x = enemy.hpBar.x,
-        y = enemy.y+250+padding,
-        width = barWidth,
-        height = barHeight,
-        fillWidth = (barWidth / enemy.maxEnergy) * enemy.energy
-    } 
-    
-
-    globalAttackName = "Attack"
-    barWidth = 300
-    barHeight = 20
-    
-    player.x = 130
-    player.y = the.screen.height/2 - 250
-    player.isLeft = true
-    player.buttons = {}
-    
-    player.image = {
-        data = player.rightImage,
-        --x = player.x-250/2,
-        --y = player.y
-    }
-    
-    player.image.x = player.x-player.image.data:getWidth()/2 + 50
-    player.image.y = the.screen.height/2 - player.image.data:getHeight()/2 - 100
-    
-    enemy.x = the.screen.width - 330
-    enemy.y = player.y
-    enemy.isRight = true
-    enemy.image = {
-        data = enemy.leftImage,
-        --x = enemy.x,
-        --y = enemy.y
-    }
-    
-    enemy.image.x = enemy.x-enemy.image.data:getWidth()/2 + 50
-    enemy.image.y = the.screen.height/2 - enemy.image.data:getHeight()/2 - 100
-    enemy.image.x = enemy.x
-    
-    -- Create buttons according to what skills player has.
-    for i,skill in ipairs(player.skills) do
-        table.insert(player.buttons, SkillBtn(i, skill, function() skill:exec(player, enemy) end))
-        
-        -- Fills the button depending on this variable.
-        player.buttons[i].cooldown = skill.cooldownReset
-    end
-    
-    for i,btn in ipairs(player.buttons) do
-        if btn.name == globalAttackName then
-            btn.hotkey = " "
-        end
-    end
-    
-    -- fighers: A table which is used to reduce duplicate code.
-    fighters = {player, enemy}
+    battle.load()
     
     -- VERY Simple AI
     -- Execute any possible skill (if cooldown is over) every second.
@@ -376,12 +240,6 @@ function battle:leave()
         loseState.msg = "You lose. (No HP left)"
     elseif player.energy <= 0 then
         loseState.msg = "You lose. (No energy left)"
-    end
-    
-    -- Reset countries' stats. [[WORKAROUND]]
-    for _,fighter in pairs(fighters) do
- --       fighter.hp = fighter.maxHP
-  --      fighter.energy = fighter.maxEnergy
     end
     
     checkIfDead() -- check if any of the countries are dead.
