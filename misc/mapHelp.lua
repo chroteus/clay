@@ -42,7 +42,7 @@ function createMap() -- Fresh map. Used to load map at first play.
         local mapString = mapFile:read()
         local mapTable = assert(loadstring(mapString))()
         
-        for _,region in pairs(mapTable[1]) do
+        for _,region in pairs(mapTable.map) do
             local country = idToCountry(region[1])
             table.insert(map, Region(country.id, country.color, region[2], region[3]))
             map[#map].pairedVertices = pairVertices(map[#map].vertices)
