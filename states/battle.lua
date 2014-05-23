@@ -366,6 +366,7 @@ function battle:leave()
                 local player = Player:returnCountry() 
                 region.id = player.id
                 region.color = player.color
+                region.country = player
             end
         end
     end
@@ -379,8 +380,8 @@ function battle:leave()
     
     -- Reset countries' stats. [[WORKAROUND]]
     for _,fighter in pairs(fighters) do
-        fighter.hp = fighter.maxHP
-        fighter.energy = fighter.maxEnergy
+ --       fighter.hp = fighter.maxHP
+  --      fighter.energy = fighter.maxEnergy
     end
     
     checkIfDead() -- check if any of the countries are dead.

@@ -46,8 +46,10 @@ function Region:mousereleased(x,y,button)
                 self.selected = true
                 game.neighbours = self.neighbours
             else
-                startBattle(Player.country, self.country.name)
-                battle.attackedRegion = self.name
+                if not editMode.enabled then
+                    startBattle(Player.country, self.country.name)
+                    battle.attackedRegion = self.name
+                end
             end
         end
     end
