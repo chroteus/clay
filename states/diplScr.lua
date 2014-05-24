@@ -135,11 +135,11 @@ function diplScr:draw()
         diplCam:detach()
     
     else -- if talking with country
-        love.graphics.setFont(bigFont)
+        love.graphics.setFont(gameFont[22])
         love.graphics.draw(diplScr.country.leftImage, the.screen.width/2 - diplScr.country.leftImage:getWidth()/2, the.screen.height/2 - diplScr.country.leftImage:getHeight())
         love.graphics.printf(diplScr.country.name, 0, diplScr.margin, the.screen.width, "center")
         love.graphics.printf(diplScr.message, the.screen.width/4, the.screen.height/2 + diplScr.margin, the.screen.width/2, "center")
-        love.graphics.setFont(gameFont)
+        love.graphics.setFont(gameFont[16])
         
         for _,btn in pairs(diplScr.cBtn) do
             btn:draw()

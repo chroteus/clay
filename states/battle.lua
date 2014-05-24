@@ -228,9 +228,7 @@ function battle:leave()
         for i,region in ipairs(map) do
             if region.name == battle.attackedRegion then
                 local player = Player:returnCountry() 
-                region.id = player.id
-                region.color = player.color
-                region.country = player
+                region:changeOwner(player)
             end
         end
     end

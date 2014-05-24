@@ -72,15 +72,30 @@ end
 local numOfInv = 0
 
 function Country:invade(dt)
-    -- [[ REWRITE ]]
-    -- Used for AI invasions
-    self.invadeTimer = self.invadeTimer - dt
-    
-    if self.invadeTimer <= 0 then
-        self.invadeTimer = math.random(3,6)
+    if self.name ~= Player.country then
+        -- [[ REWRITE ]]
+        -- Used for AI invasions
+        self.invadeTimer = self.invadeTimer - dt
         
-        
-        numOfInv = 0
+        if self.invadeTimer <= 0 then
+            self.invadeTimer = math.random(3,6)
+            
+            for _,foe in pairs(self.foes) do
+                for _,region in pairs(map) do
+                    if region.country.name == foe.name then
+                        if strongEnough(self, region.country) then
+                            for _,neighbour in pairs(region.neighbours) do
+                                if neighbour == foe.name then
+                                    region:changeOwner(self)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            
+            numOfInv = 0
+        end
     end
 end
 
@@ -120,6 +135,9 @@ function Country:isFoe(name)
 end
 
 function Country:war(foe)
+    local foe = foe
+    if type(foe) == "string" then foe = nameToCountry(foe) end
+    
     if type(foe) == "table" then
         if #foe.foes == 0 then 
             table.insert(foe.foes, self)
@@ -136,12 +154,17 @@ function Country:war(foe)
                 table.insert(self.foes, foe)
             end
         end
+        
+        msgBox:add(self.name.." declared war on "..foe.name.."!")
     else
-        error("Country:war method accepts the instance of the country only.")
+        error("Country:war method accepts the instance of country or its name.")
     end
 end
 
 function Country:peace(country)
+    local country = country
+    if type(country) == "string" then country = nameToCountry(country) end
+
     local function peace(country)
         if type(country) == "table" then
             if #self.foes > 0 then
@@ -162,7 +185,7 @@ function Country:peace(country)
             
             msgBox:add(self.name.." signed a peace treaty with "..country.name..".")
         else
-            error("Country:peace method accepts the instance of the country only.")
+            error("Country:peace method accepts the instance or name of country only.")
         end
     end
     

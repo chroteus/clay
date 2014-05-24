@@ -49,6 +49,8 @@ function Region:mousereleased(x,y,button)
                 if not editMode.enabled then
                     startBattle(Player.country, self.country.name)
                     battle.attackedRegion = self.name
+                    
+                    Player:returnCountry():war(self.country.name)
                 end
             end
         end
@@ -201,3 +203,17 @@ function Region:draw()
         
     love.graphics.setColor(255,255,255)
 end
+
+function Region:changeOwner(owner)
+    local owner = owner
+    if type(owner) == "string" then owner = nameToCountry(owner) end
+    
+    if type(owner) == "table" then
+        self.id = owner.id
+        self.color = owner.color
+        self.country = owner
+    else
+        error("Region:changeOwner accepts instance of a country or its name")
+    end
+end
+    
