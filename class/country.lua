@@ -80,14 +80,14 @@ function Country:invade(dt)
         if self.invadeTimer <= 0 then
             self.invadeTimer = math.random(3,6)
             
+            
             for _,foe in pairs(self.foes) do
                 for _,region in pairs(map) do
-                    if region.country.name == foe.name then
-                        if strongEnough(self, region.country) then
-                            for _,neighbour in pairs(region.neighbours) do
-                                if neighbour == foe.name then
-                                    region:changeOwner(self)
-                                end
+                    if strongEnough(self, region.country) then
+                        if numOfInv == 0 then
+                            if region.country.name == foe.name then
+                                numOfInv = numOfInv + 1
+                                region:changeOwner(self)
                             end
                         end
                     end
@@ -138,6 +138,10 @@ function Country:war(foe)
     local foe = foe
     if type(foe) == "string" then foe = nameToCountry(foe) end
     
+    if not self:isFoe(foe.name) then
+        msgBox:add(self.name.." declared war on "..foe.name.."!")
+    end
+    
     if type(foe) == "table" then
         if #foe.foes == 0 then 
             table.insert(foe.foes, self)
@@ -154,8 +158,6 @@ function Country:war(foe)
                 table.insert(self.foes, foe)
             end
         end
-        
-        msgBox:add(self.name.." declared war on "..foe.name.."!")
     else
         error("Country:war method accepts the instance of country or its name.")
     end
