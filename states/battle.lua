@@ -111,6 +111,9 @@ function battle:init()
     end
 
     battle.load()
+    
+    battle.music = love.filesystem.getDirectoryItems("assets/music/battle")
+    for i=1,#battle.music do battle.music[i] = "/assets/music/battle/"..battle.music[i] end
 
     player:addSkill("attack")
     enemy:addSkill("aiAttack")    
@@ -123,6 +126,9 @@ function battle:enter()
     love.mouse.setVisible(true)
     
     battle.load()
+    
+    TEsound.stop("music")
+    TEsound.playLooping(battle.music, "bMusic")
     
     -- VERY Simple AI
     -- Execute any possible skill (if cooldown is over) every second.
@@ -241,6 +247,9 @@ function battle:leave()
     end
     
     checkIfDead() -- check if any of the countries are dead.
+    
+    TEsound.stop("bMusic")
+    TEsound.playLooping(musicFiles, "music")
     
     startedBattle = false
 end
