@@ -13,8 +13,10 @@ local function new(x,y, zoom, rot)
 end
 
 function amo:setBounds(x1,y1, x2,y2)
-    local width,height = love.window.getDimensions()
+    local width,height = love.window.getDimensions()   
     self.bounds = {min = {x=(x1*self.scale)+width/2, y=(y1*self.scale)+height/2}, max = {x=(x2*self.scale)-width/2, y=(y2*self.scale)-height/2}}
+
+    self.origBounds = {min = {x = x1, y = y1}, max = {x = x2, y = y2}}
 end
 
 function amo:setX(x)
@@ -26,6 +28,12 @@ function amo:setY(y)
 end
 
 function amo:update()
+    local width,height = love.window.getDimensions()
+    local orig = self.origBounds
+    
+    self.bounds.min.x, self.bounds.min.y = orig.min.x*self.scale + width/2, orig.min.y*self.scale + height/2
+    self.bounds.max.x, self.bounds.max.y = orig.max.x*self.scale - width/2, orig.max.y*self.scale - height/2
+    
     self.bounds.min.x = (self.bounds.min.x)/self.scale
     self.bounds.max.x = (self.bounds.max.x)/self.scale
     self.bounds.min.y = (self.bounds.min.y)/self.scale

@@ -33,20 +33,23 @@ for i=1, #countries do
 end
 
 function checkIfDead()
-    -- checking for the number of cells a country has
+    -- checking for the number of regions a country posseses
     -- kills the country if there are none
-    -- [[ REWRITE ]]
-    
-    --[[
+
     for _,country in pairs(countries) do
-        local num = 0 
+        local num = 0
         
+        for _,region in pairs(map) do
+            if region.id == country.id then
+                num = num + 1
+            end
+        end
         
         if num == 0 then 
             country.isDead = true
             
             if country.name == Player.country then
-                Gamestate.switch(gameOver)
+                venus.switch(gameOver)
             else
                 if not country.deadMessagePrinted then
                     msgBox:add(country.name.." is defeated!")
@@ -55,7 +58,6 @@ function checkIfDead()
             end
         end
     end
-    ]]--
 end
 
 function funcCountry(countryName, func)

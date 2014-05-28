@@ -52,7 +52,7 @@ function Region:mousereleased(x,y,button)
                             
                             Player:returnCountry():war(self.country.name)
                         end
-                    end
+                    end 
                 end
             end
         end
@@ -216,6 +216,14 @@ function Region:changeOwner(owner)
         self.country = owner
     else
         error("Region:changeOwner accepts instance of a country or its name")
+    end
+end
+
+function getRegion(name)
+    for _,region in pairs(map) do
+        if region.name == name then
+            return region
+        end
     end
 end
     

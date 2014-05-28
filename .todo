@@ -1,48 +1,53 @@
 Before Beta:
 
 Regions:
-    Make an editor where you would be able to set regions as polygons.
-    Editor would save the vertices.
-
-    Zooming in reveals more details about the region (its sub-regions, etc)
+    Zooming in reveals more details about the country (its regions, etc)
     A countryball would be shown in the middle of a country/region.
+
+    Rewrite old code.
 end
 
 Economy: 
-    Countries should be able to give money to each other.
-    A simulation of an economy.
+    Countries should be able to give money to each other, to improve relations.
+    A simulation of an (simple) economy.
 end
 
 Diplomacy:  
-    Peace for resources, money.se
+    Peace for money.
+    Peace between countries.
 end
 
 Random events:
-    Peace between countries.
-    Riots (Khohol Power!)
+    Riots, which decrease countries' amount of money or make its regions join neighburing countries. (Khohol Power!)
 end
 
 
-*Improvement: Countries attacking each other over sea.
-
 RPG elements:
-    Item shop
+    Item shop (thus items)
 end                                        
 
 Improve Battle System:
-    Add indicators on how much health, energy were used (Chrono Trigger-esque).
-    Make battles a bit longer, more strategic, but with enough action.
-    Add new types of combat techniques.
-    Add animations.
+    Battle system 1 (current one):
+        RPG-like real-time battles.
+        
+        Add indicators on how much health, energy were used (Chrono Trigger-esque).
+        Make battles a bit longer, more strategic, but with enough action.
+        Add new types of combat techniques.
+        Add animations.
+        
+    Battle system 2 (Proposed, more fitting and also more fun. Less RPG-esque):
+        More strategy-like battles. Player will have his own army, battles are turn-based.
+    
 end
 
-Naval warfare
 
 "Upgrade" system:
     Countries cannot attack each other over sea unless they have a navy (they must have a region adjacent to water). 
 end
 
-Bonus stage:
+Naval warfare
+
+Bonus stage [AFTER RELEASE]:
     One of your soldiers gets stuck up in an 8bit world. You guide him back to Earth.
 end
 
@@ -50,5 +55,3 @@ Uninhabitated land:
     Most of the Africa is uninhabited allowing you to explore/claim it.
     OPTIONAL: Wild life
 end
-
-Refactor the code

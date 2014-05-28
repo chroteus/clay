@@ -42,7 +42,7 @@ function Country:initialize(name, color, attack, defense, hp)
         skills.heal:clone(),
     } 
     
-    self.invadeTimer = math.random(3,6)
+    self.invadeTimer = math.random(10,20)
     
     Base.initialize(self)
 end
@@ -78,7 +78,7 @@ function Country:invade(dt)
         self.invadeTimer = self.invadeTimer - dt
         
         if self.invadeTimer <= 0 then
-            self.invadeTimer = math.random(3,6)
+            self.invadeTimer = math.random(10,20)
             
             
             for _,foe in pairs(self.foes) do
@@ -87,6 +87,11 @@ function Country:invade(dt)
                         if numOfInv == 0 then
                             if region.country.name == foe.name then
                                 numOfInv = numOfInv + 1
+                                
+                                if region.country.name == Player.country then
+                                    msgBox:add(self.name.." took your clay!")
+                                end
+                                
                                 region:changeOwner(self)
                             end
                         end
@@ -134,32 +139,35 @@ function Country:isFoe(name)
     return r
 end
 
-function Country:war(foe)
+function Country:war(foe, noPrintMsg)
     local foe = foe
     if type(foe) == "string" then foe = nameToCountry(foe) end
     
-    if not self:isFoe(foe.name) then
-        msgBox:add(self.name.." declared war on "..foe.name.."!")
-    end
+    if foe.name ~= "Sea" and foe.name ~= self.name then
     
-    if type(foe) == "table" then
-        if #foe.foes == 0 then 
-            table.insert(foe.foes, self)
-        else
-            if not foe:isFoe(Player.country) then
-                table.insert(foe.foes, self)
-            end
+        if not self:isFoe(foe.name) and not noPrintMsg then
+            msgBox:add(self.name.." declared war on "..foe.name.."!")
         end
         
-        if #self.foes == 0 then
-            table.insert(self.foes, foe)
-        else
-            if not self:isFoe(foe.name) then
-                table.insert(self.foes, foe)
+        if type(foe) == "table" then
+            if #foe.foes == 0 then 
+                table.insert(foe.foes, self)
+            else
+                if not foe:isFoe(Player.country) then
+                    table.insert(foe.foes, self)
+                end
             end
+            
+            if #self.foes == 0 then
+                table.insert(self.foes, foe)
+            else
+                if not self:isFoe(foe.name) then
+                    table.insert(self.foes, foe)
+                end
+            end
+        else
+            error("Country:war method accepts the instance of country or its name.")
         end
-    else
-        error("Country:war method accepts the instance of country or its name.")
     end
 end
 
@@ -167,57 +175,59 @@ function Country:peace(country)
     local country = country
     if type(country) == "string" then country = nameToCountry(country) end
 
-    local function peace(country)
-        if type(country) == "table" then
-            if #self.foes > 0 then
-                for i,foe in ipairs(self.foes) do
-                    if country.name == foe.name then
-                        table.remove(self.foes, i)
+    if country.name ~= "Sea" and country.name ~= self.name then
+        local function peace(country)
+            if type(country) == "table" then
+                if #self.foes > 0 then
+                    for i,foe in ipairs(self.foes) do
+                        if country.name == foe.name then
+                            table.remove(self.foes, i)
+                        end
+                    end
+                    
+                end
+                if #country.foes > 0 then
+                    for i,foe in ipairs(country.foes) do
+                        if self.name == foe.name then
+                            table.remove(country.foes, i)
+                        end
                     end
                 end
                 
+                msgBox:add(self.name.." signed a peace treaty with "..country.name..".")
+            else
+                error("Country:peace method accepts the instance or name of country only.")
             end
-            if #country.foes > 0 then
-                for i,foe in ipairs(country.foes) do
-                    if self.name == foe.name then
-                        table.remove(country.foes, i)
-                    end
-                end
-            end
-            
-            msgBox:add(self.name.." signed a peace treaty with "..country.name..".")
-        else
-            error("Country:peace method accepts the instance or name of country only.")
         end
-    end
-    
-    if country.name == Player.country then
-        local r = math.random(2)
         
-        if r == 1 then
-            local dbox = DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
-                {"Refuse", function() end}, {"Accept", function() peace(country) end}
-            )
+        if country.name == Player.country then
+            local r = math.random(2)
             
-            dbox:show(function() love.mouse.setVisible(false) end)
+            if r == 1 then
+                local dbox = DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
+                    {"Refuse", function() end}, {"Accept", function() peace(country) end}
+                )
+                
+                dbox:show(function() love.mouse.setVisible(false) end)
+            else
+                local moneyAmnt = math.random(self.attack, self.attack*2)
+                local dbox = DialogBoxes:new(
+                    self.name.. " wants to sign a peace treaty with us. "..tostring(moneyAmnt).."G will be given as a compensation.",
+                    {"Refuse", function() end}, 
+                    {"Accept", 
+                        function()
+                            peace(country)
+                            country:addMoney(moneyAmnt)
+                        end
+                    }
+                )
+                
+                dbox:show(function() love.mouse.setVisible(false) end)
+            end
         else
-            local moneyAmnt = math.random(self.attack, self.attack*2)
-            local dbox = DialogBoxes:new(
-                self.name.. " wants to sign a peace treaty with us. "..tostring(moneyAmnt).."G will be given as a compensation.",
-                {"Refuse", function() end}, 
-                {"Accept", 
-                    function()
-                        peace(country)
-                        country:addMoney(moneyAmnt)
-                    end
-                }
-            )
-            
-            dbox:show(function() love.mouse.setVisible(false) end)
+            -- for AI
+            peace(country)
         end
-    else
-        -- for AI
-        peace(country)
     end
 end
 

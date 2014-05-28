@@ -201,7 +201,7 @@ end
 
 function SkillBtn:action()
     Button.action(self)
-    if self.fillWidth >= self.width-1 then -- Checking for equality doesn't work properly for some reason.
+    if self.fillWidth >= self.width-3 then -- Checking for equality doesn't work properly because of tweening's innacuracy.
         self.fillWidth = 0
         Timer.tween(self.cooldown, self, {fillWidth = self.width}, "out-quad")
     end

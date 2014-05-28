@@ -189,6 +189,12 @@ end
 
 function battle:draw()
     battleCam:attach()
+
+    love.graphics.setColor(60, 220, 60)
+    love.graphics.rectangle("fill", 0, the.screen.height/2 - 100, the.screen.width, the.screen.height)
+    love.graphics.setColor(155, 220, 255)
+    love.graphics.rectangle("fill", 0, 0, the.screen.width, the.screen.height/2 - 100)
+    love.graphics.setColor(255,255,255)
     
     for _,fighter in pairs(fighters) do
         love.graphics.draw(fighter.image.data, fighter.image.x, fighter.image.y)

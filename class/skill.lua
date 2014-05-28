@@ -37,7 +37,7 @@ function AttackSkill:initialize(extraFunc)
 
     -- energy is subtracted based on the power of attack.
     self.energy = 1
-    self.cooldown = 0.5
+    self.cooldown = 3
 
     self.slider = {
         -- x and y values are set in battle state.
@@ -81,6 +81,11 @@ function AttackSkill:updateSlider(dt)
         end
         
         self.slider.countdown = self.slider.countdown - dt
+        if self.slider.powerRect.width >= self.slider.width then
+            self.slider.countdown = 0
+            self.cooldown = 0
+        end
+        
         if self.slider.countdown <= 0 then
             self.slider.enabled = false
         
@@ -98,7 +103,7 @@ function AttackSkill:keypressed(key)
     if self.slider.enabled then
         if key == " " then
            self.slider.power = self.slider.power + 1
-           self.slider.powerRect.width = self.slider.powerRect.width + 120
+           self.slider.powerRect.width = self.slider.powerRect.width + 40
         end
     end
 end

@@ -73,7 +73,7 @@ function loadMap() -- Load an existing map.
                 local foe = countries[foeId]
                 if country.name == countryName then
                     if not foe:isFoe(country.name) then
-                        foe:war(country)
+                        foe:war(country, true)
                     end
                 end
             end

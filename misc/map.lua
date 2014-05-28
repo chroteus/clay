@@ -145,7 +145,6 @@ end
 
 
 function updateMap(dt)
-    setCamB()
     mapCam:update()
     -- Converting camera to mouse coordinates.
     mapMouse.x, mapMouse.y = mapCam:mousepos()

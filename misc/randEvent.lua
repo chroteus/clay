@@ -1,44 +1,33 @@
+local function randCountry()
+
+    r = math.random(#countries)
+    while countries[r].name == "Sea" or countries[r].name == Player.country do r = math.random(#countries) end
+    return countries[r]
+end
+
 randEvents = {
     function() -- war
-        local num = 0
-        
-        math.randomseed(os.time())
-        local r = math.random(#countries)
-        local randCountry = countries[r]
-                
-        for rowIndex, row in ipairs(map) do
-            for columnIndex, cell in ipairs(row) do
-                if cell.name == randCountry.name then
-                    for _,adjCellRow in ipairs(adjCellsOf(rowIndex,columnIndex)) do
-                        for _,adjCell in ipairs(adjCellRow) do
-                            if adjCell.rowIndex > 0 and adjCell.columnIndex > 0 then
-                                if adjCell.rowIndex < mapW-3 and adjCell.columnIndex < mapH-3 then
-                                    local foe = map[adjCell.rowIndex][adjCell.columnIndex]
-                                    if foe.name ~= randCountry.name and foe.name ~= "Sea" and randCountry.name ~= "Sea" and randCountry.name ~= Player.country then
-                                        if num == 0 then
-                                            if not randCountry:isFoe(foe.name) and not nameToCountry(foe.name):isFoe(randCountry.name) then
-                                                
-                                                randCountry:war(nameToCountry(foe.name))
-                                                nameToCountry(foe.name):war(randCountry)
-                                                
-                                                msgBox:add(randCountry.name.." has declared war on "..foe.name.."!")
-                                                num = num + 1
-                                           end
-                                        end
-                                    end
-                                end
-                            end
+        local randCountry = randCountry()
+        for _,country in pairs(countries) do
+            for _,region in pairs(map) do
+                if region.country.name == randCountry.name then
+                    for _,neighbour in pairs(region.neighbours) do
+                        if num == 0 then
+                            local foeRegion = getRegion(neighbour)
+                            randCountry:war(foeRegion.country.name)
+                            
+                            num = num + 1
                         end
                     end
                 end
             end
         end
-        
+                        
         num = 0
     end,
     
     function() -- peace
-        local randCountry = countries[math.random(#countries)]
+        local randCountry = randCountry()        
         local num = 0
         
         for _,foe in pairs(randCountry.foes) do
@@ -50,7 +39,7 @@ randEvents = {
     end,
 }
             
-local randEventTimer = math.random(5,20)
+local randEventTimer = math.random(5,10)
 
 function randEvent(dt)
     if not DEBUG then
@@ -58,7 +47,7 @@ function randEvent(dt)
         if randEventTimer <= 0 then
             local r = math.random(#randEvents)
             randEvents[r]()
-            randEventTimer = math.random(5,20)
+            randEventTimer = math.random(5,10)
         end
     end
 end

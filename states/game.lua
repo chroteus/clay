@@ -3,12 +3,6 @@ game = {}
 function game:init()
     game.mapDrawn = true
     initMap()
-
-    --[[ REWRITE ]]
-    -- If death message was printed already previous game, don't print it again at the start of the game.
-    for _,country in pairs(countries) do
-        local num = 0
-    end
     
     ------------
     --Info Box--
@@ -58,7 +52,7 @@ function game:enter()
     love.graphics.setFont(gameFont[16])
     
     enteredMap()
-    game.timerHandle = Timer.addPeriodic(2, function() checkIfDead() end)
+    --game.timerHandle = Timer.addPeriodic(2, function() checkIfDead() end)
     
     love.mouse.setVisible(false)
     love.mouse.setGrabbed(true)
@@ -103,6 +97,10 @@ function game:draw()
         if DEBUG then
             bgPrintf("E - Enter edit mode.", 0, the.screen.height-50, the.screen.width, "left")
         end
+    end
+    
+    if DEBUG then
+        bgPrintf("FPS: "..love.timer.getFPS(), -5, the.screen.height-50, the.screen.width, "right")
     end
     
     infoBox:draw()
@@ -165,5 +163,5 @@ function game:textinput(t)
 end
 
 function game:leave()
-    Timer.cancel(game.timerHandle)
+    --Timer.cancel(game.timerHandle)
 end
