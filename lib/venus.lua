@@ -1,189 +1,183 @@
-venus = {}
-venus.current = "No state"
-venus.noState = true
+--[[
+License:
+This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 
-venus.currentFx = "fade"
+Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
 
-local transitions = {
-    fade = {},
-    slide = {}
-}
---[[ 
+    1- The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+    2- Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+    3- This notice may not be removed or altered from any source distribution.
+]]--
+
+local venus = {}
+
+local function __NULL__() end
+
+-- set some sensible defaults
+-- defaults can be set by referencing venus.propertyName when you set up your instance of Venus
+
+venus.duration       = 1                    -- default duration for transitions.
+venus.timer          = Timer                -- default HUMP.timer.
+venus.effect         = "fade"               -- default transition effect
+
+venus.current  = {}
+
+--[[
 List of transitions:
 
 1) fade: Default one. Fades in to a black rectangle which covers whole screen, then fades out to the next state.
 2) slide: Slides between states from right to left.
+3) fall: Similar to slide, but "falls" downwards and has a slightly different animation.
+4) none: Direct switch.
 ]]--
+local transitions = {
+  fade = {},
+  slide = {},
+  none = {}
+}
 
 local all_callbacks = {
-	"update", "draw", "focus", "keypressed", "keyreleased",
-	"mousepressed", "mousereleased", "joystickpressed",
-	"joystickreleased", "textinput", "quit"
+  'draw', 'errhand', 'focus', 'keypressed', 'keyreleased', 'mousefocus',
+  'mousepressed', 'mousereleased', 'quit', 'resize', 'textinput',
+  'threaderror', 'update', 'visible', 'gamepadaxis', 'gamepadpressed',
+  'gamepadreleased', 'joystickadded', 'joystickaxis', 'joystickhat',
+  'joystickpressed', 'joystickreleased', 'joystickremoved'
 }
 
-function venus.registerEvents()
-    for _,callback in pairs(all_callbacks) do
-        local backupFunc = love[callback]
-        love[callback] = function(...)
-            if backupFunc then backupFunc(...) end
-            if venus.current[callback] then venus.current[callback](self, ...) end
-        end
+-- overides love's default events and binds venus' events in their place
+function venus.registerEvents(timer)
+  local registry = {}
+  for _, f in ipairs(all_callbacks) do
+    registry[f] = love[f] or __NULL__
+    love[f] = function(...)
+      registry[f](...)
+      return (venus.current[f] or __NULL__)(self,...)
     end
+  end
 end
 
--- globalCalls: Add your functions which you want to be called with every state's callback
--- NOTE: Must be one of the callbacks from the all_callbacks list
---[[ Example: 
-    venus.globalCalls = {
-        update = function() print("test...") end, -- this will call print("test...") every frame.
-    }
-]]--
-
-venus.globalCalls = {
-}
-
+-- switch immediately without a transition. Used internally. Use venus.switch("none") for no-animaion switch
 function venus._switch(to, ...)
-    -- internal switch function which directly switches without any transitions
-    if venus.current.leave then venus.current.leave() end
-    
-    if to.init then to.init() end
+    assert(to, "Missing argument: Gamestate to switch to")
+
+    local pre = venus.current
+    ;(pre.leave or __NULL__)()
+
+    ;(to.init or __NULL__)()
     to.init = nil
-    
-    if to.enter then to.enter(venus.current, ...) end
+
+    ;(to.enter or __NULL__)()
     venus.current = to
-    
-    for _,callback in pairs(all_callbacks) do
-        venus[callback] = function(...)
-            if venus.current[callback] then
-                
-                for k,v in pairs(venus.globalCalls) do
-                    if callback == k then
-                        local backupFunc = venus.current[callback] 
-                        
-                        venus.current[callback] = function(self, ...)
-                            v()
-                            backupFunc()
-                        end
-                    end
-                end
-                
-                if venus.noState then
-                    venus.current[callback](self, ...)
-                else                    
-                    if callback == "draw" then
-                        venus.current[callback](self, ...)
-                        transitions[venus.currentFx].draw()
-                    else
-                        venus.current[callback](self, ...)
-                    end
-                end
-            end
-        end
-    end
-    
-    venus.noState = false
 end
 
-function venus.switch(to, effect)
-    if venus.noState then
+-- switch with transition
+function venus.switch(to, effect, duration)
+    if next(venus.current) == nil or effect == 'none' or duration == 0 then
         venus._switch(to)
     else
-        local effect = effect or venus.currentFx
-        assert(transitions[effect], '"'..effect..'"'.." animation does not exist.")
+        assert(to, "Missing argument: state to switch to")
         
-        if venus.currentFx ~= effect then venus.currentFx = effect end
-        transitions[effect].switch(to)
+        local duration = duration or venus.duration
+        assert(duration >= 0, 'Transition duration must be greater than or equal to zero.')
+
+        local effect = effect or venus.effect
+        assert(transitions[effect], effect .. ' animation does not exist.')
+
+        
+        ;(to.init or __NULL__)()
+        to.init = nil
+        
+        transitions[effect].switch(to, duration)
     end
 end
 
---#################--
---###--EFFECTS--###--
+-- fade effect
+transitions.fade.state = {}
 
-venus.timer = Timer
-
--- SLIDE ----------------------
-local ts = transitions.slide
-
-transitions.slide.state = {}
-
-function transitions.slide.state:draw()
-    if ts.pre then
-        love.graphics.push()
-        love.graphics.translate(ts.pre.x, ts.pre.y)
-        if ts.pre.state.draw then ts.pre.state:draw() end
-        love.graphics.pop()
-    end
-    
-    if ts.to then 
-        love.graphics.push()
-        love.graphics.translate(ts.to.x, ts.to.y)
-        if ts.to.state.draw then ts.to.state:draw() end
-        love.graphics.pop()
-    end
-end
-
-transitions.slide.switch = function(to, ...)
-    ts.pre = {x = 0, y = 0, state = venus.current}
-    ts.to = {x = love.window.getWidth(), y = 0, state = to}  
-    
-    if to.init then to.init(); to.init = nil end
-    venus._switch(ts.state)
-
-    venus.timer.tween(1, ts.pre, {x = -love.window.getWidth()}, "out-quad")
-    venus.timer.tween(1, ts.to, {x = 0}, "out-quad", function() venus._switch(to) end)
-end
-
-transitions.slide.draw = function()
-    ts.state:draw()
-end
-
-
--- FADE ----------------------
-local tf = transitions.fade
-
-tf.rect = {
-    color = {10,10,10},
-    alpha = 0
-}
-
-tf.state = {}
-
-function tf.state:draw()
-    if tf.switched then
-        if tf.to then 
-            if tf.to.draw then tf.to:draw() end
-        end
+function transitions.fade.state:draw()
+    if transitions.fade.switched then
+        _ = (transitions.fade.to.draw or __NULL__)()
     else
-        if tf.pre then
-            if tf.pre.draw then tf.pre:draw() end
-        end
+        _ = (transitions.fade.pre.draw or __NULL__)()
     end
-    
-    love.graphics.setColor(tf.rect.color[1], tf.rect.color[2], tf.rect.color[3], tf.rect.alpha)
+
+    love.graphics.setColor(0, 0, 0, transitions.fade.alpha)
     love.graphics.rectangle("fill", 0, 0, love.window.getDimensions())
     love.graphics.setColor(255,255,255)
 end
 
-transitions.fade.switch = function(to, ...)
-    tf.switched = false
-    tf.pre = venus.current
-    tf.to = to
+function transitions.fade.switch(to, duration, ...)
+    transitions.fade.alpha = 0
+    transitions.fade.switched = false
+    transitions.fade.pre = venus.current
+    transitions.fade.to = to
     
-    if to.init then to.init(); to.init = nil end
-    venus._switch(tf.state)
-    
-    venus.timer.tween(0.3, tf.rect, {alpha = 255}, "out-quad", 
-        function() 
-            tf.switched = true 
-            randBg()
-            venus.timer.tween(0.3, tf.rect, {alpha = 0}, "out-quad", function() venus._switch(to) end)
-        end
-    )
+    venus._switch(transitions.fade.state)
+    local f = function()
+        transitions.fade.switched = true
+        venus.timer.tween(duration / 2, transitions.fade, { alpha = 0 }, "out-quad", function() venus._switch(to) end)
+    end
+
+    venus.timer.tween(duration / 2, transitions.fade, { alpha = 255 }, "out-quad", f)
 end
 
-transitions.fade.draw = function()
-    tf.state:draw()
+-- slide effect
+transitions.slide.state = {}
+
+function transitions.slide.state:draw()
+    love.graphics.push()
+    love.graphics.translate(transitions.slide.xpos, transitions.slide.ypos)
+    ;(transitions.slide.pre.draw or __NULL__)()
+    love.graphics.pop()
+
+    love.graphics.push()
+    
+    if transitions.slide.goal_xpos < 0 then
+        love.graphics.translate(transitions.slide.xpos + love.graphics.getWidth(), 0)
+    elseif transitions.slide.goal_xpos > 0 then
+        love.graphics.translate(transitions.slide.xpos - love.graphics.getWidth(), 0)
+    end
+ 
+    if transitions.slide.goal_ypos < 0 then
+        love.graphics.translate(0, transitions.slide.ypos + love.graphics.getHeight())
+    elseif transitions.slide.goal_ypos > 0 then
+        love.graphics.translate(0, transitions.slide.ypos - love.graphics.getHeight())
+    end
+    
+    ;(transitions.slide.to.draw or __NULL__)()
+    love.graphics.pop()
 end
 
+function transitions.slide.switch(to, duration, goal_xpos, goal_ypos)
+    transitions.slide.xpos = 0
+    transitions.slide.ypos = 0
+    transitions.slide.goal_xpos = goal_xpos or -love.window.getWidth()
+    transitions.slide.goal_ypos = goal_ypos or 0
+    
+    transitions.slide.pre = venus.current
+    transitions.slide.to = to
+
+    venus._switch(transitions.slide.state)
+
+    venus.timer.tween(duration, transitions.slide, {xpos = transitions.slide.goal_xpos}, "out-quint", function() venus._switch(to) end)
+    venus.timer.tween(duration, transitions.slide, {ypos = transitions.slide.goal_ypos}, "out-quint", function() venus._switch(to) end)
+end
+
+transitions.slide_left = transitions.slide
+
+transitions.slide_right = {}
+function transitions.slide_right.switch(to, duration)
+    transitions.slide.switch(to, duration, love.window.getWidth(), 0)
+end
+
+transitions.slide_down = {}
+function transitions.slide_down.switch(to, duration)
+    transitions.slide.switch(to, duration, 0, love.window.getHeight())
+end
+
+transitions.slide_up = {}
+function transitions.slide_up.switch(to, duration)
+    transitions.slide.switch(to, duration, 0, -love.window.getHeight())
+end
 
 return venus

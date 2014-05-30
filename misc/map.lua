@@ -363,13 +363,17 @@ function drawMap()
         local fp = editMode.firstPoint
         
        -- love.graphics.setColor(20,20,200)
+        love.graphics.setColor(255,255,255)
         love.graphics.circle("fill", lp.x, lp.y, radius)
-        love.graphics.circle("fill", cp.x, cp.y, radius)
+        love.graphics.circle("fill", cp.x, cp.y, radius)        
+        
 
         if #editMode.currPolygon >= 4 then -- at least 2 vertices are needed to draw a line
-            love.graphics.setColor(255,255,255,100)
+            love.graphics.setColor(0,0,0)
+            love.graphics.setLineWidth(6/mapCam.scale)
             love.graphics.line(editMode.currPolygon)
-            love.graphics.setColor(225,225,225)
+            love.graphics.setColor(255,255,255)
+            love.graphics.setLineWidth(4.5/mapCam.scale)
             love.graphics.line(editMode.currPolygon)
         end
         
@@ -387,6 +391,11 @@ function drawMap()
         
         if cp.x > 0 then
             if #editMode.currPolygon > 0 then
+                love.graphics.setColor(0,0,0)
+                love.graphics.setLineWidth(6/mapCam.scale)
+                love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
+                love.graphics.setColor(255,255,255)
+                love.graphics.setLineWidth(4.5/mapCam.scale)
                 love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
             end
         end

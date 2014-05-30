@@ -3,7 +3,7 @@ DEBUG = false
 -- Libraries
 Timer = require "lib.hump.timer"
 Camera = require "lib.amo" --require "lib.hump.camera"
-require "lib.venus"
+venus = require "lib.venus"
 
 Gamestate = venus
 class = require "lib.middleclass"
@@ -49,6 +49,10 @@ require "lib.math"
 
 function love.load()
     math.randomseed(os.time())
+    
+    Gamestate.registerEvents()
+    venus.effect = "fade"
+    venus.duration = 0.6
 
     love.window.setMode(0, 0, {fullscreen=true, fullscreentype="desktop", vsync=true})
     love.window.setTitle("Clay")
@@ -121,12 +125,10 @@ function love.update(dt)
     DialogBoxes:update(dt)
     Timer.update(dt)
     TEsound.cleanup()
-    venus.update(dt)
 end
 
 function love.draw()
     drawBallBg()
-    venus.draw()
 end
 
 function love.keypressed(key, u)
@@ -141,27 +143,19 @@ function love.keypressed(key, u)
     elseif key == "home" then
         debug.debug()
     end
-    
-    venus.keypressed(key, u)
 end
 
 function love.keyreleased(key, u)
-    venus.keyreleased(key, u)
 end
 
 function love.mousepressed(x,y,button)
-    venus.mousepressed(x,y,button)
 end
     
 function love.mousereleased(x, y, button)
     DialogBoxes:mousereleased(x,y,button)
-    if not DialogBoxes:present() then
-        venus.mousereleased(x,y,button)
-    end
 end
 
 function love.textinput(t)
-    venus.textinput(t)
 end
 
 function love.quit()
