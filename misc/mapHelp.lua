@@ -1,22 +1,38 @@
 -- map's helper functions
 -- added here so that map.lua won't be cluttered.
 
-function pairVertices(pol, name)
-    local name = name or false
-    
-    
+function pairVertices(pol)
     local t = {}
     for i=2,#pol, 2 do
-        if name then
-            table.insert(t, {x = pol[i-1], y = pol[i]})
-        else
-            table.insert(t, {pol[i-1], pol[i]})
-        end
+        table.insert(t, {x = pol[i-1], y = pol[i]})
     end
     
     return t
 end
+
+function unpairVertices(pol)
+    -- Turns paired vertices table like {{x = 20, y = 10},...} into {20,10, ...}
+    local t = {}
+    for _,vertex in pairs(pol) do
+        table.insert(t, vertex.x)
+        table.insert(t, vertex.y)
+    end
     
+    return t
+end
+
+function pointCollidesMouse(x, y, radius)
+    local radius = radius or 1
+    return checkCollision(x,y,(radius*2)/mapCam.scale,(radius*2)/mapCam.scale, mapMouse.x,mapMouse.y,5/mapCam.scale,5/mapCam.scale)
+end
+
+function getRegion(name)
+    for _,region in pairs(map) do
+        if region.name == name then
+            return region
+        end
+    end
+end
 
 function rmSpc(str)
     local s = str
@@ -116,7 +132,7 @@ function saveMap(name)
         append('"'..region.name..'"'..",")
         
         append("{")
-        for k,vertex in pairs(region.vertices) do
+        for k,vertex in pairs(region.unpairedVertices) do
             append(vertex..",")
         end
         

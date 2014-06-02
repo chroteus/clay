@@ -89,11 +89,11 @@ function initMap()
         end
     end
     
+    -- remove duplicate neighbours
     for _,region in pairs(map) do
         region.neighbours = removeDuplicates(region.neighbours)
     end
-            
-    
+
     -- Map images "stitching"
     local t = #love.filesystem.getDirectoryItems("assets/image/map")
     mapImgTable = {}
@@ -190,7 +190,7 @@ function updateMap(dt)
         local fp = editMode.firstPoint
         local radius = editMode.radius/mapCam.scale
         
-        if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+        if pointCollidesMouse(fp.x, fp.y, 5) then
             editMode.fpActive = true
         else
             editMode.fpActive = false
@@ -200,11 +200,9 @@ function updateMap(dt)
         local radius = map[1].vertRadius or 5
         if love.mouse.isDown("l") and love.keyboard.isDown("lalt") then
             for _,region in pairs(map) do
-                for i,vertex in ipairs(region.pairedVertices) do
-                    if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
-                        vertex[1],vertex[2] = mapCam:mousepos()
-                        region.vertices[(i*2)-1] = mapMouse.x
-                        region.vertices[i*2] = mapMouse.y
+                for i,vertex in ipairs(region.vertices) do
+                    if pointCollidesMouse(vertex.x, vertex.y) then
+                        vertex.x,vertex.y = mapCam:mousepos()
                     end
                 end
             end
@@ -228,11 +226,6 @@ function mousepressedMap(x, y, button)
             Timer.tween(0.3, mapCam, {scale = mapCam.scale - 0.1*mapCam.scale}, "out-quad")
         end
     end
-
-    -- [[ REWRITE ]]
-    if not editMode.enabled then
-
-    end
 end
 
 function mousereleasedMap(x,y,button)
@@ -245,16 +238,12 @@ function mousereleasedMap(x,y,button)
         
         -- todo after movement of the point
         if button == "l" and love.keyboard.isDown("lalt") then
-            for _,region in pairs(map) do
-                region.triangles = love.math.triangulate(region.vertices)
-            
-                for _,vertex in pairs(region.pairedVertices) do
-                    vertex[1],vertex[2] = math.round(vertex[1], 1), math.round(vertex[2], 1)
+            for _,region in pairs(map) do            
+                for _,vertex in pairs(region.vertices) do
+                    vertex.x,vertex.y = math.round(vertex.x, 1), math.round(vertex.y, 1)
                 end
                 
-                for _,vertex in pairs(region.vertices) do
-                    vertex = math.round(vertex, 1)
-                end
+                region.triangles = love.math.triangulate(region.unpairedVertices)
             end
         end
         
@@ -265,7 +254,7 @@ function mousereleasedMap(x,y,button)
                 fp.x,fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
             end
             
-            if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+            if pointCollidesMouse(fp.x, fp.y, 5) then
                 cp.x, cp.y = fp.x, fp.y
                 
                 if #editMode.currPolygon >= 6 then
@@ -301,7 +290,7 @@ function mousereleasedMap(x,y,button)
             lp.x, lp.y = cp.x, cp.y
             
         elseif button == "r" then
-            if checkCollision(fp.x,fp.y,radius*2,radius*2, mapMouse.x,mapMouse.y,1,1) then
+            if pointCollidesMouse(fp.x, fp.y, 5) then
                 editMode.currPolygon = {}
                 editMode.resetPoints()
             end
@@ -379,7 +368,7 @@ function drawMap()
         
         local t = pairVertices(editMode.currPolygon)
         for _,vertex in pairs(t) do
-            love.graphics.circle("fill", vertex[1], vertex[2], radius)
+            love.graphics.circle("fill", vertex.x, vertex.y, radius)
         end
         
         love.graphics.setColor(255,255,255)

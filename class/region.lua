@@ -12,24 +12,28 @@ function Region:initialize(id, color, name, ...)
     
     local arg = {...}
     
+    -- unpaired vertices are needed for drawing and triangulation (Löve2D doesn't accept paired ones)
     if type(arg[1]) == "table" then
-        self.vertices = arg[1]
+        self.vertices = pairVertices(arg[1]) -- pairing for a cleaner code
+        self.unpairedVertices = arg[1]
+    elseif type(arg[1]) == "number" then
+        self.vertices = pairVertices(arg)
+        self.unpairedVertices = arg
     else
-        self.vertices = arg
+        error("Region only accepts a table or number as a polygon.")
     end
     
-    if not love.math.isConvex(self.vertices) then
+    if not love.math.isConvex(self.unpairedVertices) then
         self.convex = false
         
-        if #self.vertices >= 6 then
-            self.triangles = love.math.triangulate(self.vertices)
+        if #self.vertices >= 3 then
+            self.triangles = love.math.triangulate(self.unpairedVertices)
         end
     end
     
-    self.pairedVertices = pairVertices(self.vertices)
     self.vertRadius = 5
     
-    
+    self.border = {} -- filled after all regions are initialized
     self.neighbours = {} -- filled after all regions are initialized
 end
 
@@ -64,13 +68,13 @@ function Region:mousereleased(x,y,button)
         local fp = editMode.firstPoint
         
         if button == "l" then
-            for _,vertex in pairs(self.pairedVertices) do
-                if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,5/mapCam.scale,5/mapCam.scale) then
-                    cp.x,cp.y = vertex[1],vertex[2]
+            for _,vertex in pairs(self.vertices) do
+                if pointCollidesMouse(vertex.x, vertex.y) then
+                    cp.x,cp.y = vertex.x,vertex.y
                     
                     if fp.x > 0 then
                         if editMode.polFin then
-                            fp.x,fp.y = vertex[1],vertex[2]
+                            fp.x,fp.y = vertex.x,vertex.y
                         end
                     end
                 end
@@ -78,13 +82,11 @@ function Region:mousereleased(x,y,button)
         end
         
         if button == "r" then
-            for i,vertex in ipairs(self.pairedVertices) do
-                if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,5/mapCam.scale,5/mapCam.scale) then
-                    table.remove(self.pairedVertices, i)
-                    table.remove(self.vertices, i*2)
-                    table.remove(self.vertices, (i*2)-1)
+            for i,vertex in ipairs(self.vertices) do
+                if pointCollidesMouse(vertex.x, vertex.y) then
+                    table.remove(self.vertices, i)
                     
-                    if #self.pairedVertices > 3 then    
+                    if #self.vertices > 3 then    
                         self.triangles = love.math.triangulate(self.vertices)
                     end
                 
@@ -115,10 +117,10 @@ function Region:draw()
     love.graphics.setColor(self.color)
     
    
-    if #self.pairedVertices > 2 then
+    if #self.unpairedVertices > 2 then
         if self.country.name ~= "Sea" then
             if self.convex then
-                love.graphics.polygon("fill", self.vertices)
+                love.graphics.polygon("fill", self.unpairedVertices)
             else
                 for _,triangle in pairs(self.triangles) do
                     love.graphics.polygon("fill", triangle)
@@ -128,27 +130,27 @@ function Region:draw()
         
         if editMode.enabled then
             love.graphics.setColor(255,255,255)    
-            love.graphics.polygon("line",self.vertices)
+            love.graphics.polygon("line",self.unpairedVertices)
         else
             if self.country.name ~= "Sea" then
                 self.color[4] = 255
                 love.graphics.setColor(self.color)
-                love.graphics.polygon("line",self.vertices)
+                love.graphics.polygon("line",self.unpairedVertices)
                 
-                if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+                if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
                     love.graphics.setColor(255,255,255,64)
                 else
                     love.graphics.setColor(255,255,255,32)
                 end
                 
-                love.graphics.polygon("line",self.vertices)
+                love.graphics.polygon("line",self.unpairedVertices)
             end
         end
         
-        if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+        if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
             love.graphics.setColor(255,255,255,32)
             if self.convex then
-                love.graphics.polygon("fill", self.vertices)
+                love.graphics.polygon("fill", self.unpairedVertices)
             else
                 for _,triangle in pairs(self.triangles) do
                     love.graphics.polygon("fill", triangle)
@@ -160,7 +162,7 @@ function Region:draw()
         if self.selected then
             love.graphics.setColor(255,255,255,64)
             if self.convex then
-                love.graphics.polygon("fill", self.vertices)
+                love.graphics.polygon("fill", self.unpairedVertices)
             else
                 for _,triangle in pairs(self.triangles) do
                     love.graphics.polygon("fill", triangle)
@@ -174,7 +176,7 @@ function Region:draw()
             
                 love.graphics.setColor(255,255,255,64)
                 if self.convex then
-                    love.graphics.polygon("fill", self.vertices)
+                    love.graphics.polygon("fill", self.unpairedVertices)
                 else
                     for _,triangle in pairs(self.triangles) do
                         love.graphics.polygon("fill", triangle)
@@ -184,30 +186,39 @@ function Region:draw()
             end
         end
                    
-    elseif #self.pairedVertices == 2 then
-        love.graphics.line(self.vertices)
+    elseif #self.unpairedVertices == 2 then
+        love.graphics.line(self.unpairedVertices)
     end
     
     if editMode.enabled then
+        local radius = self.vertRadius/mapCam.scale
         love.graphics.setColor(255,50,50)
-        if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
-            local radius = self.vertRadius/mapCam.scale
-            for _,vertex in pairs(self.pairedVertices) do
-                if checkCollision(vertex[1],vertex[2],radius*2,radius*2, mapMouse.x,mapMouse.y,5/mapCam.scale,5/mapCam.scale) then
-                    love.graphics.circle("line", vertex[1], vertex[2], radius+0.2, 100)
+        if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
+            for _,vertex in pairs(self.vertices) do
+                if pointCollidesMouse(vertex.x, vertex.y) then
+                    love.graphics.circle("line", vertex.x, vertex.y, radius+0.2, 100)
                 else
-                    love.graphics.circle("line", vertex[1], vertex[2], radius, 100)
+                    love.graphics.circle("line", vertex.x, vertex.y, radius, 100)
                 end
+            end
+        end
+        
+        for _,vertex in pairs(self.vertices) do
+            if pointCollidesMouse(vertex.x, vertex.y) then
+                love.graphics.circle("line", vertex.x, vertex.y, radius+0.2, 100)
             end
         end
     end
             
         
     love.graphics.setColor(255,255,255)
+    
+    if #self.border >= 4 then
+        love.graphics.line(self.border)
+    end
 end
 
 function Region:changeOwner(owner)
-    local owner = owner
     if type(owner) == "string" then owner = nameToCountry(owner) end
     
     if type(owner) == "table" then
@@ -215,15 +226,6 @@ function Region:changeOwner(owner)
         self.color = owner.color
         self.country = owner
     else
-        error("Region:changeOwner accepts instance of a country or its name")
+        error("Region:changeOwner accepts instance of a country or its name only")
     end
 end
-
-function getRegion(name)
-    for _,region in pairs(map) do
-        if region.name == name then
-            return region
-        end
-    end
-end
-    
