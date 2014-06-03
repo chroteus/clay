@@ -76,10 +76,10 @@ function initMap()
     -- It is checked if regions share points and add those who share it are added to neighbors table.
     -- Since multiple points can be shared, duplicates are removed later on.
     for _,region in pairs(map) do
-        for _,vertex in pairs(region.pairedVertices) do
+        for _,vertex in pairs(region.vertices) do
             for _,regionB in pairs(map) do
-                for _,vertexB in pairs(regionB.pairedVertices) do
-                    if vertexB[1] == vertex[1] and vertexB[2] == vertex[2] then
+                for _,vertexB in pairs(regionB.vertices) do
+                    if vertexB.x == vertex.x and vertexB.y == vertex.y then
                         if region.name ~= regionB.name then
                             table.insert(region.neighbours, regionB.name)
                         end
@@ -136,9 +136,6 @@ function initMap()
 end         
 
 function enteredMap()
-    -- Clear up current adjacent cells table so that none of the cells would be selected.
-   -- currAdjCells = {}
-
     -- Camera isn't limited by borders if true.
     mapBorderCheck = true
 end

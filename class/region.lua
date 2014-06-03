@@ -69,7 +69,7 @@ function Region:mousereleased(x,y,button)
         
         if button == "l" then
             for _,vertex in pairs(self.vertices) do
-                if pointCollidesMouse(vertex.x, vertex.y) then
+                if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     cp.x,cp.y = vertex.x,vertex.y
                     
                     if fp.x > 0 then
@@ -113,7 +113,7 @@ function Region:mousereleased(x,y,button)
 end
 
 function Region:draw()
-    self.color[4] = 80
+    self.color[4] = 225
     love.graphics.setColor(self.color)
     
    
@@ -144,11 +144,19 @@ function Region:draw()
                 end
                 
                 love.graphics.polygon("line",self.unpairedVertices)
+                
+                if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
+                    love.graphics.setColor(0,0,0,200)
+                else
+                    love.graphics.setColor(255,255,255,200)
+                end
+                
+                love.graphics.polygon("line",self.unpairedVertices)                
             end
         end
         
         if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
-            love.graphics.setColor(255,255,255,32)
+            love.graphics.setColor(255,255,255,100)
             if self.convex then
                 love.graphics.polygon("fill", self.unpairedVertices)
             else
@@ -160,7 +168,7 @@ function Region:draw()
         end
         
         if self.selected then
-            love.graphics.setColor(255,255,255,64)
+            love.graphics.setColor(255,255,255,100)
             if self.convex then
                 love.graphics.polygon("fill", self.unpairedVertices)
             else
@@ -195,7 +203,7 @@ function Region:draw()
         love.graphics.setColor(255,50,50)
         if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
             for _,vertex in pairs(self.vertices) do
-                if pointCollidesMouse(vertex.x, vertex.y) then
+                if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     love.graphics.circle("line", vertex.x, vertex.y, radius+0.2, 100)
                 else
                     love.graphics.circle("line", vertex.x, vertex.y, radius, 100)
@@ -204,7 +212,7 @@ function Region:draw()
         end
         
         for _,vertex in pairs(self.vertices) do
-            if pointCollidesMouse(vertex.x, vertex.y) then
+            if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                 love.graphics.circle("line", vertex.x, vertex.y, radius+0.2, 100)
             end
         end
