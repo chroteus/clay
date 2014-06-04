@@ -8,7 +8,7 @@ require "class.country"
 -- Where countries are instantiated.
 countries = {    
     -- Country(name, color, attack, defense, hp)
-    Country("Sea", {255, 255, 255}, 0,0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
+    Country("Sea", {0,0,0}, 0,0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
     Country("Ukraine", {200,200,0}, 8,2, 50),
     Country("United States", {0,0,255}, 12,5, 95),
     Country("Canada", {255,64,64}, 9,4, 80),

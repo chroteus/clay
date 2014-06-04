@@ -135,43 +135,24 @@ function Region:draw()
             love.graphics.setColor(255,255,255)    
             love.graphics.polygon("line",self.unpairedVertices)
         else
-            if self.country.name ~= "Sea" then
-             --   self.color[4] = 255
-           --     love.graphics.setColor(self.color)
-       --         love.graphics.polygon("line",self.unpairedVertices)
+    
+            if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
+                if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
+                    love.graphics.setColor(0,0,0,100)
+                else
+                    love.graphics.setColor(255,255,255,100)
+                end
                 
-                if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
+                if self.convex then
+                    love.graphics.polygon("fill", self.unpairedVertices)
+                else
+                    for _,triangle in pairs(self.triangles) do
+                        love.graphics.polygon("fill", triangle)
+                    end
+                end
+            end
+        end
 
-                    if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
-                        love.graphics.setColor(0,0,0,100)
-                    else
-                        love.graphics.setColor(255,255,255,100)
-                    end
-                    
-                    if self.convex then
-                        love.graphics.polygon("fill", self.unpairedVertices)
-                    else
-                        for _,triangle in pairs(self.triangles) do
-                            love.graphics.polygon("fill", triangle)
-                        end
-                    end
-                end
-            end
-        end
-        --[[
-        if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
-          
-            love.graphics.setColor(255,255,255,100)
-            if self.convex then
-                love.graphics.polygon("fill", self.unpairedVertices)
-            else
-                for _,triangle in pairs(self.triangles) do
-                    love.graphics.polygon("fill", triangle)
-                end
-            end
-            love.graphics.setColor(255,255,255)
-        end
-        ]]--
         if self.selected then
             love.graphics.setColor(255,255,255,100)
             if self.convex then
