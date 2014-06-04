@@ -31,7 +31,7 @@ function Region:initialize(id, color, name, ...)
         end
     end
     
-    self.vertRadius = 5
+    self.vertRadius = 10
     
     self.border = {} -- filled after all regions are initialized
     self.neighbours = {} -- filled after all regions are initialized
@@ -67,15 +67,17 @@ function Region:mousereleased(x,y,button)
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
         
-        if button == "l" then
+        if button == "l" and not love.keyboard.isDown("lalt") then
             for _,vertex in pairs(self.vertices) do
                 if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     cp.x,cp.y = vertex.x,vertex.y
                     
-                    if fp.x > 0 then
-                        if editMode.polFin then
-                            fp.x,fp.y = vertex.x,vertex.y
-                        end
+                    if fp.x < 0 then
+                        fp.x,fp.y = vertex.x,vertex.y
+                    end
+                else
+                    if fp.x < 0 then
+                        fp.x, fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
                     end
                 end
             end
@@ -102,6 +104,7 @@ function Region:mousereleased(x,y,button)
                         {"Yes", function()
                                     for k,region in pairs(map) do
                                         if region.name == self.name then map[k] = nil end
+                                        Regions.generateBorders()
                                     end
                                 end
                         }
@@ -133,29 +136,31 @@ function Region:draw()
             love.graphics.polygon("line",self.unpairedVertices)
         else
             if self.country.name ~= "Sea" then
-                self.color[4] = 255
-                love.graphics.setColor(self.color)
-                love.graphics.polygon("line",self.unpairedVertices)
+             --   self.color[4] = 255
+           --     love.graphics.setColor(self.color)
+       --         love.graphics.polygon("line",self.unpairedVertices)
                 
                 if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
-                    love.graphics.setColor(255,255,255,64)
-                else
-                    love.graphics.setColor(255,255,255,32)
+
+                    if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
+                        love.graphics.setColor(0,0,0,100)
+                    else
+                        love.graphics.setColor(255,255,255,100)
+                    end
+                    
+                    if self.convex then
+                        love.graphics.polygon("fill", self.unpairedVertices)
+                    else
+                        for _,triangle in pairs(self.triangles) do
+                            love.graphics.polygon("fill", triangle)
+                        end
+                    end
                 end
-                
-                love.graphics.polygon("line",self.unpairedVertices)
-                
-                if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
-                    love.graphics.setColor(0,0,0,200)
-                else
-                    love.graphics.setColor(255,255,255,200)
-                end
-                
-                love.graphics.polygon("line",self.unpairedVertices)                
             end
         end
-        
+        --[[
         if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
+          
             love.graphics.setColor(255,255,255,100)
             if self.convex then
                 love.graphics.polygon("fill", self.unpairedVertices)
@@ -166,7 +171,7 @@ function Region:draw()
             end
             love.graphics.setColor(255,255,255)
         end
-        
+        ]]--
         if self.selected then
             love.graphics.setColor(255,255,255,100)
             if self.convex then
@@ -220,10 +225,6 @@ function Region:draw()
             
         
     love.graphics.setColor(255,255,255)
-    
-    if #self.border >= 4 then
-        love.graphics.line(self.border)
-    end
 end
 
 function Region:changeOwner(owner)
@@ -237,3 +238,53 @@ function Region:changeOwner(owner)
         error("Region:changeOwner accepts instance of a country or its name only")
     end
 end
+
+Regions = {} -- Table to hold functions which affect all regions.
+
+function Regions.generateNeighbours()
+    -- Generating neighbours for regions
+    -- NOTE: Must be called AFTER map's regions are loaded.
+    -- It is checked if regions share points and add those who share it are added to neighbors table.
+    -- Since multiple points can be shared, duplicates are removed later on.
+    for _,region in pairs(map) do
+        for _,vertex in pairs(region.vertices) do
+            for _,regionB in pairs(map) do
+                for _,vertexB in pairs(regionB.vertices) do
+                    if vertexB.x == vertex.x and vertexB.y == vertex.y then
+                        if region.name ~= regionB.name then
+                            table.insert(region.neighbours, regionB.name)
+                        end
+                    end
+                end
+            end
+        end
+        
+        region.neighbours = removeDuplicates(region.neighbours)
+    end
+end
+
+function Regions.generateBorders()
+    for _,region in pairs(map) do
+        region.border = {} -- empty table
+        for _,neighbourName in pairs(region.neighbours) do
+            local neighbour = getRegion(neighbourName)
+            
+            if neighbour ~= nil then
+                if neighbourName ~= region.name then
+                    if neighbour.country.name ~= region.country.name then
+                        for _,region_vertex in pairs(region.vertices) do
+                            for _,neigh_vertex in pairs(neighbour.vertices) do
+                                if region_vertex.x == neigh_vertex.x
+                                and region_vertex.y == neigh_vertex.y then
+                                    table.insert(region.border, region_vertex.x)
+                                    table.insert(region.border, region_vertex.y)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+

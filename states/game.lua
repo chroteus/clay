@@ -31,11 +31,11 @@ function game:init()
     function infoBox:draw()
         guiRect(self.x, self.y, self.width, self.height)
         love.graphics.setColor(guiColors.fg)
-        if countries[self.id].name ~= "Sea" then
+      --  if countries[self.id].name ~= "Sea" then
             love.graphics.printf(self.name..", "..self.countryName, self.x+5, self.y+5, self.width, "left")
-        else
-            love.graphics.printf(self.countryName, self.x+5, self.y+5, self.width, "left")
-        end
+       -- else
+         --   love.graphics.printf(self.countryName, self.x+5, self.y+5, self.width, "left")
+       -- end
         
         love.graphics.setColor(255,255,255)
     end

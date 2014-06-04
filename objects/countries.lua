@@ -9,7 +9,7 @@ require "class.country"
 countries = {    
     -- Country(name, color, attack, defense, hp)
     Country("Sea", {255, 255, 255}, 0,0,0), -- A special "country". To be used for sea or as a placeholder if no countries are present.
-    Country("Ukraine", {255,255,0}, 8,2, 50),
+    Country("Ukraine", {200,200,0}, 8,2, 50),
     Country("United States", {0,0,255}, 12,5, 95),
     Country("Canada", {255,64,64}, 9,4, 80),
     Country("United Kingdom", {255,0,255}, 11, 4, 80),

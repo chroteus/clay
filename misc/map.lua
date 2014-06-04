@@ -71,28 +71,8 @@ function initMap()
 
     function editMode.pair() pairVertices(editMode.currPolygon) end
     
-    -- Generating neighbours for regions
-    -- NOTE: Must be called AFTER map's regions are loaded.
-    -- It is checked if regions share points and add those who share it are added to neighbors table.
-    -- Since multiple points can be shared, duplicates are removed later on.
-    for _,region in pairs(map) do
-        for _,vertex in pairs(region.vertices) do
-            for _,regionB in pairs(map) do
-                for _,vertexB in pairs(regionB.vertices) do
-                    if vertexB.x == vertex.x and vertexB.y == vertex.y then
-                        if region.name ~= regionB.name then
-                            table.insert(region.neighbours, regionB.name)
-                        end
-                    end
-                end
-            end
-        end
-    end
-    
-    -- remove duplicate neighbours
-    for _,region in pairs(map) do
-        region.neighbours = removeDuplicates(region.neighbours)
-    end
+    Regions.generateNeighbours()
+    Regions.generateBorders()
 
     -- Map images "stitching"
     local t = #love.filesystem.getDirectoryItems("assets/image/map")
@@ -122,13 +102,10 @@ function initMap()
     -- Camera
     mapCam = Camera(mapW*mapImgScale/2, mapH*mapImgScale/2)
     
-    function setCamB()
-        local x1,y1 = 1,1
-        local x2, y2 = mapW*mapImgScale-3, mapH*mapImgScale-3
-        mapCam:setBounds(x1,y1, x2,y2)
-    end
-    
-    setCamB()
+
+    local x1,y1 = 1,1
+    local x2, y2 = mapW*mapImgScale-3, mapH*mapImgScale-3
+    mapCam:setBounds(x1,y1, x2,y2)
     mapCam:zoomTo(1.5)
 
     mapMouse = {}
@@ -194,7 +171,7 @@ function updateMap(dt)
         end
         
         -- point movement
-        local radius = map[1].vertRadius or 5
+        local radius = 10
         if love.mouse.isDown("l") and love.keyboard.isDown("lalt") then
             for _,region in pairs(map) do
                 for i,vertex in ipairs(region.vertices) do
@@ -247,10 +224,6 @@ function mousereleasedMap(x,y,button)
         local radius = editMode.radius/mapCam.scale
         
         if button == "l" and not love.keyboard.isDown("lalt") then
-            if fp.x < 0 then
-                fp.x,fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
-            end
-            
             if pointCollidesMouse(fp.x, fp.y, 5) then
                 cp.x, cp.y = fp.x, fp.y
                 
@@ -262,6 +235,7 @@ function mousereleasedMap(x,y,button)
                         
                         editMode.currPolygon = {}
                         editMode.resetPoints()
+                        Regions.generateBorders()
                     end
                     
                     local dbox = DialogBoxes:newInputDBox(20, function() dboxFunc() end)
@@ -270,6 +244,7 @@ function mousereleasedMap(x,y,button)
                         game.seaId = game.seaId + 1
                         table.insert(map, Region(1, countries[1].color, "sea"..game.seaId, editMode.currPolygon))
                         
+                        --Regions.generateBorders()
                         editMode.currPolygon = {}
                         editMode.resetPoints()
                     else

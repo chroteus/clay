@@ -65,6 +65,7 @@ function createMap() -- Fresh map. Used to load map at first play.
         end
         
         mapFile:close()
+        game.seaId = mapTable.seaId
     end
 end
 
