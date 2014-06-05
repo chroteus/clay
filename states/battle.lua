@@ -114,9 +114,6 @@ function battle:init()
     
     battle.music = love.filesystem.getDirectoryItems("assets/music/battle")
     for i=1,#battle.music do battle.music[i] = "/assets/music/battle/"..battle.music[i] end
-
-    player:addSkill("attack")
-    enemy:addSkill("aiAttack")    
     
     battleCam = Camera(the.screen.width/2, the.screen.height/2)
 end

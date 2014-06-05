@@ -72,12 +72,8 @@ function Region:mousereleased(x,y,button)
                 if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     cp.x,cp.y = vertex.x,vertex.y
                     
-                    if fp.x < 0 then
+                    if fp.x < 0 and fp.y < 0 then
                         fp.x,fp.y = vertex.x,vertex.y
-                    end
-                else
-                    if fp.x < 0 then
-                        fp.x, fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
                     end
                 end
             end
@@ -85,7 +81,7 @@ function Region:mousereleased(x,y,button)
         
         if button == "r" then
             for i,vertex in ipairs(self.vertices) do
-                if pointCollidesMouse(vertex.x, vertex.y) then
+                if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     table.remove(self.vertices, i)
                     
                     if #self.vertices > 3 then    

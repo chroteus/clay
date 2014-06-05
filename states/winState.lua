@@ -55,7 +55,7 @@ function winState:draw()
     love.graphics.rectangle("line", winXpRect.x, winXpRect.y, winXpRect.width, winXpRect.height)
     love.graphics.rectangle("fill", winXpRect.x, winXpRect.y, winXpRect.fillWidth, winXpRect.height)
    
-    love.graphics.setColor(50, 50, 50)
+    love.graphics.setColor(200, 200, 200)
     local fontHeight = (love.graphics.getFont():getHeight())/2
     love.graphics.printf("XP: +"..winResultXp, winXpRect.x + 5, winXpRect.y + winXpRect.height/2 - fontHeight, winXpRect.width, "left")
     

@@ -282,8 +282,13 @@ function mousereleasedMap(x,y,button)
     end
     
     
+    
     if editMode.enabled then
         if button == "l" and not love.keyboard.isDown("lalt") then
+            if fp.x < 0 then
+                fp.x, fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
+            end
+            
            if not editMode.polFin then
                 table.insert(editMode.currPolygon, cp.x)
                 table.insert(editMode.currPolygon, cp.y)

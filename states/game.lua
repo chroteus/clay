@@ -1,8 +1,18 @@
 game = {}
 
 function game:init()
-    game.mapDrawn = true
     initMap()
+
+    -- add needed skills for countries (after loading the game)
+    for _,country in pairs(countries) do
+        if country.name == Player.country then
+            country:addSkill("attack")
+        else
+            country:addSkill("aiAttack")
+        end
+    end
+    
+    game.mapDrawn = true
     
     ------------
     --Info Box--
