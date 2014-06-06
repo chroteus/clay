@@ -51,10 +51,20 @@ function Region:mousereleased(x,y,button)
                 if not editMode.enabled then
                     for _,mapNeighbour in pairs(game.neighbours) do
                         if self.name == mapNeighbour then
-                            startBattle(Player.country, self.country.name)
-                            battle.attackedRegion = self.name
+                            local PlayerCountry = Player:returnCountry()
+                            local battleFunc = function() startBattle(Player.country, self.country.name); battle.attackedRegion = self.name end
                             
-                            Player:returnCountry():war(self.country.name)
+                            if not Player:returnCountry():isFoe(self.country.name) then
+                                local dbox = DialogBoxes:new(
+                                    "Declare war on "..self.country.name.."?",
+                                    {"No", function() end},
+                                    {"Yes", function() Player:returnCountry():war(self.country.name); battleFunc() end}
+                                )
+                                
+                                dbox:show()
+                            else
+                                battleFunc()
+                            end
                         end
                     end 
                 end
