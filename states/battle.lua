@@ -161,6 +161,8 @@ function battle:update(dt)
             end
         end
     end
+    
+    game:update(dt) -- game is in real-time, so invasions and general updates of the map should be called in battle too.
 end
 
 function battle:mousereleased(x,y,button)
