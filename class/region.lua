@@ -137,8 +137,10 @@ function Region:draw()
         end
         
         if editMode.enabled then
-            love.graphics.setColor(255,255,255)    
-            love.graphics.polygon("line",self.unpairedVertices)
+            if self.country.name == editMode.country then
+                love.graphics.setColor(255,255,255)    
+                love.graphics.polygon("line",self.unpairedVertices)
+            end
         else
     
             if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
