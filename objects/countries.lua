@@ -18,7 +18,7 @@ countries = {
     Country("Cyprus", {237,128,0}, 9, 3, 70),
     Country("Bavaria", {0,162,232}, 9,3, 65),
     Country("Germany", {255,0,0}, 11, 4, 90),
-    Country("Finland", {0,53,128}, 9, 5, 65),
+    Country("Finland", {0,83,128}, 9, 5, 65),
     Country("Denmark", {100,50,50}, 9, 4, 80),
     Country("France", {230,230,230}, 8, 5, 100),
     Country("Austria", {180,80,80}, 10, 4, 70),
@@ -49,7 +49,7 @@ function checkIfDead()
             country.isDead = true
             
             if country.name == Player.country then
-                venus.switch(gameOver)
+                venus._switch(gameOver)
             else
                 if not country.deadMessagePrinted then
                     msgBox:add(country.name.." is defeated!")

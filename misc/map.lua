@@ -314,9 +314,11 @@ function drawMap()
     love.graphics.pop()
     
     love.graphics.setLineWidth(0.2)
+    
     for _,region in pairs(map) do
         region:draw()
     end
+
     
     -- EDITOR
     love.graphics.setLineWidth(1)

@@ -124,32 +124,18 @@ function Region:draw()
     self.color[4] = 225
     love.graphics.setColor(self.color)
     
-   
-    if #self.unpairedVertices > 2 then
-        if self.country.name ~= "Sea" then
-            if self.convex then
-                love.graphics.polygon("fill", self.unpairedVertices)
-            else
-                for _,triangle in pairs(self.triangles) do
-                    love.graphics.polygon("fill", triangle)
-                end
-            end
+    local drawRegion = false
+    local camX, camY = mapCam:worldCoords(0,0)
+    for _,vertex in pairs(self.vertices) do
+        if checkCollision(camX, camY, the.screen.width, the.screen.height, vertex.x, vertex.y, self.vertRadius/mapCam.scale, self.vertRadius/mapCam.scale) then
+            drawRegion = true
+            break
         end
-        
-        if editMode.enabled then
-            if self.country.name == editMode.country then
-                love.graphics.setColor(255,255,255)    
-                love.graphics.polygon("line",self.unpairedVertices)
-            end
-        else
-    
-            if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
-                if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
-                    love.graphics.setColor(0,0,0,100)
-                else
-                    love.graphics.setColor(255,255,255,100)
-                end
-                
+    end
+   
+    if drawRegion then
+        if #self.unpairedVertices > 2 then
+            if self.country.name ~= "Sea" then
                 if self.convex then
                     love.graphics.polygon("fill", self.unpairedVertices)
                 else
@@ -158,24 +144,33 @@ function Region:draw()
                     end
                 end
             end
-        end
-
-        if self.selected then
-            love.graphics.setColor(255,255,255,100)
-            if self.convex then
-                love.graphics.polygon("fill", self.unpairedVertices)
+            
+            if editMode.enabled then
+                if self.country.name == editMode.country then
+                    love.graphics.setColor(255,255,255)    
+                    love.graphics.polygon("line",self.unpairedVertices)
+                end
             else
-                for _,triangle in pairs(self.triangles) do
-                    love.graphics.polygon("fill", triangle)
+        
+                if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
+                    if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
+                        love.graphics.setColor(0,0,0,100)
+                    else
+                        love.graphics.setColor(255,255,255,100)
+                    end
+                    
+                    if self.convex then
+                        love.graphics.polygon("fill", self.unpairedVertices)
+                    else
+                        for _,triangle in pairs(self.triangles) do
+                            love.graphics.polygon("fill", triangle)
+                        end
+                    end
                 end
             end
-            love.graphics.setColor(255,255,255)
-        end
-        
-        for _,neighbour in pairs(game.neighbours) do
-            if self.name == neighbour then
-            
-                love.graphics.setColor(255,255,255,64)
+
+            if self.selected then
+                love.graphics.setColor(255,255,255,100)
                 if self.convex then
                     love.graphics.polygon("fill", self.unpairedVertices)
                 else
@@ -185,34 +180,49 @@ function Region:draw()
                 end
                 love.graphics.setColor(255,255,255)
             end
+            
+            for _,neighbour in pairs(game.neighbours) do
+                if self.name == neighbour then
+                
+                    love.graphics.setColor(255,255,255,64)
+                    if self.convex then
+                        love.graphics.polygon("fill", self.unpairedVertices)
+                    else
+                        for _,triangle in pairs(self.triangles) do
+                            love.graphics.polygon("fill", triangle)
+                        end
+                    end
+                    love.graphics.setColor(255,255,255)
+                end
+            end
+                       
+        elseif #self.unpairedVertices == 2 then
+            love.graphics.line(self.unpairedVertices)
         end
-                   
-    elseif #self.unpairedVertices == 2 then
-        love.graphics.line(self.unpairedVertices)
-    end
-    
-    if editMode.enabled then
-        local radius = self.vertRadius/mapCam.scale
-        love.graphics.setColor(255,50,50)
-        if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
+        
+        if editMode.enabled then
+            local radius = self.vertRadius/mapCam.scale
+            love.graphics.setColor(255,50,50)
+            if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
+                for _,vertex in pairs(self.vertices) do
+                    if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
+                        love.graphics.circle("line", vertex.x, vertex.y, radius+0.2, 100)
+                    else
+                        love.graphics.circle("line", vertex.x, vertex.y, radius, 100)
+                    end
+                end
+            end
+            
             for _,vertex in pairs(self.vertices) do
                 if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     love.graphics.circle("line", vertex.x, vertex.y, radius+0.2, 100)
-                else
-                    love.graphics.circle("line", vertex.x, vertex.y, radius, 100)
                 end
             end
         end
-        
-        for _,vertex in pairs(self.vertices) do
-            if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
-                love.graphics.circle("line", vertex.x, vertex.y, radius+0.2, 100)
-            end
-        end
-    end
+                
             
-        
-    love.graphics.setColor(255,255,255)
+        love.graphics.setColor(255,255,255)
+    end
 end
 
 function Region:changeOwner(owner)

@@ -62,7 +62,7 @@ function game:enter()
     love.graphics.setFont(gameFont[16])
     
     enteredMap()
-    --game.timerHandle = Timer.addPeriodic(2, function() checkIfDead() end)
+    game.timerHandle = Timer.addPeriodic(2, function() checkIfDead() end)
     
     love.mouse.setVisible(false)
     love.mouse.setGrabbed(true)
@@ -173,5 +173,5 @@ function game:textinput(t)
 end
 
 function game:leave()
-    --Timer.cancel(game.timerHandle)
+    Timer.cancel(game.timerHandle)
 end

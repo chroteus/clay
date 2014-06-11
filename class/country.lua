@@ -72,34 +72,37 @@ end
 local numOfInv = 0
 
 function Country:invade(dt)
-    if self.name ~= Player.country then
-        -- [[ REWRITE ]]
-        -- Used for AI invasions
-        self.invadeTimer = self.invadeTimer - dt
-        
-        if self.invadeTimer <= 0 then
-            self.invadeTimer = math.random(10,20)
+
+    if not self.isDead then
+        if self.name ~= Player.country then
+            -- [[ REWRITE ]]
+            -- Used for AI invasions
+            self.invadeTimer = self.invadeTimer - dt
             
-            
-            for _,foe in pairs(self.foes) do
-                for _,region in pairs(map) do
-                    if strongEnough(self, region.country) then
-                        if numOfInv == 0 then
-                            if region.country.name == foe.name then
-                                numOfInv = numOfInv + 1
-                                
-                                if region.country.name == Player.country then
-                                    msgBox:add(self.name.." took your clay!")
+            if self.invadeTimer <= 0 then
+                self.invadeTimer = math.random(10,20)
+                
+                
+                for _,foe in pairs(self.foes) do
+                    for _,region in pairs(map) do
+                        if strongEnough(self, region.country) then
+                            if numOfInv == 0 then
+                                if region.country.name == foe.name then
+                                    numOfInv = numOfInv + 1
+                                    
+                                    if region.country.name == Player.country then
+                                        msgBox:add(self.name.." took your clay!")
+                                    end
+                                    
+                                    region:changeOwner(self)
                                 end
-                                
-                                region:changeOwner(self)
                             end
                         end
                     end
                 end
+                
+                numOfInv = 0
             end
-            
-            numOfInv = 0
         end
     end
 end

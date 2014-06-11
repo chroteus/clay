@@ -6,7 +6,7 @@ local amo = {
 
 amo.__index = amo
 
-local function new(x,y, zoom, rot)
+local function new(x,y, zoom)
 	x,y  = x or love.window.getWidth()/2, y or love.window.getHeight()/2
 	zoom = zoom or 1
 	return setmetatable({x = x, y = y, scale = zoom}, amo)
@@ -27,6 +27,11 @@ function amo:setY(y)
     self.y = math.clamp(self.bounds.min.y, y, self.bounds.max.y)
 end
 
+function amo:setPos(x,y)
+    self:setX(x)
+    self:setY(y)
+end
+
 function amo:update()
     local width,height = love.window.getDimensions()
     local orig = self.origBounds
@@ -41,6 +46,10 @@ function amo:update()
     
     self.x = math.clamp(self.bounds.min.x, self.x, self.bounds.max.x)
     self.y = math.clamp(self.bounds.min.y, self.y, self.bounds.max.y)
+end
+
+function amo:getViewport()
+    return self:cameraCoords(0,0)
 end
 
 function amo:zoomTo(zoom)
