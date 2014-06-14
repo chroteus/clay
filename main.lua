@@ -224,3 +224,24 @@ function removeDuplicates(tt)
   end
   return newtable
 end
+
+function CodeToUTF8 (Unicode)
+    if (Unicode <= 0x7F) then return string.char(Unicode); end;
+
+    if (Unicode <= 0x7FF) then
+      local Byte0 = 0xC0 + math.floor(Unicode / 0x40);
+      local Byte1 = 0x80 + (Unicode % 0x40);
+      return string.char(Byte0, Byte1);
+    end;
+
+    if (Unicode <= 0xFFFF) then
+      local Byte0 = 0xE0 +  math.floor(Unicode / 0x1000);
+      local Byte1 = 0x80 + (math.floor(Unicode / 0x40) % 0x40);
+      local Byte2 = 0x80 + (Unicode % 0x40);
+      return string.char(Byte0, Byte1, Byte2);
+    end;
+
+    return "";                                   -- ignore UTF-32 for the moment
+end
+
+ 

@@ -85,16 +85,18 @@ function Country:invade(dt)
                 
                 for _,foe in pairs(self.foes) do
                     for _,region in pairs(map) do
-                        if strongEnough(self, region.country) then
-                            if numOfInv == 0 then
-                                if region.country.name == foe.name then
-                                    numOfInv = numOfInv + 1
-                                    
-                                    if region.country.name == Player.country then
-                                        msgBox:add(self.name.." took your clay!")
+                        if self:isNeighbour(region.name) then
+                            if strongEnough(self, region.country) then
+                                if numOfInv == 0 then
+                                    if region.country.name == foe.name then
+                                        numOfInv = numOfInv + 1
+                                        
+                                        if region.country.name == Player.country then
+                                            msgBox:add(self.name.." took your clay!")
+                                        end
+                                        
+                                        region:changeOwner(self)
                                     end
-                                    
-                                    region:changeOwner(self)
                                 end
                             end
                         end
@@ -258,6 +260,14 @@ function Country:addSkill(argSkill, order)
         
         if count > 1 then
             table.remove(self.skills, order) -- Remove last item from table.
+        end
+    end
+end
+
+function Country:isNeighbour(regionName)
+    for _,region in pairs(map) do
+        if region.country.id == self.id then
+            return table_count(region.neighbours, regionName) > 0
         end
     end
 end
