@@ -118,7 +118,19 @@ function transitions.fade.switch(to, duration, ...)
         venus.timer.tween(duration / 2, transitions.fade, { alpha = 0 }, "out-quad", function() venus._switch(to) end)
     end
 
-    venus.timer.tween(duration / 2, transitions.fade, { alpha = 255 }, "out-quad", function() f(); randBg() end)
+    venus.timer.tween(duration / 2, transitions.fade, { alpha = 255 }, "out-quad", 
+        function()
+            f()
+            randBg()
+            DialogBoxes:clear()
+            if to == battle then
+                msgBox.x = the.screen.width/2 - msgBox.width/2
+                msgBox.y = enemy.energyBar.y - msgBox.height/2 -- enemy there is battle enemy
+            else
+                msgBox:reset()
+            end
+        end
+    )
 end
 
 -- slide effect

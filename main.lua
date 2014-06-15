@@ -100,10 +100,16 @@ function love.load()
         Gamestate.switch(menu)
     end
     
+    -- Font handling
     gameFont = {}
-    gameFont[16] = love.graphics.newFont("assets/Sansation_Regular.ttf", 16)
-    gameFont[22] = love.graphics.newFont("assets/Sansation_Regular.ttf", 22)
-    gameFont[52] = love.graphics.newFont("assets/Sansation_Regular.ttf", 52)
+    local fontHandle = {
+        __index = function(t, k)
+            gameFont[k] =  love.graphics.newFont("assets/Sansation_Regular.ttf", k)
+            return gameFont[k]
+        end
+    }
+    setmetatable(gameFont, fontHandle)
+    
     love.graphics.setFont(gameFont[16])
     
     loadPrefs()
@@ -114,10 +120,6 @@ function love.load()
         
     TEsound.playLooping(musicFiles, "music", math.huge, .6)
     musicPaused = false
-    
-    
-    msgBox:add("TAB - Character screen")
-    msgBox:add("Welcome to Clay!")
 end
 
 function love.update(dt)

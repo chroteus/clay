@@ -38,13 +38,16 @@ function game:init()
         end
     end
 
-    function infoBox:draw()
-        guiRect(self.x, self.y, self.width, self.height)
+    function infoBox:draw(x,y)
+        local x = x or self.x
+        local y = y or self.y
+        
+        guiRect(x, y, self.width, self.height)
         love.graphics.setColor(guiColors.fg)
         if countries[self.id].name ~= "Sea" then
-            love.graphics.printf(self.name..", "..self.countryName, self.x+5, self.y+5, self.width, "left")
+            love.graphics.printf(self.name..", "..self.countryName, x+5, y+5, self.width, "left")
         else
-            love.graphics.printf(self.countryName, self.x+5, self.y+5, self.width, "left")
+            love.graphics.printf(self.countryName, x+5, y+5, self.width, "left")
         end
         
         love.graphics.setColor(255,255,255)
@@ -57,6 +60,8 @@ function game:enter()
     if prefs.firstPlay then
         prefs.firstPlay = false
         savePrefs()
+        
+        DialogBoxes:new("Welcome to Clay! Press TAB to enter character screen!"):show()
     end
 
     love.graphics.setFont(gameFont[16])
@@ -131,13 +136,13 @@ function game:mousereleased(x,y,button)
 end
 
 function game:keyreleased(key)
+    if key == "escape" then
+        venus.switch(pause)
+    elseif key == "tab" then
+        venus.switch(transState.lastState)
+    end
+    
     if not DialogBoxes:present() then
-        if key == "escape" then
-            venus.switch(pause)
-        elseif key == "tab" then
-            venus.switch(transState.lastState)
-        end
-
         if DEBUG then
             if key == "b" then
                 if mapBorderCheck then

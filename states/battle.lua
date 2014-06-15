@@ -229,6 +229,9 @@ function battle:draw()
     end
     
     battleCam:detach()
+    
+    msgBox:draw()
+
 end
 
 function battle:leave()
@@ -241,6 +244,9 @@ function battle:leave()
                 local player = Player:returnCountry() 
                 region:changeOwner(player)
             end
+            
+            -- Deselect all regions
+            if region.selected then region.selected = false end
         end
     end
     

@@ -199,6 +199,10 @@ function DialogBoxes:present()
     
     return result
 end
+
+function DialogBoxes:clear()
+    self.list = {}
+end
     
 function DialogBoxes:draw()
     -- this function shouldn't be called in love.draw because state's functions will draw over the dialogbox.
