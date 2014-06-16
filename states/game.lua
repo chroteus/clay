@@ -54,14 +54,26 @@ function game:init()
     end
     
     game.editModeString = "Q: Select country, E: Exit, B: Disable cam limits, LMB: Place a point, RMB: Undo/Remove point, LShift + RMB: Delete a region, LAlt + LMB: Move a point"
+
+    function game.endTutorial()
+        prefs.firstPlay = false
+        savePrefs()
+    end
 end
 
 function game:enter()
     if prefs.firstPlay then
-        prefs.firstPlay = false
-        savePrefs()
-        
-        DialogBoxes:new("Welcome to Clay! Press TAB to enter character screen!"):show()
+        if not game.secondTutMsg then  
+            DialogBoxes:new(
+                "Welcome to Clay! Press TAB to enter character screen and continue tutorial.",
+                {"I know how to play, end tutorial", function() game.endTutorial() end}
+            ):show()
+        else
+            DialogBoxes:new(
+                "Attacking others is easy. Choose one of your regions and all the neighboring regions will be selected.\n Clicking a region of a neutral or enemy country will trigger a battle.",
+                {"Hide this box.", function() end}
+            ):show()
+        end
     end
 
     love.graphics.setFont(gameFont[16])
@@ -69,19 +81,17 @@ function game:enter()
     enteredMap()
     game.timerHandle = Timer.addPeriodic(2, function() checkIfDead() end)
     
-    love.mouse.setVisible(false)
-    love.mouse.setGrabbed(true)
+    if not prefs.firstPlay then
+        love.mouse.setVisible(false)
+        love.mouse.setGrabbed(true)
+    end
 end
 
 function game:update(dt)
-    if not DialogBoxes:present() then
-        updateMap(dt)
-        msgBox:update(dt)
-        randEvent(dt)
-        infoBox:update(dt)
-    end
-    
-    DialogBoxes:update(dt)
+    updateMap(dt)
+    msgBox:update(dt)
+    randEvent(dt)
+    infoBox:update(dt)
 end
 
 function game:draw()
@@ -102,7 +112,6 @@ function game:draw()
     
     love.graphics.setColor(255,255,255)
     
-    DialogBoxes:draw()
     msgBox:draw()
     
     if editMode.enabled then
@@ -122,17 +131,11 @@ function game:draw()
 end
 
 function game:mousepressed(x, y, button)
-    if not DialogBoxes:present() then
-        mousepressedMap(x, y, button)
-    end
+    mousepressedMap(x, y, button)
 end
 
 function game:mousereleased(x,y,button)
-    if not DialogBoxes:present() then
-        mousereleasedMap(x,y,button)
-    else
-        DialogBoxes:mousereleased(x,y,button)
-    end
+    mousereleasedMap(x,y,button)
 end
 
 function game:keyreleased(key)
@@ -142,39 +145,29 @@ function game:keyreleased(key)
         venus.switch(transState.lastState)
     end
     
-    if not DialogBoxes:present() then
-        if DEBUG then
-            if key == "b" then
-                if mapBorderCheck then
-                    mapBorderCheck = false
-                else
-                    mapBorderCheck = true
-                end
+    if DEBUG then
+        if key == "b" then
+            if mapBorderCheck then
+                mapBorderCheck = false
+            else
+                mapBorderCheck = true
             end
-        
-            if key == "e" then
-                if editMode.enabled then
-                    editMode.enabled = false
-                else
-                    editMode.enabled = true
-                end
-            end
-            
+        end
+    
+        if key == "e" then
             if editMode.enabled then
-                if key == "q" then
-                    venus.switch(selection)
-                end
+                editMode.enabled = false
+            else
+                editMode.enabled = true
+            end
+        end
+        
+        if editMode.enabled then
+            if key == "q" then
+                venus.switch(selection)
             end
         end
     end
-end
-
-function game:keypressed(key)
-    DialogBoxes:keypressed(key)
-end
-
-function game:textinput(t)
-    DialogBoxes:textinput(t)
 end
 
 function game:leave()

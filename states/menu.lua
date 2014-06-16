@@ -11,15 +11,15 @@ function menu:init()
         end
     end
     
-    local function newGame()
+    function menu.newGame()
         mapNewGame = true
         Gamestate.switch(countrySelect)
     end
     
     menuButtons = {
         -- GenericButton(order, text, action)
-        start = GenericButton(1, "New Game", function() newGame() end),
-        options = GenericButton(2, "Options", function() venus.switch(options) end),
+        start = GenericButton(1, "New Game", function() menu.newGame() end),
+      --  options = GenericButton(3, "Options", function() venus.switch(options) end),
         quit = GenericButton(3, "Exit", function() love.event.quit() end),
         debugBtn = GenericButton(4, "Dev Mode: OFF", function() debugBtnFunc() end),
     }
@@ -27,28 +27,28 @@ function menu:init()
     
     menuConfirmBox = DialogBoxes:new(
         "You have a saved game. Continue?", 
-        {"Cancel", function() end}, {"Continue >>", function() newGame() end}
+        {"Cancel", function() end}, {"Continue >>", function() menu.newGame() end}
     )
+    
+   -- menu.logo = love.graphics.newImage("assets/image/Clay_logo.png")
 end
 
 function menu:enter()
     if love.filesystem.exists("map.lua") then
-        menuButtons.start.y = 2*menuButtons.start.height*2
-        menuButtons.options.y = 3*menuButtons.options.height*2
+        menuButtons.start.y = 3*menuButtons.start.height*2
+      --  menuButtons.options.y = 4*menuButtons.options.height*2
         menuButtons.quit.y = 4*menuButtons.quit.height*2 
         menuButtons.debugBtn.y = 5*menuButtons.debugBtn.height*2 
         
         menuButtons.start.action = function() menuConfirmBox:show() end
     
-        table.insert(menuButtons, GenericButton(1, "Continue", function() Gamestate.switch(game) end))
+        menuButtons.continue = GenericButton(2, "Continue", function() Gamestate.switch(game) end)
     end
 end
 
 function menu:update(dt)
-    if not DialogBoxes:present() then
-        for _,button in pairs(menuButtons) do
-            button:update()
-        end
+    for _,button in pairs(menuButtons) do
+        button:update()
     end
 end
 
@@ -57,18 +57,18 @@ function menu:draw()
         button:draw()
     end
     
-    DialogBoxes:draw()
+    love.graphics.setFont(gameFont[80])
+    love.graphics.printf("Clay", 0, 60, the.screen.width, "center")
+    love.graphics.setFont(gameFont[16])
+    --love.graphics.draw(menu.logo, the.screen.width/2-menu.logo:getWidth()/2, 50)
     
-    love.graphics.printf("Clay", 0, 50, the.screen.width, "center")
     love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 100, the.screen.width, "center")
 end
 
 function menu:mousereleased(x,y,button)
     if button == "l" then
-        if not DialogBoxes:present() then
-            for _,button in pairs(menuButtons) do
-                button:mousereleased(x,y,button)
-            end
+        for _,button in pairs(menuButtons) do
+            button:mousereleased(x,y,button)
         end
     end
 end

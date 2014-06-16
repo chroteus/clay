@@ -46,14 +46,25 @@ local all_callbacks = {
 
 -- overides love's default events and binds venus' events in their place
 function venus.registerEvents(timer)
-  local registry = {}
-  for _, f in ipairs(all_callbacks) do
-    registry[f] = love[f] or __NULL__
-    love[f] = function(...)
-      registry[f](...)
-      return (venus.current[f] or __NULL__)(self,...)
+    local registry = {}
+     for _, f in ipairs(all_callbacks) do
+        registry[f] = love[f] or __NULL__
+        love[f] = function(...)
+            registry[f](...)
+
+            if DialogBoxes:present() then
+                if f ~= "update" and f ~= "mousereleased" and f ~= "mousepressed" and f ~= "keyreleased" and f ~= "keypressed" then
+                    (venus.current[f] or __NULL__)(self,...)
+                    
+                    if f == "draw" then
+                        DialogBoxes:draw()
+                    end
+                end
+            else
+                (venus.current[f] or __NULL__)(self,...)
+            end
+        end
     end
-  end
 end
 
 -- switch immediately without a transition. Used internally. Use venus.switch("none") for no-animaion switch

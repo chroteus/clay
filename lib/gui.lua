@@ -100,8 +100,10 @@ function Button:draw(rgba)
 
     if not self:isInstanceOf(CountryBtn) then
         love.graphics.setColor(self.colors.idle.fg)
+        love.graphics.setFont(gameFont[18])
         local fontHeight = (love.graphics.getFont():getHeight())/2
         love.graphics.printf(self.text, self.x, self.y + self.height/2 - fontHeight, self.width, "center")
+        love.graphics.setFont(gameFont[16])
     else
         local imageX = self.x + 4
         local imageY = self.y + 5

@@ -4,7 +4,7 @@ function countrySelect:init()
     SelectBtn = Button:subclass("CountrySelectBtn")
     function SelectBtn:initialize(xOrder, yOrder, ball, text, func)
         self.height = 50
-        self.width = 130
+        self.width = 150
         self.y = self.height * (yOrder*2)
         self.ball = love.graphics.newImage("assets/image/miniatures/"..ball..".png")
         self.text = text

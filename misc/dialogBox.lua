@@ -36,19 +36,23 @@ end
 
 function DialogBox:show(hideFunc)
     if not self.enabled then
-        self.hideFunc = hideFunc
+        if venus.current == game then
+            self.hideFunc = hideFunc or function() love.mouse.setVisible(false) end
+        else
+            self.hideFunc = hideFunc
+        end
         
         love.mouse.setVisible(true)
         self.enabled = true
         self.y = -self.height
         self.x = the.screen.width/2-self.width/2
         
-        Timer.tween(0.6, self, {y = the.screen.height/2-self.height/2}, "out-quad")
+        Timer.tween(1, self, {y = the.screen.height/2-self.height/2}, "out-quint")
         
         for i,btn in ipairs(self.buttons) do
             btn.y = -btn.height
             btn.x = self.x + (btn.width*(i-1))
-            Timer.tween(0.6, btn, {y = (the.screen.height/2-self.height/2)+self.height}, "out-quad")
+            Timer.tween(1, btn, {y = (the.screen.height/2-self.height/2)+self.height}, "out-quint")
         end
     end
 end
@@ -63,13 +67,11 @@ function DialogBox:hide()
             end
         end
         
-        Timer.tween(0.5, self, {x = -self.width}, "out-quad", function() self.enabled = false end)
+        Timer.tween(0.5, self, {x = -self.width}, "out-quad", function() self.enabled = false; if self.hideFunc then self.hideFunc() end end)
+        
         for i,btn in ipairs(self.buttons) do
             Timer.tween(0.5, btn, {x = the.screen.width+btn.width}, "out-quad", 
                 function() 
-                    if self.hideFunc then
-                        self.hideFunc() 
-                    end
                 end
             )
         end
@@ -152,7 +154,7 @@ end
 
 function InputDBox:keypressed(key)
     if key == "backspace" then
-        self.text = self.text:sub(1, -2)
+        self.text = ""
     elseif key == "return" then
         self.enteredData = true
         self:hide()

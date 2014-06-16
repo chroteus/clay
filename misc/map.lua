@@ -182,11 +182,6 @@ function updateMap(dt)
             end
         end
     end
-    
-    -- loader
-    if not game.finishedLoading then
-        loader.update()
-    end
 end
 
 function mousepressedMap(x, y, button)

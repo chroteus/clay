@@ -124,9 +124,9 @@ end
 
 function love.update(dt)
     updateThe()
-    DialogBoxes:update(dt)
     Timer.update(dt)
     TEsound.cleanup()
+    DialogBoxes:update(dt)
 end
 
 function love.draw()
@@ -145,19 +145,16 @@ function love.keypressed(key, u)
     elseif key == "home" then
         debug.debug()
     end
-end
 
-function love.keyreleased(key, u)
+    DialogBoxes:keypressed(key, u)
 end
-
-function love.mousepressed(x,y,button)
-end
-    
+  
 function love.mousereleased(x, y, button)
     DialogBoxes:mousereleased(x,y,button)
 end
 
 function love.textinput(t)
+    DialogBoxes:textinput(t)
 end
 
 function love.quit()

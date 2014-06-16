@@ -43,6 +43,13 @@ function charScr:init()
 end
 
 function charScr:enter()
+    if prefs.firstPlay then
+        DialogBoxes:new(
+            "This is character screen.\n You can change your stats and talk with other nations via diplomacy.\n Return to game via TAB, ESC or pressing Continue",
+             {"Close this box", function() game.secondTutMsg = true end}
+        ):show()
+    end
+    
     charScr.text = ""
     love.mouse.setVisible(true)
 end
@@ -87,6 +94,8 @@ function charScr:draw()
     drawText(charScr.btn.minusDef, "Defense")
 
     love.graphics.printf(charScr.text, the.screen.width/3, charScr.btn.minusDef.y + 80, the.screen.width/3, "center")
+    
+    DialogBoxes:draw()
 end
 
 function charScr:mousereleased(x,y,button)
@@ -98,4 +107,6 @@ end
 function charScr:leave()
     Player:returnCountry(true).attack = Player.attack
     Player:returnCountry(true).defense = Player.defense
+    
+    game.secondTutMsg = true
 end

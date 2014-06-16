@@ -108,6 +108,11 @@ function battle:init()
         end
             
         fighters = {player, enemy}
+        
+        if prefs.firstPlay then
+            battle.tutMsg = "Press Space repeatedly!"
+            battle.tutSpaceCounter = 0
+        end
     end
 
     battle.load()
@@ -184,6 +189,15 @@ function battle:keypressed(key)
             end
         end
     end
+    
+    if prefs.firstPlay then
+        if key == " " then
+            battle.tutSpaceCounter = battle.tutSpaceCounter + 1
+            if battle.tutSpaceCounter > 6 then
+                battle.tutMsg = "Check your HP and Energy!"
+            end
+        end
+    end
 end
 
 function battle:draw()
@@ -226,6 +240,12 @@ function battle:draw()
         if skill.name == globalAttackName then
             skill:drawSlider()
         end
+    end
+    
+    if prefs.firstPlay then
+        love.graphics.setFont(gameFont[50])
+        love.graphics.printf(battle.tutMsg, 0, enemy.hpBar.y, the.screen.width, "center")
+        love.graphics.setFont(gameFont[16])
     end
     
     battleCam:detach()

@@ -47,6 +47,14 @@ function Region:mousereleased(x,y,button)
             if Player.country == self.country.name or self.country.name == "Sea" then
                 self.selected = true
                 game.neighbours = self.neighbours                 
+            
+                -- tutorial message
+                if prefs.firstPlay then
+                    DialogBoxes:new(
+                        "Now that you've selected your region, try clicking on other countries' regions.",
+                        {"OK", function() end}
+                    ):show()
+                end
             else
                 if not editMode.enabled then
                     for _,mapNeighbour in pairs(game.neighbours) do
