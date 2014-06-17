@@ -193,8 +193,10 @@ function battle:keypressed(key)
     if prefs.firstPlay then
         if key == " " then
             battle.tutSpaceCounter = battle.tutSpaceCounter + 1
-            if battle.tutSpaceCounter > 6 then
-                battle.tutMsg = "Check your HP and Energy!"
+            if battle.tutSpaceCounter > 15 then
+                battle.tutMsg = "Make sure your\n HP and Energy bars aren't empty!"
+            elseif battle.tutSpaceCounter > 50 then
+                battle.tutMsg = ""
             end
         end
     end
@@ -243,9 +245,11 @@ function battle:draw()
     end
     
     if prefs.firstPlay then
-        love.graphics.setFont(gameFont[50])
+        love.graphics.setColor(guiColors.fg)
+        love.graphics.setFont(gameFont[40])
         love.graphics.printf(battle.tutMsg, 0, enemy.hpBar.y, the.screen.width, "center")
         love.graphics.setFont(gameFont[16])
+        love.graphics.setColor(255,255,255)
     end
     
     battleCam:detach()

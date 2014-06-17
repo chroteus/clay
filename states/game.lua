@@ -64,10 +64,13 @@ end
 function game:enter()
     if prefs.firstPlay then
         if not game.secondTutMsg then  
-            DialogBoxes:new(
+            local dbox = DialogBoxes:new(
                 "Welcome to Clay! Press TAB to enter character screen and continue tutorial.",
                 {"I know how to play, end tutorial", function() game.endTutorial() end}
-            ):show()
+            )
+            
+            dbox:defineKey("tab", function() venus.switch(charScr); dbox:hide() end)
+            dbox:show()
         else
             DialogBoxes:new(
                 "Attacking others is easy. Choose one of your regions and all the neighboring regions will be selected.\n Clicking a region of a neutral or enemy country will trigger a battle.",

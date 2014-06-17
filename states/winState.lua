@@ -24,6 +24,13 @@ end
 
 
 function winState:enter()
+    if prefs.firstPlay then
+        DialogBoxes:new(
+            "Congratulations! You've won your first battle. From now on, you're on your own. Good luck.",
+            {"Finish tutorial", function() game.endTutorial() end}
+        ):show()
+    end
+
     local p = Player:returnCountry(true)
     local netResult = (winState.enemy.def+winState.enemy.att) - (p.attack+p.defense)
     if netResult <= 0 then netResult = 1 end

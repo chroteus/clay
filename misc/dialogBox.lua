@@ -34,6 +34,11 @@ function DialogBox:initialize(text, ...)
     end
 end
 
+function DialogBox:defineKey(key, func)
+    self.key = key
+    self.func = assert(func)
+end
+
 function DialogBox:show(hideFunc)
     if not self.enabled then
         if venus.current == game then
@@ -126,6 +131,14 @@ function DialogBox:mousereleased(x,y,button)
     if self.enabled then
         for _,btn in pairs(self.buttons) do
             btn:mousereleased(x,y,button)
+        end
+    end
+end
+
+function DialogBox:keypressed(key)
+    if self.key then
+        if key == self.key then
+            self.func()
         end
     end
 end
@@ -229,8 +242,6 @@ end
 
 function DialogBoxes:keypressed(key)
     for _,box in pairs(DialogBoxes.list) do
-        if box:isInstanceOf(InputDBox) then
-            box:keypressed(key)
-        end
+        box:keypressed(key)
     end
 end

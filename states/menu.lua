@@ -18,7 +18,7 @@ function menu:init()
     
     menuButtons = {
         -- GenericButton(order, text, action)
-        start = GenericButton(1, "New Game", function() menu.newGame() end),
+        start = GenericButton(2, "New Game", function() menu.newGame() end),
       --  options = GenericButton(3, "Options", function() venus.switch(options) end),
         quit = GenericButton(3, "Exit", function() love.event.quit() end),
         debugBtn = GenericButton(4, "Dev Mode: OFF", function() debugBtnFunc() end),

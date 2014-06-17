@@ -45,7 +45,7 @@ end
 function charScr:enter()
     if prefs.firstPlay then
         DialogBoxes:new(
-            "This is character screen.\n You can change your stats and talk with other nations via diplomacy.\n Return to game via TAB, ESC or pressing Continue",
+            "This is character screen.\n You can change your stats and talk with other nations via diplomacy.",
              {"Close this box", function() game.secondTutMsg = true end}
         ):show()
     end
