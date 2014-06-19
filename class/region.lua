@@ -88,15 +88,22 @@ function Region:mousereleased(x,y,button)
             for _,vertex in pairs(self.vertices) do
                 if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     cp.x,cp.y = vertex.x,vertex.y
-                    
+
                     if fp.x < 0 and fp.y < 0 then
                         fp.x,fp.y = vertex.x,vertex.y
+                    else
+                        if #editMode.currPolygon == 0 then
+                            editMode.resetPoints()
+                        end
                     end
                 end
             end
         end
         
+        
         if button == "r" then
+        
+            --[[ #### POINT REMOVAL
             for i,vertex in ipairs(self.vertices) do
                 if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     table.remove(self.vertices, i)
@@ -107,7 +114,7 @@ function Region:mousereleased(x,y,button)
                 
                 end
             end
-        
+            ]]--
             
             if love.keyboard.isDown("lshift") then
                 if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then

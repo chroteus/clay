@@ -77,7 +77,7 @@ function venus._switch(to, ...)
     ;(to.init or __NULL__)()
     to.init = nil
 
-    ;(to.enter or __NULL__)()
+    ;(to.enter or __NULL__)(to, pre, ...)
     venus.current = to
 end
 

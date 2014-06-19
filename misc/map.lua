@@ -230,7 +230,6 @@ function mousereleasedMap(x,y,button)
                         
                         editMode.currPolygon = {}
                         editMode.resetPoints()
-                        Regions.generateBorders()
                     end
                     
                     local dbox = DialogBoxes:newInputDBox(20, function() dboxFunc() end)
@@ -289,6 +288,8 @@ function mousereleasedMap(x,y,button)
                 table.insert(editMode.currPolygon, cp.y)
             end
         end
+        
+        if editMode.polFin then editMode.resetPoints() end
         
         editMode.polFin = false
     end
