@@ -8,12 +8,12 @@ function Skill:initialize(name, energy, func)
 end
 
 function Skill:exec(fighter, target)
-    if not self.used then
+    if not fighter.turnFinished then
         if fighter.energy - self.energy >= 0 then
             fighter.energy = fighter.energy - self.energy
             self.func(fighter, target)
-        end 
-        
-        self.used = true
+        end
+    
+		fighter.turnFinished = true
     end
 end

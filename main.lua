@@ -28,6 +28,7 @@ require "states.diplScr"
 require "states.gameOver"
 require "states.transState"
 require "states.upg"
+require "states.loading"
 
 -- Misc
 require "class.player"

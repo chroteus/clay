@@ -13,7 +13,7 @@ end
 skills = {
     -- Skill(name, energy, func)
 
-    attack = Skill("Attack", 3, 
+    attack = Skill("(A)ttack", 3, 
         function(fighter, target) 
             target:loseHP(math.random(fighter.defense+5, target.attack + 10)) 
             knockback(target, 1)

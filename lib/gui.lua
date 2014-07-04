@@ -161,14 +161,16 @@ function ShopButton:drawIcon()
 end
     
 SkillBtn = Button:subclass("SkillBtn")
-    
-function SkillBtn:initialize(x, yOrder, skill)
+SkillBtn.static.width = 150
+SkillBtn.static.height = 30
+
+function SkillBtn:initialize(x, y, skill)
     self.name = skill.name
     self.text = skill.name.." ["..-skill.energy.."]"
     self.hotkey = string.match(skill.name, "%((.?)%)")
     if self.hotkey then self.hotkey = string.lower(self.hotkey) end
     
-    Button.initialize(self, x, yOrder*30*2, 150, 30, self.text, function() skill.func(battle.player, battle.enemy) end)
+    Button.initialize(self, x, y, SkillBtn.width, SkillBtn.height, self.text, function() skill:exec(battle.player, battle.enemy) end)
 end
 
 function SkillBtn:reset()

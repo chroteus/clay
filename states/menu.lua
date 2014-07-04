@@ -42,7 +42,7 @@ function menu:enter()
         
         menuButtons.start.action = function() menuConfirmBox:show() end
     
-        menuButtons.continue = GenericButton(2, "Continue", function() Gamestate.switch(game) end)
+        menuButtons.continue = GenericButton(2, "Continue", function() loading.switch(game) end)
     end
 end
 

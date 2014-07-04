@@ -1,6 +1,6 @@
 battle = {}
 
-local padding = 20
+local padding = 40
 local barWidth, barHeight = 100, 15
 
 function battle.start(player, enemy) -- Sets opponents, and switches to battle gamestate.
@@ -17,13 +17,14 @@ function battle.load()
 
 	local player = battle.player
 	player.x = padding
-	player.y = the.screen.height/2 - player.rightImage:getHeight()/2
+	player.y = the.screen.height/2 - player.rightImage:getHeight()
 	
 	local enemy = battle.enemy
 	enemy.x = the.screen.width - enemy.leftImage:getWidth() - padding*2
-	enemy.y = the.screen.height/2 - enemy.leftImage:getHeight()/2
+	enemy.y = the.screen.height/2 - enemy.leftImage:getHeight()
 
-	battle.fighters = {player, enemy}	
+	battle.fighters = {player, enemy}
+	for _,fighter in pairs(battle.fighters) do fighter.turnFinished = false end
 end
 
 function battle:init()
@@ -33,8 +34,9 @@ end
 function battle:enter()
 	battle.load()
 	
+	local playerImg = battle.player.rightImage
 	for i,skill in ipairs(battle.player.skills) do
-		table.insert(battle.btn, SkillBtn(battle.player.x, i, skill))
+		table.insert(battle.btn, SkillBtn(battle.player.x + playerImg:getWidth()/2 - SkillBtn.width/2, battle.player.y + playerImg:getHeight() + (i * 50), skill))
 	end
 	
 	love.mouse.setVisible(true)
