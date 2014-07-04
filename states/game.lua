@@ -2,16 +2,6 @@ game = {}
 
 function game:init()
     initMap()
-
-    -- add needed skills for countries (after loading the game)
-    for _,country in pairs(countries) do
-        if country.name == Player.country then
-            country:addSkill("attack")
-        else
-            country:addSkill("aiAttack")
-        end
-    end
-    
     game.mapDrawn = true
     
     ------------
@@ -53,7 +43,7 @@ function game:init()
         love.graphics.setColor(255,255,255)
     end
     
-    game.editModeString = "Q: Select country, E: Exit, B: Disable cam limits, LMB: Place a point, RMB: Undo/Remove point, LShift + RMB: Delete a region, LAlt + LMB: Move a point"
+    game.editModeString = "Q: Select country, E: Exit, B: Disable cam limits, LMB: Place a point, Alt+LMB: Place a helper point, RMB: Undo, LShift + RMB: Delete a region,"
 
     function game.endTutorial()
         prefs.firstPlay = false

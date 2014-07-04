@@ -39,7 +39,9 @@ function Country:initialize(name, color, attack, defense, hp)
     self.maxEnergy = self.energy
     
     self.skills = {
+		-- default skills
         skills.heal:clone(),
+        skills.attack:clone()
     } 
     
     self.invadeTimer = math.random(10,20)
@@ -55,18 +57,10 @@ local function strongEnough(self, foe)
     elseif winChance < 1 then winChance = 1
     end
     
-    local success = false
-    
     math.randomseed(os.time())
     local r = math.random(100)
     
-    if winChance >= r then 
-        success = true
-    else 
-        success = false
-    end
-    
-    return success
+    return winChance >= r 
 end
 
 local numOfInv = 0
@@ -250,18 +244,8 @@ end
 function Country:addSkill(argSkill, order)    
     local order = order or 1
     table.insert(self.skills, order, skills[argSkill]:clone())
-    
-    local count = 0
-    
-    for _,skill in pairs(self.skills) do
-        if skill.name == skills[argSkill].name then
-            count = count + 1
-        end
-        
-        if count > 1 then
-            table.remove(self.skills, order) -- Remove last item from table.
-        end
-    end
+
+    removeDuplicates(self.skills)
 end
 
 function Country:isNeighbour(regionName)

@@ -55,7 +55,7 @@ function love.load()
 
     love.window.setMode(0, 0, {fullscreen=true, fullscreentype="desktop", vsync=true})
     love.window.setTitle("Clay")
-    --love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
+   -- love.graphics.setDefaultFilter("nearest", "nearest") -- Turn off AA.
 
     loadThe()
 
@@ -76,11 +76,12 @@ function love.load()
         love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
         
         -- tint
-        love.graphics.setColor(45,45,55,150)
+        love.graphics.setColor(45,45,55, 100)
         love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
             
         -- lines
-        love.graphics.draw(bgLineImg,bgLineQ,0,0)
+        love.graphics.setColor(0,0,0, 200)
+		love.graphics.draw(bgLineImg,bgLineQ,0,0)
     
         love.graphics.setColor(255,255,255)
     end

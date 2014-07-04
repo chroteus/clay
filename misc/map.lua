@@ -47,6 +47,16 @@ function initMap()
             y = -20,
         },
         
+        helpPoint1 = {
+            x = -70,
+            y = -70,
+        },
+
+        helpPoint2 = {
+            x = -80,
+            y = -80,
+        },
+        
         fpActive = false, -- first point
             
         radius = 4,
@@ -62,11 +72,14 @@ function initMap()
         local cp = editMode.currPoint
         local lp = editMode.lastPoint
         local plp = editMode.prevLastPoint
+        local hp1, hp2 = editMode.helpPoint1, editMode.helpPoint2
         
         fp.x,fp.y = -10,-10
         cp.x,cp.y = -20,-20
         lp.x,lp.y = -30,-30
         plp.x,plp.y = -40,-40
+        hp1.x,hp1.y = -80,-80
+        hp2.x,hp2.y = -90,-90
     end
 
     function editMode.pair() pairVertices(editMode.currPolygon) end
@@ -169,18 +182,6 @@ function updateMap(dt)
         else
             editMode.fpActive = false
         end
-        
-        -- point movement
-        local radius = 10
-        if love.mouse.isDown("l") and love.keyboard.isDown("lalt") then
-            for _,region in pairs(map) do
-                for i,vertex in ipairs(region.vertices) do
-                    if pointCollidesMouse(vertex.x, vertex.y) then
-                        vertex.x,vertex.y = mapCam:mousepos()
-                    end
-                end
-            end
-        end
     end
 end
 
@@ -204,21 +205,9 @@ function mousereleasedMap(x,y,button)
     local plp = editMode.prevLastPoint
 
     if editMode.enabled then
-        
-        -- todo after movement of the point
-        if button == "l" and love.keyboard.isDown("lalt") then
-            for _,region in pairs(map) do            
-                for _,vertex in pairs(region.vertices) do
-                    vertex.x,vertex.y = math.round(vertex.x, 1), math.round(vertex.y, 1)
-                end
-                
-                region.triangles = love.math.triangulate(region.unpairedVertices)
-            end
-        end
-        
         local radius = editMode.radius/mapCam.scale
         
-        if button == "l" and not love.keyboard.isDown("lalt") then
+        if button == "l" and not love.keyboard.isDown("lalt") or not love.keyboard.isDown("lshift") then
             if pointCollidesMouse(fp.x, fp.y, 5) then
                 cp.x, cp.y = fp.x, fp.y
                 
@@ -289,7 +278,7 @@ function mousereleasedMap(x,y,button)
             end
         end
         
-        if editMode.polFin then editMode.resetPoints() end
+        if #editMode.currPolygon == 0 then editMode.resetPoints() end
         
         editMode.polFin = false
     end
@@ -325,6 +314,8 @@ function drawMap()
         local lp = editMode.lastPoint
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
+        local hp1 = editMode.helpPoint1
+        local hp2 = editMode.helpPoint2
         
        -- love.graphics.setColor(20,20,200)
         love.graphics.setColor(255,255,255)
@@ -361,6 +352,11 @@ function drawMap()
                 love.graphics.setColor(255,255,255)
                 love.graphics.setLineWidth(4.5/mapCam.scale)
                 love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
+
+                love.graphics.setColor(20,255,20)    
+                love.graphics.circle("fill", hp1.x, hp1.y, radius*3)
+                love.graphics.circle("fill", hp2.x, hp2.y, radius*3)
+                love.graphics.setColor(255,255,255)
             end
         end
         

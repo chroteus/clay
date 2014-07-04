@@ -7,8 +7,8 @@ Button = class("Button")
 -- Not to be used by itself.
 
 guiColors = {
-    bg = {200, 200, 200, 200},
-    fg = {50, 50, 50}
+    bg = {255,255,255,200},
+    fg = {20,20,20}
 }
 
 function guiRect(x,y,width,height)
@@ -24,16 +24,11 @@ function Button:initialize(x, y, width, height, text, func)
     self.y = y
     self.width = width
     self.height = height
-    self.func = assert(func) -- Function to be executed when button is clicked.
+    self.func = assert(func)
     self.state = "idle" -- Default state is idle. State is used to change colors of button.
     self.text = text
     
     self.colors = {
-        -- <self.colors> is table containing colors of button.
-        -- Button's colors change if mouse is hovering or clicking on it.
-        -- That depends on self.state.
-    
-        -- Idle = Mouse is outside of button.
         idle = {    
             bg = guiColors.bg,
             fg = guiColors.fg
@@ -41,27 +36,21 @@ function Button:initialize(x, y, width, height, text, func)
         
         -- active = Mouse is hovering on the button.
         active = {
-            bg = {guiColors.bg[1]+55, guiColors.bg[2]+55, guiColors.bg[3]+55, 255},
-            fg = {guiColors.fg[1]+55, guiColors.fg[2]+55, guiColors.fg[3]+55, 255}
+            bg = {80,80,80},
+            fg = {200,200,200}
         },
     }
 end
 
-function Button:action()
-    self.func()
-end
-
 function Button:update(dt)
-    if checkCol(self, the.mouse) then -- Check if mouse and button overlap.
-        self.state = "active"
-    else
-        self.state = "idle"
+    if checkCol(self, the.mouse) then self.state = "active"
+	else self.state = "idle"
     end
 end
 
 function Button:mousereleased(x, y, button)    
     if checkCol(self, the.mouse) then
-        self:action()
+        self.func()
         TEsound.play("assets/sounds/mouseclick.wav")
     end
 end
@@ -69,37 +58,24 @@ end
 function Button:draw(rgba)
     -- Change colors of button which depends on state of the buttton.
 
-    if self.state == "idle" then
-        if rgba ~= nil then
-            love.graphics.setColor(rgba)
-        else
-            love.graphics.setColor(self.colors.idle.bg)
-        end
-        
-        if self:isInstanceOf(SkillBtn) then
-            love.graphics.rectangle("fill", self.x, self.y, self.fillWidth, self.height)
-        else
-            love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-        end
-        
-        love.graphics.setColor(self.colors.idle.fg)
-        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
-    elseif self.state == "active" then
-        love.graphics.setColor(self.colors.active.bg)
-        if self:isInstanceOf(SkillBtn) then
-            love.graphics.rectangle("fill", self.x, self.y, self.fillWidth, self.height)
-        else
-            love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-        end
-        love.graphics.setColor(self.colors.active.fg)
-        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
-    end
-    
+	if rgba then
+		love.graphics.setColor(rgba)
+	else
+		love.graphics.setColor(self.colors[self.state].bg)
+	end
+	
+	love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+
+
+	if self.state == "active" then love.graphics.setLineWidth(2) end
+	love.graphics.setColor(self.colors[self.state].fg)
+    love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
+    love.graphics.setLineWidth(1)
 
     love.graphics.setColor(255, 255, 255)
 
     if not self:isInstanceOf(CountryBtn) then
-        love.graphics.setColor(self.colors.idle.fg)
+        love.graphics.setColor(self.colors[self.state].fg)
         love.graphics.setFont(gameFont[18])
         local fontHeight = (love.graphics.getFont():getHeight())/2
         love.graphics.printf(self.text, self.x, self.y + self.height/2 - fontHeight, self.width, "center")
@@ -147,7 +123,7 @@ end
 
 
 ShopButton = Button:subclass("ShopButton")
--- Shop Button: Has icons, values of variables of something. ex: Player.maxHP
+-- Shop Button: Has icons, values of variables of something. ex: fighter.maxHP
 -- Used solely in shop.
 
 function ShopButton:initialize(order, icon, variable, price, amount, text)
@@ -162,8 +138,8 @@ function ShopButton:initialize(order, icon, variable, price, amount, text)
     self.text = "+"..self.amount.." "..text..", "..self.price.."$"
     
     local function buy()
-        if Player.money >= self.price then
-            Player.money = Player.money - self.price
+        if fighter.money >= self.price then
+            fighter.money = fighter.money - self.price
             self.variable = self.variable + self.amount
         end
     end
@@ -171,8 +147,8 @@ function ShopButton:initialize(order, icon, variable, price, amount, text)
     -- Superclass init.
     Button.initialize(self, self.x, self.y, self.width, self.height, self.text, 
     function()
-        if Player.money >= self.price then
-            Player.money = Player.money - self.price
+        if fighter.money >= self.price then
+            fighter.money = fighter.money - self.price
             self.variable = self.variable + self.amount
         end
     end
@@ -186,27 +162,17 @@ end
     
 SkillBtn = Button:subclass("SkillBtn")
     
-function SkillBtn:initialize(yOrder, skill, func)
-    self.width = 150
-    self.x = player.x + self.width + self.width/2 --player.x/2 + self.width/3
-    self.y = player.y + 40 + 40*yOrder --(player.y + 250+40) + 40*yOrder
-    self.fillWidth = self.width
-    self.height = 30
-    self.func = func
+function SkillBtn:initialize(x, yOrder, skill)
     self.name = skill.name
     self.text = skill.name.." ["..-skill.energy.."]"
     self.hotkey = string.match(skill.name, "%((.?)%)")
     if self.hotkey then self.hotkey = string.lower(self.hotkey) end
-        
-    Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
+    
+    Button.initialize(self, x, yOrder*30*2, 150, 30, self.text, function() skill.func(battle.player, battle.enemy) end)
 end
 
-function SkillBtn:action()
-    Button.action(self)
-    if self.fillWidth >= self.width-3 then -- Checking for equality doesn't work properly because of tweening's innacuracy.
-        self.fillWidth = 0
-        Timer.tween(self.cooldown, self, {fillWidth = self.width}, "out-quad")
-    end
+function SkillBtn:reset()
+	self.used = false
 end
 
 function SkillBtn:keypressed(key)
@@ -214,15 +180,3 @@ function SkillBtn:keypressed(key)
         self:action()
     end
 end
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

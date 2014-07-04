@@ -30,7 +30,7 @@ function menu:init()
         {"Cancel", function() end}, {"Continue >>", function() menu.newGame() end}
     )
     
-   -- menu.logo = love.graphics.newImage("assets/image/Clay_logo.png")
+	menu.logo = love.graphics.newImage("assets/image/Clay_logo.png")
 end
 
 function menu:enter()
@@ -58,9 +58,9 @@ function menu:draw()
     end
     
     love.graphics.setFont(gameFont[80])
-    love.graphics.printf("Clay", 0, 60, the.screen.width, "center")
+    --love.graphics.printf("Clay", 0, 60, the.screen.width, "center")
     love.graphics.setFont(gameFont[16])
-    --love.graphics.draw(menu.logo, the.screen.width/2-menu.logo:getWidth()/2, 50)
+    love.graphics.draw(menu.logo, the.screen.width/2-menu.logo:getWidth()/2, 50)
     
     love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 100, the.screen.width, "center")
 end

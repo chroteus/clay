@@ -55,6 +55,8 @@ function Region:mousereleased(x,y,button)
                         {"OK", function() end}
                     ):show()
                 end
+                --------------------
+                
             else
                 if not editMode.enabled then
                     for _,mapNeighbour in pairs(game.neighbours) do
@@ -83,40 +85,23 @@ function Region:mousereleased(x,y,button)
         local radius = self.vertRadius/mapCam.scale
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
+        local hp1 = editMode.helpPoint1
+        local hp2 = editMode.helpPoint2
         
-        if button == "l" and not love.keyboard.isDown("lalt") then
+        if button == "l" and not love.keyboard.isDown("lalt") or not love.keyboard.isDown("lshift") then
             for _,vertex in pairs(self.vertices) do
                 if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
                     cp.x,cp.y = vertex.x,vertex.y
 
                     if fp.x < 0 and fp.y < 0 then
                         fp.x,fp.y = vertex.x,vertex.y
-                    else
-                        if #editMode.currPolygon == 0 then
-                            editMode.resetPoints()
-                        end
                     end
                 end
             end
         end
         
-        
-        if button == "r" then
-        
-            --[[ #### POINT REMOVAL
-            for i,vertex in ipairs(self.vertices) do
-                if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
-                    table.remove(self.vertices, i)
-                    
-                    if #self.vertices > 3 then    
-                        self.triangles = love.math.triangulate(self.vertices)
-                    end
-                
-                end
-            end
-            ]]--
-            
-            if love.keyboard.isDown("lshift") then
+        if love.keyboard.isDown("lshift") then
+            if button == "r" then
                 if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
                     DialogBoxes:new(
                         "Delete region?",
@@ -131,7 +116,7 @@ function Region:mousereleased(x,y,button)
                     ):show(function() love.mouse.setVisible(false) end)
                 end
             end
-        end             
+        end
     end
 end
 
@@ -300,4 +285,17 @@ function Regions.generateBorders()
         end
     end
 end
+
+--[[ #### POINT REMOVAL -- OLD CODE
+for i,vertex in ipairs(self.vertices) do
+    if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then
+        table.remove(self.vertices, i)
+        
+        if #self.vertices > 3 then    
+            self.triangles = love.math.triangulate(self.vertices)
+        end
+    
+    end
+end
+]]--
 

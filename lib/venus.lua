@@ -134,12 +134,7 @@ function transitions.fade.switch(to, duration, ...)
             f()
             randBg()
             DialogBoxes:clear()
-            if to == battle then
-                msgBox.x = the.screen.width/2 - msgBox.width/2
-                msgBox.y = enemy.energyBar.y - msgBox.height/2 -- enemy there is battle enemy
-            else
-                msgBox:reset()
-            end
+            msgBox:reset()
         end
     )
 end
