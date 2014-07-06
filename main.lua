@@ -70,21 +70,23 @@ function love.load()
     end
     
     function drawBallBg()
-        love.graphics.setBackgroundColor(45,45,55)
-        local imgW, imgH = scrBgImg:getWidth(), scrBgImg:getHeight()
-        
-        -- draw the image at the right bottom corner.
-        love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
-        
-        -- tint
-        love.graphics.setColor(45,45,55, 100)
-        love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
-            
-        -- lines
-        love.graphics.setColor(0,0,0, 200)
-		love.graphics.draw(bgLineImg,bgLineQ,0,0)
-    
-        love.graphics.setColor(255,255,255)
+		if venus.current ~= game and venus.current ~= battle then
+			love.graphics.setBackgroundColor(45,45,55)
+			local imgW, imgH = scrBgImg:getWidth(), scrBgImg:getHeight()
+			
+			-- draw the image at the right bottom corner.
+			love.graphics.draw(scrBgImg, the.screen.width-imgW, the.screen.height-imgH)
+			
+			-- tint
+			love.graphics.setColor(45,45,55, 100)
+			love.graphics.rectangle("fill", 0,0, the.screen.width, the.screen.height)
+				
+			-- lines
+			love.graphics.setColor(0,0,0, 200)
+			love.graphics.draw(bgLineImg,bgLineQ,0,0)
+		
+			love.graphics.setColor(255,255,255)
+		end
     end
     
     bgLineImg = love.graphics.newImage("assets/image/bgLine.png")

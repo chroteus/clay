@@ -5,7 +5,7 @@ require "class.skill"
 function knockback(target, speed, distance)
     local origX = target.x
     local knockbackDist = distance or 200
-    if target.x < the.screen.width/2 then knockbackDist = -knockbackDist end -- Reverse knockback if the target is on left.
+    if target.x > the.screen.width/2 then knockbackDist = -knockbackDist end -- Reverse knockback if the target is on left.
     Timer.tween(0.6/speed, target, {x = target.x - knockbackDist}, "out-expo")
     Timer.tween(0.4/speed, target, {x = target.x + knockbackDist}, "out-quad")
 end
@@ -19,7 +19,7 @@ skills = {
             knockback(target, 1)
         end),
         
-    heal = Skill("(H)eal", 5, function(fighter) fighter:gainHP(math.random(10,20)) end),
+    heal = Skill("(H)eal", 7, function(fighter) fighter:gainHP(math.random(10,20)) end),
    
    
 }

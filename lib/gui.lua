@@ -173,12 +173,8 @@ function SkillBtn:initialize(x, y, skill)
     Button.initialize(self, x, y, SkillBtn.width, SkillBtn.height, self.text, function() skill:exec(battle.player, battle.enemy) end)
 end
 
-function SkillBtn:reset()
-	self.used = false
-end
-
 function SkillBtn:keypressed(key)
     if self.hotkey and string.lower(key) == self.hotkey then
-        self:action()
+        self.func()
     end
 end

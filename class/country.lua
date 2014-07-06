@@ -25,7 +25,7 @@ function Country:initialize(name, color, attack, defense, hp)
     self.attack = attack
     self.defense = defense
     self.hp = hp
-    self.energy = 100
+    self.energy = 10
     self.money = 0
     
     self.foes = {}
@@ -40,8 +40,8 @@ function Country:initialize(name, color, attack, defense, hp)
     
     self.skills = {
 		-- default skills
-        skills.heal:clone(),
-        skills.attack:clone()
+        heal = skills.heal:clone(),
+        attack = skills.attack:clone()
     } 
     
     self.invadeTimer = math.random(10,20)

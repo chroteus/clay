@@ -14,6 +14,25 @@ function Skill:exec(fighter, target)
             self.func(fighter, target)
         end
     
-		fighter.turnFinished = true
+		-- finding the skill with lowest energy "usage"
+		local minEnergy = math.huge
+		for _,skill in pairs(fighter.skills) do
+			if skill.energy < minEnergy then
+				minEnergy = skill.energy
+			end
+		end
+		
+		-- end turn only if there are no usable moves left
+		
+		if fighter.energy < minEnergy then
+			fighter.turnFinished = true
+			target.turnFinished = false
+		
+			if target == battle.enemy then
+				Timer.add(1, function() battle.ai() end)
+			end
+			
+			fighter.energy = fighter.maxEnergy
+		end
     end
 end

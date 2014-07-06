@@ -9,7 +9,7 @@ function loading.switch(stateToSwitch)
 end
 
 function loading:enter()
-	Timer.add(0.1, function() venus.switch(state) end)
+	Timer.add(0.5, function() venus.switch(state) end)
 	if state.init then state:init(); state.init = nil end
 end
 

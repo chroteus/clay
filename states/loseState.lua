@@ -1,5 +1,4 @@
 loseState = {}
-loseState.msg = "" -- set in battle.lua
 
 function loseState:init()
     if prefs.firstPlay then
@@ -19,7 +18,6 @@ end
 
 function loseState:draw()
     love.graphics.draw(loseImg, the.screen.width/2-loseImg:getWidth()/2, the.screen.height/2-loseImg:getHeight())
-    love.graphics.printf(loseState.msg, 0, the.screen.height/2 + 50, the.screen.width, "center") 
     contBtn:draw()
 end
 
