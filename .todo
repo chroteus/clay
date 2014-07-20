@@ -1,45 +1,36 @@
 Before Beta:
 
+BATTLE BUFF EFFECTS!
+
 Regions:
     Zooming in reveals more details about the country (its regions, etc)
     A countryball would be shown in the middle of a country/region.
-
-    Rewrite old code.
 end
 
-Economy: 
+Economy:
+	Ability to improve land in order to passively gain money.
     Countries should be able to give money to each other, to improve relations.
     A simulation of an (simple) economy.
 end
 
 Diplomacy:  
     Peace for money.
-    Peace between countries.
 end
 
+Time:
+    Format: [[DD Month YYYY]]
+    Time would pass in-game and it could be sped up, like in Pandemic.
+    In battles, time would pass after each turn depending on how much    energy was spent or how many moves were used.
+
+end
 Random events:
-    Riots, which decrease countries' amount of money or make its regions join neighburing countries. (Khohol Power!)
+    Riots, which decrease countries' amount of money or make its regions join neighbouring countries. (Khohol Power!)
 end
 
 
 RPG elements:
     Item shop (thus items)
 end                                        
-
-Improve Battle System:
-    Battle system 1 (current one):
-        RPG-like real-time battles.
-        
-        Add indicators on how much health, energy were used (Chrono Trigger-esque).
-        Make battles a bit longer, more strategic, but with enough action.
-        Add new types of combat techniques.
-        Add animations.
-        
-    Battle system 2 (Proposed, more fitting and also more fun. Less RPG-esque):
-        More strategy-like battles. Player will have his own army, battles are turn-based.
-    
-end
-
 
 "Upgrade" system:
     Countries cannot attack each other over sea unless they have a navy (they must have a region adjacent to water). 
@@ -52,6 +43,6 @@ Bonus stage [AFTER RELEASE]:
 end
 
 Uninhabitated land:
-    Most of the Africa is uninhabited allowing you to explore/claim it.
+    Most of the Africa is uninhabited allowing you to claim it, but you'll need to fight aborigines first.
     OPTIONAL: Wild life
 end

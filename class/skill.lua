@@ -25,14 +25,7 @@ function Skill:exec(fighter, target)
 		-- end turn only if there are no usable moves left
 		
 		if fighter.energy < minEnergy then
-			fighter.turnFinished = true
-			target.turnFinished = false
-		
-			if target == battle.enemy then
-				Timer.add(1, function() battle.ai() end)
-			end
-			
-			fighter.energy = fighter.maxEnergy
+			battle.turnEnd(fighter)
 		end
     end
 end

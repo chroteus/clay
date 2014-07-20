@@ -29,6 +29,8 @@ require "states.gameOver"
 require "states.transState"
 require "states.upg"
 require "states.loading"
+require "states.shop"
+require "states.inventory"
 
 -- Misc
 require "class.player"
@@ -36,8 +38,12 @@ require "class.base"
 require "class.skill"
 require "class.item"
 require "class.region"
+require "class.buff"
+
 require "objects.skills"
 require "objects.items"
+require "objects.buffs"
+
 require "misc.map"
 require "misc.mapHelp"
 require "misc.msgBox"
@@ -46,6 +52,8 @@ require "misc.randEvent"
 require "misc.screenBtn"
 require "lib.collision"
 require "lib.math"
+
+math.random = love.math.random
 
 function love.load()
     math.randomseed(os.time())
@@ -137,17 +145,23 @@ function love.draw()
 end
 
 function love.keypressed(key, u)
-    if key == "m" then
-        if not musicPaused then
-            TEsound.pause("music")
-            musicPaused = true
-        else
-            TEsound.resume("music")
-            musicPaused = false
-        end
-    elseif key == "home" then
-        debug.debug()
-    end
+	if love.keyboard.isDown("lshift") then
+		if key == "m" then
+			Player.money = Player.money + 100
+		end
+	else
+		if key == "m" then
+			if not musicPaused then
+				TEsound.pause("music")
+				musicPaused = true
+			else
+				TEsound.resume("music")
+				musicPaused = false
+			end
+		elseif key == "home" and DEBUG then
+			debug.debug()
+		end
+	end
 
     DialogBoxes:keypressed(key, u)
 end

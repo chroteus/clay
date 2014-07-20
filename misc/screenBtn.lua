@@ -5,7 +5,9 @@ screenBtn = {}
 -- syntax to add is as follows: {"name",state}
 screenBtn.states = {
     {"Character", charScr},
+    {"Inventory", inventory},
     {"Diplomacy", diplScr},
+    {"Shop", shop}
 }
 
 screenBtn.list = {}

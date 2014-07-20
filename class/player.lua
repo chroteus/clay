@@ -6,6 +6,8 @@ Player = {
     level = 1,
     money = 0,
     attack = 0,
+    addAttack = 0, -- attack added by items
+    addDefense = 0, -- same as addAttack, but for defense
     defense = 0,
     
     items = {}
@@ -30,6 +32,6 @@ function Player:gainXP(amount)
     return finXP, leveledUp
 end
 
-function Player:returnCountry(notClone)
+function Player:returnCountry()
     return nameToCountry(Player.country)
 end

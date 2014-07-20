@@ -1,39 +1,48 @@
 Item = Base:subclass("Item")
 
-function Item:initialize(name, info, func)
+function Item:initialize(name, cost, info, onEquip, onUnequip)
     self.name = name
     self.info = info
-    self.img = love.graphics.newImage("assets/image/items/"..self.name..".png")
-    self.func = assert(func)
+    self.cost = cost
+    self.img = love.graphics.newImage("assets/image/items/" .. self.name .. ".png")
+    self.onEquip = assert(onEquip)
+    self.onUnequip = assert(onUnequip)
     
-    self.isWorn = false
+    self.equipped = false
 end
 
 function Item:equip()
-    -- check to see if an item is worn already
+	self.equipped = true
+	self.onEquip()
+end
+
+function Item:add()
+	 -- check to see if an item is worn already
     local num = 0
     for _,item in pairs(Player.items) do
         if item.name == self.name then
             num = num + 1
-            item.isWorn = true
         end
     end
     
-    -- if item isn't found, add one.
+    -- if item isn't found, add.
     if num == 0 then
-        self.isWorn = true
-        table.insert(Player.items, self:clone())
+        table.insert(Player.items, self)
     end
 end
 
 function Item:unequip()
-    for _,item in pairs(Player.items) do
-        if item.name == self.name then
-            item.isWorn = false
-        end
-    end
+    self.equipped = false
+	self.onUnequip()
 end
-    
-function Item:update(dt)
-    self.func()
+
+OffensiveItem = Item:subclass("OffensiveItem")
+-- Adds to attack
+
+function OffensiveItem:initialize(name, cost, info, amount)
+	-- Player.addAttack is attack added by weapons.
+	local function onEquip() Player.attack = Player.attack + amount; Player.addAttack = Player.addAttack + amount end
+	local function onUnequip() Player.attack = Player.attack - amount; Player.addAttack = Player.addAttack - amount end
+	
+	Item.initialize(self, name, cost, info, onEquip, onUnequip)
 end

@@ -14,13 +14,13 @@ skills = {
     -- Skill(name, energy, func)
 
     attack = Skill("(A)ttack", 3, 
-        function(fighter, target) 
-            target:loseHP(math.random(fighter.defense+5, target.attack + 10)) 
+        function(fighter, target)
+            target:loseHP(math.random(fighter.defense+5, target.attack + 10))
             knockback(target, 1)
         end),
         
     heal = Skill("(H)eal", 7, function(fighter) fighter:gainHP(math.random(10,20)) end),
-   
-   
+    
+    fire = Skill("(F)ire", 10, function(fighter, target) buffs.fire:apply(target) end),
 }
                 

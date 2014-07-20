@@ -59,7 +59,7 @@ function createMap() -- Fresh map. Used to load map at first play.
         local mapTable = assert(loadstring(mapString))()
         
         for _,region in pairs(mapTable.map) do
-            local country = idToCountry(region[1])
+            local country = countries[region[1]]
             table.insert(map, Region(country.id, country.color, region[2], region[3]))
             map[#map].pairedVertices = pairVertices(map[#map].vertices)
         end
@@ -74,7 +74,7 @@ function loadMap() -- Load an existing map.
     local mapTable = mapFile() -- Call the return of mapFile
     
     for _,region in pairs(mapTable.map) do
-        local country = idToCountry(region[1])
+        local country = countries[region[1]]
         table.insert(map, Region(country.id, country.color, region[2], region[3]))
     end
     

@@ -73,7 +73,7 @@ function charScr:draw()
 
     love.graphics.draw(charScr.char.leftImage, charX, charY)
     
-    local str = "| Points: "..Player.unspentPoints.." | Attack: "..Player.attack.." | Defense: "..Player.defense.." |" 
+    local str = "| Points: "..Player.unspentPoints.." | Attack: "..Player.attack - Player.addAttack.." (+"..Player.addAttack..") | Defense: "..Player.defense - Player.addDefense.." (+"..Player.addDefense..") |" 
     love.graphics.printf(str, 0, charY+270, the.screen.width, "center")
     
     for _,btn in pairs(charScr.btn) do

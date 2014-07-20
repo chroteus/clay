@@ -33,32 +33,42 @@ for i=1, #countries do
 end
 
 function checkIfDead()
-        if not Player:returnCountry().isDead then
+	if not Player:returnCountry().isDead then
         -- checking for the number of regions a country posseses
         -- kills the country if there are none
 
-        for _,country in pairs(countries) do
-            local num = 0
-            
-            for _,region in pairs(map) do
-                if region.id == country.id then
-                    num = num + 1
-                end
-            end
-            
-            if num == 0 then 
-                country.isDead = true
-                
-                if country.name == Player.country then
-                    venus._switch(gameOver)
-                else
-                    if not country.deadMessagePrinted then
-                        msgBox:add(country.name.." is defeated!")
-                        country.deadMessagePrinted = true
-                    end
-                end
-            end
-        end
+		for _,country in pairs(countries) do
+			local num = 0
+			
+			for _,region in pairs(map) do
+				if region.id == country.id then
+					num = num + 1
+				end
+			end
+			
+			if num == 0 then 
+				country.isDead = true
+				
+				if #country.foes > 0 then
+					for _,foe in pairs(country.foes) do		
+						for i,_foe in ipairs(foe.foes) do
+							if country.name == _foe then
+								table.remove(foe.foes, i)
+							end
+						end
+					end
+				end
+
+				if country.name == Player.country then
+					venus._switch(gameOver)
+				else
+					if not country.deadMessagePrinted then
+						msgBox:add(country.name.." is defeated!")
+						country.deadMessagePrinted = true
+					end
+				end
+			end
+		end
     end
 end
 
@@ -79,12 +89,3 @@ function nameToCountry(name)
         end
     end
 end
-
-function idToCountry(id)
-    for _,country in pairs(countries) do
-        if country.id == id then
-            return country
-        end
-    end
-end
-

@@ -41,7 +41,8 @@ function Country:initialize(name, color, attack, defense, hp)
     self.skills = {
 		-- default skills
         heal = skills.heal:clone(),
-        attack = skills.attack:clone()
+        attack = skills.attack:clone(),
+        fire = skills.fire:clone(),
     } 
     
     self.invadeTimer = math.random(10,20)
@@ -112,6 +113,12 @@ function Country:loseHP(damage)
     local randSnd = soundT[randNum]
     TEsound.play("assets/sounds/attack/"..randSnd)
     self.hp = self.hp - netDamage
+    
+    if self.name == battle.player.name then
+		battle.showDmg(battle.player, netDamage)
+	elseif self.name == battle.enemy.name then
+		battle.showDmg(battle.enemy, netDamage)
+	end
 end
 
 function Country:gainHP(amount)

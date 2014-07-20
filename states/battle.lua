@@ -10,10 +10,14 @@ function battle.start(player, enemy) -- Sets opponents, and switches to battle g
 	battle.player = nameToCountry(player)
 	battle.enemy = nameToCountry(enemy)
 	
-    Gamestate.switch(battle)
+	battle.player.hp = battle.player.maxHP
+	battle.enemy.hp = battle.enemy.maxHP
+	
+    venus.switch(battle)
 end
 
 startBattle = battle.start
+
 
 function battle.load()
 	battle.btn = {}
@@ -33,6 +37,8 @@ function battle.load()
 		fighter.static = {}
 		fighter.static.x = fighter.x 
 		fighter.static.y = the.screen.height/2 - fixedHeight
+		
+		fighter.buffs = {}
 	end
 	
 	player.turnFinished = false; enemy.turnFinished = true
@@ -49,21 +55,49 @@ function battle.load()
 		lastBtn.x-10,lastBtn.y+lastBtn.height+80,
 		lastBtn.width+20, lastBtn.height+20, 
 		"End Turn", 
-		function() battle.player.turnFinished = true 
-				   battle.enemy.turnFinished = false; 
-				   Timer.add(1, function() battle.ai() end) 
-		end
+		function() battle.turnEnd(battle.player) end
 	)
 end
+
+function battle.showDmg(fighter, dmg)
+end
+
+function battle.turnEnd(prevFighter)
+	-- prevFighter: Fighter whose turn ends
+	-- nextFighter: Fighter whose turn begins.
+
+	local nextFighter
+	
+	if prevFighter == battle.player then
+		nextFighter = battle.enemy
+	else
+		nextFighter = battle.player
+	end
+
+	-- called everytime a turn ends
+	prevFighter.turnFinished = true
+	nextFighter.turnFinished = false
+
+	if nextFighter == battle.enemy then
+		Timer.add(1, function() battle.ai() end)
+	end
+
+	prevFighter.energy = prevFighter.maxEnergy
+	
+	for _,buff in pairs(nextFighter.buffs) do
+		buff.effect(nextFighter)
+	end
+end
+
 
 function battle.ai()
 	local enemy = battle.enemy
 	local player = battle.player
 	if not enemy.turnFinished then
 		if enemy.hp / enemy.maxHP < 0.6 then
-			local r = math.random(1,3)
+			local r = math.random(1,2)
 			if r == 1 then enemy.skills.attack:exec(enemy, player)
-			else enemy.skills.heal:exec(enemy, player) end
+			elseif r == 2 then enemy.skills.heal:exec(enemy, player) end
 		else
 			enemy.skills.attack:exec(enemy, player)
 		end
@@ -177,9 +211,6 @@ function battle:leave()
     
     TEsound.stop("bMusic")
     TEsound.playLooping(musicFiles, "music")
-    
-    countries[player.id].hp = player.maxHP
-	countries[enemy.id].hp = enemy.maxHP
     
     startedBattle = false
 end
