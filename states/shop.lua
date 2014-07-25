@@ -12,6 +12,10 @@ function shop:init()
 	end
 end
 
+function shop:enter()
+	love.mouse.setVisible(true)
+end
+
 function shop:update(dt)
 	shop.btn:update()
 end

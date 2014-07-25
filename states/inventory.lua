@@ -13,6 +13,7 @@ function inventory:init()
 end
 
 function inventory:enter()
+	love.mouse.setVisible(true)
 	inventory.load()
 end
 
@@ -22,6 +23,11 @@ end
 
 function inventory:draw()
 	inventory.btn:draw()
+	if #Player.items == 0 then
+		love.graphics.setFont(gameFont[50])
+		love.graphics.printf("Your inventory is empty!", 0, 100, the.screen.width, "center")
+		love.graphics.setFont(gameFont[16])
+	end
 end
 
 function inventory:mousereleased(x,y,button)

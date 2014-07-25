@@ -50,6 +50,8 @@ require "misc.msgBox"
 require "misc.dialogBox"
 require "misc.randEvent"
 require "misc.screenBtn"
+require "misc.worldTime"
+
 require "lib.collision"
 require "lib.math"
 

@@ -78,6 +78,8 @@ function game:enter()
         love.mouse.setVisible(false)
         love.mouse.setGrabbed(true)
     end
+    
+    worldTime:start()
 end
 
 function game:update(dt)
@@ -88,7 +90,6 @@ function game:update(dt)
 end
 
 function game:draw()
-    
     drawMap() 
      
     -- GUI
@@ -121,6 +122,10 @@ function game:draw()
     end
     
     infoBox:draw()
+    
+    if not prefs.firstPlay then
+		worldTime:draw()
+	end
 end
 
 function game:mousepressed(x, y, button)
@@ -136,7 +141,12 @@ function game:keyreleased(key)
         venus.switch(pause)
     elseif key == "tab" then
         venus.switch(transState.lastState)
-    end
+    elseif key == "n" then
+		worldTime.time.year = worldTime.time.year + 1
+		worldTime.leapYearCount = worldTime.leapYearCount + 1
+	elseif key == "j" then
+		worldTime.time.month = worldTime.time.month + 1
+	end
     
     if DEBUG then
         if key == "b" then
@@ -165,4 +175,5 @@ end
 
 function game:leave()
     Timer.cancel(game.timerHandle)
+    worldTime:stop()
 end
