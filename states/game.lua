@@ -141,11 +141,6 @@ function game:keyreleased(key)
         venus.switch(pause)
     elseif key == "tab" then
         venus.switch(transState.lastState)
-    elseif key == "n" then
-		worldTime.time.year = worldTime.time.year + 1
-		worldTime.leapYearCount = worldTime.leapYearCount + 1
-	elseif key == "j" then
-		worldTime.time.month = worldTime.time.month + 1
 	end
     
     if DEBUG then

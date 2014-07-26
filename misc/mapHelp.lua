@@ -112,6 +112,11 @@ function loadMap() -- Load an existing map.
     -- load sea id
     game.seaId = mapTable.seaId
 
+	-- load time
+	for k,v in pairs(mapTable.time) do
+		worldTime[k] = v
+	end
+
     Player:returnCountry(true).attack = Player.attack
     Player:returnCountry(true).defense = Player.defense
     Player:returnCountry(true).money = Player.money
@@ -189,9 +194,12 @@ function saveMap(name)
         append(rmSpc(country.name).."="..tostring(country.money)..",")
     end
     append("},")
-    
+   
     --save latest sea id
     append("seaId = "..game.seaId..",")
+    
+    --save time
+    append("time = { day=" .. worldTime.day .. ", month=".. worldTime.month .. ",year=" .. worldTime.year .. "},")
     -- finish
     append("}")
     

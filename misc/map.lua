@@ -85,7 +85,7 @@ function initMap()
     function editMode.pair() pairVertices(editMode.currPolygon) end
     
     Regions.generateNeighbours()
-    Regions.generateBorders()
+    --Regions.generateBorders()
 
     -- Map images "stitching"
     local t = #love.filesystem.getDirectoryItems("assets/image/map")

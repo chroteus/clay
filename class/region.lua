@@ -121,9 +121,7 @@ function Region:mousereleased(x,y,button)
 end
 
 function Region:draw()
-    self.color[4] = 225
-    love.graphics.setColor(self.color)
-    
+	-- determining whether Region is visible, not drawing if not visible
     local drawRegion = false
     local camX, camY = mapCam:worldCoords(0,0)
     for _,vertex in pairs(self.vertices) do
@@ -133,8 +131,20 @@ function Region:draw()
         end
     end
    
+	-- Set color
+    self.color[4] = 225 -- opacity
+	love.graphics.setColor(self.color)
+	
     if drawRegion then
         if #self.unpairedVertices > 2 then
+			
+			-- Borders
+			if self.country.name ~= "Sea" then
+				--love.graphics.setLineWidth(1.5)
+				--love.graphics.polygon("line", self.unpairedVertices)
+				--love.graphics.setLineWidth(1)
+			end
+            
             if self.country.name ~= "Sea" then
                 if self.convex then
                     love.graphics.polygon("fill", self.unpairedVertices)
@@ -143,6 +153,7 @@ function Region:draw()
                         love.graphics.polygon("fill", triangle)
                     end
                 end
+
             end
             
             if editMode.enabled then
@@ -263,7 +274,7 @@ end
 
 function Regions.generateBorders()
     for _,region in pairs(map) do
-        region.border = {} -- empty table
+        region.border = {}
         for _,neighbourName in pairs(region.neighbours) do
             local neighbour = getRegion(neighbourName)
             
