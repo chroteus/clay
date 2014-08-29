@@ -11,12 +11,14 @@ worldTime = {
 	stopProgress = true,
 }
 
-function worldTime:start()
+function worldTime:start(dayLength)
 	self.stopProgress = false
-	self:progress()
+	self:progress(dayLength)
 end
 
-function worldTime:progress()
+function worldTime:progress(dayLength)
+	local dayLength = dayLength or self.dayLength
+	
 	if not self.stopProgress then
 	
 		local function progressMonth()
@@ -64,8 +66,9 @@ function worldTime:progress()
 			if self.day == 28  and self.leapYearCount ~= 4 then progressMonth() end
 		end
 		
-		self.day = self.day + 1	
-		Timer.add(self.dayLength, function() worldTime:progress() end)
+		self.day = self.day + 1
+		
+		Timer.add(dayLength, function() worldTime:progress() end)
 	end
 end
 

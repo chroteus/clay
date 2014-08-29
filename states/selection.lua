@@ -22,6 +22,11 @@ function selection:init()
         Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
     end
     
+    function CountryBtn:draw()
+		Button.draw(self)
+		love.graphics.draw(self.image, self.x+4, self.y+4)
+	end
+    
     countryButtons = {}
     
     local rowIndex = 1

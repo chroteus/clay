@@ -1,11 +1,5 @@
-Before Beta:
-
 BATTLE BUFF EFFECTS!
-
-Regions:
-    Zooming in reveals more details about the country (its regions, etc)
-    A countryball would be shown in the middle of a country/region.
-end
+BATTLE DMG SHOW.
 
 Economy:
 	Ability to improve land in order to passively gain money.
@@ -18,7 +12,6 @@ Diplomacy:
 end
 
 Time:
-    Format: [[DD Month YYYY]]
     Time would pass in-game and it could be sped up, like in Pandemic.
     In battles, time would pass after each turn depending on how much    energy was spent or how many moves were used.
 
@@ -38,11 +31,11 @@ end
 
 Naval warfare
 
-Bonus stage [AFTER RELEASE]:
+Bonus stage [AFTER RELEASE] [MAYBE]:
     One of your soldiers gets stuck up in an 8bit world. You guide him back to Earth.
 end
 
 Uninhabitated land:
-    Most of the Africa is uninhabited allowing you to claim it, but you'll need to fight aborigines first.
+    Most of the Africa is uninhabited allowing you to claim it, but you'll need to fight natives first.
     OPTIONAL: Wild life
 end

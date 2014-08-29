@@ -50,15 +50,17 @@ function diplScr:init()
         diplScr.btn = {}
         local btnH = 30
         for i,foe in ipairs(Player:returnCountry(true).foes) do
-            table.insert(diplScr.btn,
-                Button(the.screen.width/2-rectW/2, ((rectH*1.5)*i)+rectH, rectW, btnH, "Talk", 
-                    function() 
-                        diplScr.country = foe
-                        diplScr.enabled = true
-                        diplScr.message = randMsg.foe(foe)
-                    end
-                )
-            )
+			if not foe.isDead then
+				table.insert(diplScr.btn,
+					Button(the.screen.width/2-rectW/2, ((rectH*1.5)*i)+rectH, rectW, btnH, "Talk", 
+						function() 
+							diplScr.country = foe
+							diplScr.enabled = true
+							diplScr.message = randMsg.foe(foe)
+						end
+					)
+				)
+			end
         end
     end
     
@@ -104,19 +106,21 @@ function diplScr:draw()
         diplCam:attach()
         
         for i,foe in ipairs(Player:returnCountry(true).foes) do
-            love.graphics.setColor(guiColors.bg)
-            love.graphics.rectangle("fill",the.screen.width/2-rectW/2, ((rectH*1.5)*i), rectW, rectH)
-            love.graphics.setColor(guiColors.fg)
-            love.graphics.rectangle("line",the.screen.width/2-rectW/2, ((rectH*1.5)*i), rectW, rectH)
-            love.graphics.printf(foe.name, 0, diplScr.margin*2.5+(rectH*1.5*i), the.screen.width, "center")
-            love.graphics.setColor(255,255,255)
+			if not foe.isDead then
+				love.graphics.setColor(guiColors.bg)
+				love.graphics.rectangle("fill",the.screen.width/2-rectW/2, ((rectH*1.5)*i), rectW, rectH)
+				love.graphics.setColor(guiColors.fg)
+				love.graphics.rectangle("line",the.screen.width/2-rectW/2, ((rectH*1.5)*i), rectW, rectH)
+				love.graphics.printf(foe.name, 0, diplScr.margin*2.5+(rectH*1.5*i), the.screen.width, "center")
+				love.graphics.setColor(255,255,255)
 
-            local ball = foe.miniature
-            ball:setFilter("nearest", "nearest")
-            love.graphics.push()
-            love.graphics.scale(2)
-            love.graphics.draw(ball, (the.screen.width/4)-(ball:getWidth()/2), (rectH*0.75*i)+diplScr.margin/4) --0.75 because it's scaled
-            love.graphics.pop()
+				local ball = foe.miniature
+				ball:setFilter("nearest", "nearest")
+				love.graphics.push()
+				love.graphics.scale(2)
+				love.graphics.draw(ball, (the.screen.width/4)-(ball:getWidth()/2), (rectH*0.75*i)+diplScr.margin/4) --0.75 because it's scaled
+				love.graphics.pop()
+			end
         end
         
         love.graphics.setFont(gameFont[22])

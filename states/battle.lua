@@ -1,7 +1,5 @@
 battle = {}
 
-print("12th JULY! Congratulate a German Bernd.")
-
 local padding = 40
 local fixedHeight = 250
 local barWidth, barHeight = 200, 30
@@ -16,6 +14,7 @@ function battle.start(player, enemy) -- Sets opponents, and switches to battle g
     venus.switch(battle)
 end
 
+-- backwards compatiblity
 startBattle = battle.start
 
 
@@ -39,6 +38,8 @@ function battle.load()
 		fighter.static.y = the.screen.height/2 - fixedHeight
 		
 		fighter.buffs = {}
+		
+		fighter.dmgColor = {255,255,255}
 	end
 	
 	player.turnFinished = false; enemy.turnFinished = true
@@ -60,6 +61,16 @@ function battle.load()
 end
 
 function battle.showDmg(fighter, dmg)
+		if fighter.dmgColor[2] > 200 then
+		Timer.tween(0.1, fighter.dmgColor, {[2] = 0})
+		
+		Timer.tween(0.1, fighter.dmgColor, {[3] = 0}, "linear",
+			function()
+				Timer.tween(0.2, fighter.dmgColor, {[2] = 255})
+				Timer.tween(0.2, fighter.dmgColor, {[3] = 255})
+			end
+		)
+	end
 end
 
 function battle.turnEnd(prevFighter)
@@ -84,8 +95,24 @@ function battle.turnEnd(prevFighter)
 
 	prevFighter.energy = prevFighter.maxEnergy
 	
-	for _,buff in pairs(nextFighter.buffs) do
-		buff.effect(nextFighter)
+	-- progress 10 days
+	for i=1,10 do
+		worldTime:start(0)
+		
+		-- progress everything according to days passed / 1.5
+		game:update(worldTime.dayLength/1.5)
+	end
+	worldTime:stop()
+
+	-- apply all buffs
+	for _,fighter in pairs(battle.fighters) do
+		for k,buff in pairs(fighter.buffs) do
+			if buff.duration <= 0 then
+				table.remove(fighter.buffs, k)
+			else
+				buff:exec(fighter)
+			end
+		end
 	end
 end
 
@@ -96,7 +123,7 @@ function battle.ai()
 	if not enemy.turnFinished then
 		if enemy.hp / enemy.maxHP < 0.6 then
 			local r = math.random(1,2)
-			if r == 1 then enemy.skills.attack:exec(enemy, player)
+			if     r == 1 then enemy.skills.attack:exec(enemy, player)
 			elseif r == 2 then enemy.skills.heal:exec(enemy, player) end
 		else
 			enemy.skills.attack:exec(enemy, player)
@@ -144,12 +171,16 @@ function battle:draw()
 	love.graphics.setColor(255,255,255)
 	
 	local player,enemy = battle.player, battle.enemy
+	
+	if player.dmgColor then love.graphics.setColor(player.dmgColor) end
 	love.graphics.draw(player.rightImage, player.x, player.y)
+	if enemy.dmgColor  then love.graphics.setColor(enemy.dmgColor) end
 	love.graphics.draw(enemy.leftImage, enemy.x, enemy.y)
 	
 	for _,fighter in pairs(battle.fighters) do
 		local hpBarX, hpBarY = fighter.static.x + fighter.leftImage:getWidth()/2 - barWidth/2, fighter.static.y - barHeight*2
 		local enBarX, enBarY = fighter.static.x + fighter.leftImage:getWidth()/2 - barWidth/2, fighter.static.y + fixedHeight
+		
 		
 		love.graphics.setColor(255,20,20, 150)
 		love.graphics.rectangle("line", hpBarX, hpBarY, barWidth, barHeight)
@@ -162,6 +193,10 @@ function battle:draw()
 		love.graphics.setColor(255,255,255)
 		love.graphics.print("HP: " .. fighter.hp .. "/" .. fighter.maxHP, hpBarX + 10, hpBarY + barHeight/2 - love.graphics.getFont():getHeight()/2)
 		love.graphics.print("Energy: " .. fighter.energy .. "/" .. fighter.maxEnergy, enBarX + 10, enBarY + barHeight/2 - love.graphics.getFont():getHeight()/2)
+	
+		for i,buff in pairs(fighter.buffs) do
+			love.graphics.draw(buff.image, enBarX + ((i-1)*50), enBarY - 50)
+		end
 	end
 	
 	love.graphics.setColor(255,255,255)
@@ -179,7 +214,7 @@ function battle:draw()
 	end
 end
 
-function battle:mousereleased(x,y,buttom)
+function battle:mousereleased(x,y,button)
 	for _,btn in pairs(battle.btn) do btn:mousereleased(x,y,button) end
 	if not battle.player.turnFinished then battle.endTurnBtn:mousereleased(x,y,button) end
 end
@@ -211,6 +246,12 @@ function battle:leave()
     
     TEsound.stop("bMusic")
     TEsound.playLooping(musicFiles, "music")
+    
+    for _,fighter in pairs(battle.fighters) do
+		fighter.buffs = {}
+		fighter.hp = fighter.maxHP
+		fighter.energy = fighter.maxEnergy
+	end
     
     startedBattle = false
 end

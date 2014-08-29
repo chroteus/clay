@@ -17,9 +17,8 @@ end
 
 msgBox.list = {}
 
-local LIMIT = msgBox.height/(love.graphics.getFont():getHeight()+10)
-
 function msgBox:add(str)
+	local LIMIT = msgBox.height/(love.graphics.getFont():getHeight()+10)
     --[[
     if #msgBox.list > 0 then
         for _,m in pairs(msgBox.list) do
@@ -30,6 +29,10 @@ function msgBox:add(str)
     
     table.insert(self.list, str)
     
+    if love.graphics.getFont():getWidth(str) > self.width then
+		LIMIT = LIMIT - 1
+	end
+	
     if #msgBox.list > LIMIT then
         table.remove(msgBox.list, 1)
     end

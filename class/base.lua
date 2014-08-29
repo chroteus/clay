@@ -28,7 +28,13 @@ function Base:clone()
             t.drawSlider = function(self) AttackSkill.drawSlider(self) end
         end
         
+    elseif self:isInstanceOf(Buff) then
+		t.exec = function(self, target)
+			Buff.exec(self, target)
+		end
+
     end
+    
     
     return t
 end

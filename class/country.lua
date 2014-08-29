@@ -113,12 +113,6 @@ function Country:loseHP(damage)
     local randSnd = soundT[randNum]
     TEsound.play("assets/sounds/attack/"..randSnd)
     self.hp = self.hp - netDamage
-    
-    if self.name == battle.player.name then
-		battle.showDmg(battle.player, netDamage)
-	elseif self.name == battle.enemy.name then
-		battle.showDmg(battle.enemy, netDamage)
-	end
 end
 
 function Country:gainHP(amount)
@@ -146,94 +140,99 @@ function Country:isFoe(name)
 end
 
 function Country:war(foe, noPrintMsg)
-    local foe = foe
-    if type(foe) == "string" then foe = nameToCountry(foe) end
-    
-    if foe.name ~= "Sea" and foe.name ~= self.name then
-    
-        if not self:isFoe(foe.name) and not noPrintMsg then
-            msgBox:add(self.name.." declared war on "..foe.name.."!")
-        end
-        
-        if type(foe) == "table" then
-            if #foe.foes == 0 then 
-                table.insert(foe.foes, self)
-            else
-                if not foe:isFoe(Player.country) then
-                    table.insert(foe.foes, self)
-                end
-            end
-            
-            if #self.foes == 0 then
-                table.insert(self.foes, foe)
-            else
-                if not self:isFoe(foe.name) then
-                    table.insert(self.foes, foe)
-                end
-            end
-        else
-            error("Country:war method accepts the instance of country or its name.")
-        end
-    end
+	if not self.isDead then
+		local foe = foe
+		if type(foe) == "string" then foe = nameToCountry(foe) end
+		
+		if foe.name ~= "Sea" and foe.name ~= self.name then
+		
+			if not self:isFoe(foe.name) and not noPrintMsg then
+				msgBox:add(self.name.." declared war on "..foe.name.."!")
+			end
+			
+			if #foe.foes == 0 then 
+				table.insert(foe.foes, self)
+			else
+				if not foe:isFoe(Player.country) then
+					table.insert(foe.foes, self)
+				end
+			end
+			
+			if #self.foes == 0 then
+				table.insert(self.foes, foe)
+			else
+				if not self:isFoe(foe.name) then
+					table.insert(self.foes, foe)
+				end
+			end
+				
+			removeDuplicates(foe.foes)
+			removeDuplicates(self.foes)
+		end
+	end
 end
 
 function Country:peace(country)
-    local country = country
-    if type(country) == "string" then country = nameToCountry(country) end
+	if not self.isDead then
+		local country = country
+		if type(country) == "string" then country = nameToCountry(country) end
 
-    if country.name ~= "Sea" and country.name ~= self.name then
-        local function peace(country)
-            if type(country) == "table" then
-                if #self.foes > 0 then
-                    for i,foe in ipairs(self.foes) do
-                        if country.name == foe.name then
-                            table.remove(self.foes, i)
-                        end
-                    end
-                    
-                end
-                if #country.foes > 0 then
-                    for i,foe in ipairs(country.foes) do
-                        if self.name == foe.name then
-                            table.remove(country.foes, i)
-                        end
-                    end
-                end
-                
-                msgBox:add(self.name.." signed a peace treaty with "..country.name..".")
-            else
-                error("Country:peace method accepts the instance or name of country only.")
-            end
-        end
-        
-        if country.name == Player.country then
-            local r = math.random(2)
-            
-            if r == 1 then
-                local dbox = DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
-                    {"Refuse", function() end}, {"Accept", function() peace(country) end}
-                )
-                
-                dbox:show(function() love.mouse.setVisible(false) end)
-            else
-                local moneyAmnt = math.random(self.attack, self.attack*2)
-                local dbox = DialogBoxes:new(
-                    self.name.. " wants to sign a peace treaty with us. "..tostring(moneyAmnt).."G will be given as a compensation.",
-                    {"Refuse", function() end}, 
-                    {"Accept", 
-                        function()
-                            peace(country)
-                            country:addMoney(moneyAmnt)
-                        end
-                    }
-                )
-                
-                dbox:show(function() love.mouse.setVisible(false) end)
-            end
-        else
-            -- for AI
-            peace(country)
-        end
+		if country.name ~= "Sea" and country.name ~= self.name then
+			local function peace(country)
+				if type(country) == "table" then
+					if #self.foes > 0 then
+						for i,foe in ipairs(self.foes) do
+							if country.name == foe.name then
+								table.remove(self.foes, i)
+							end
+						end
+						
+					end
+					if #country.foes > 0 then
+						for i,foe in ipairs(country.foes) do
+							if self.name == foe.name then
+								table.remove(country.foes, i)
+							end
+						end
+					end
+					
+					msgBox:add(self.name.." signed a peace treaty with "..country.name..".")
+				else
+					error("Country:peace method accepts the instance or name of country only.")
+				end
+			end
+			
+			if country.name == Player.country then
+				local r = math.random(2)
+				
+				if r == 1 then
+					local dbox = DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
+						{"Refuse", function() end}, {"Accept", function() peace(country) end}
+					)
+					
+					dbox:show(function() love.mouse.setVisible(false) end)
+				else
+					local moneyAmnt = math.random(self.attack*2, self.attack*3)
+					local dbox = DialogBoxes:new(
+						self.name.. " wants to sign a peace treaty with us. "
+						..tostring(moneyAmnt).."G will be given as a compensation.",
+						
+						{"Refuse", function() end}, 
+						{"Accept", 
+							function()
+								peace(country)
+								country:addMoney(moneyAmnt)
+							end
+						}
+					)
+					
+					dbox:show(function() love.mouse.setVisible(false) end)
+				end
+			else
+				-- for AI
+				peace(country)
+			end
+		end
     end
 end
 

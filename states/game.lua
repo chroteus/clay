@@ -83,7 +83,8 @@ function game:enter()
 end
 
 function game:update(dt)
-    updateMap(dt)
+    if venus.current == game then updateMap(dt) end
+    
     msgBox:update(dt)
     randEvent(dt)
     infoBox:update(dt)

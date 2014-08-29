@@ -130,20 +130,11 @@ function Region:draw()
             break
         end
     end
-   
-	-- Set color
-    self.color[4] = 225 -- opacity
-	love.graphics.setColor(self.color)
 	
     if drawRegion then
-        if #self.unpairedVertices > 2 then
-			
-			-- Borders
-			if self.country.name ~= "Sea" then
-				--love.graphics.setLineWidth(1.5)
-				--love.graphics.polygon("line", self.unpairedVertices)
-				--love.graphics.setLineWidth(1)
-			end
+        if #self.unpairedVertices > 2 then       
+			self.color[4] = 225 -- opacity
+			love.graphics.setColor(self.color)
             
             if self.country.name ~= "Sea" then
                 if self.convex then
@@ -164,7 +155,8 @@ function Region:draw()
             else
         
                 if PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y) then
-                    if self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128 then
+                    if (self.color[1] >= 128 or self.color[2] >= 128 or self.color[3] >= 128)
+                    and self.country.name ~= "Sea" then
                         love.graphics.setColor(0,0,0,100)
                     else
                         love.graphics.setColor(255,255,255,100)
@@ -230,7 +222,23 @@ function Region:draw()
                 end
             end
         end
-                
+        
+        -- Borders
+		if not editMode.enabled then
+		
+			if (self.country.name == "Sea" and PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y))
+			or self.country.name ~= "Sea" then
+				
+				local alpha = 30*mapCam.scale
+				alpha = math.clamp(0,alpha,255)
+				
+				love.graphics.setLineWidth(1.2)
+				love.graphics.setColor(self.color[1], self.color[2],self.color[3],alpha)
+				love.graphics.polygon("line", self.unpairedVertices)
+				love.graphics.setColor(255,255,255)
+				love.graphics.setLineWidth(1)
+			end
+        end  
             
         love.graphics.setColor(255,255,255)
     end
