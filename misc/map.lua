@@ -165,8 +165,8 @@ function updateMap(dt)
     if not DEBUG then
         if mapCam.scale < 1.5 then
             mapCam.scale = 1.5
-        elseif mapCam.scale > 5 then
-            mapCam.scale = 5
+        elseif mapCam.scale > 6 then
+            mapCam.scale = 6
         end
     end
     

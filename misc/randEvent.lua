@@ -29,12 +29,15 @@ end
 
 
 ------------------------------------------------------------------------
+local lastCountry = ""
+
 local function randCountry()
 
     local r = math.random(#countries)
     
     while countries[r].name == "Sea" 
-    or countries[r].name == Player.country do 
+    or countries[r].name == Player.country
+    or countries[r].name == lastCountry do 
 		r = math.random(#countries) 
     end
     
@@ -48,7 +51,11 @@ function randEvent(dt)
         randEventTimer = randEventTimer - dt
         if randEventTimer <= 0 then
             local r = math.random(#randEvents)
-            randEvents[r](randCountry())
+            
+            local country = randCountry()
+            randEvents[r](country)
+            lastCountry = country.name
+            
             randEventTimer = math.random(5,10)
         end
     end

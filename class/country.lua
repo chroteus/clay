@@ -46,7 +46,7 @@ function Country:initialize(name, color, attack, defense, hp)
     } 
     
     self.invadeTimer = math.random(10,20)
-    
+    self.numOfInv = 0
     Base.initialize(self)
 end
 
@@ -64,44 +64,40 @@ local function strongEnough(self, foe)
     return winChance >= r 
 end
 
-local numOfInv = 0
-
 function Country:invade(dt)
 
-    if not self.isDead then
-        if self.name ~= Player.country then
-            -- [[ REWRITE ]]
-            -- Used for AI invasions
-            self.invadeTimer = self.invadeTimer - dt
-            
-            if self.invadeTimer <= 0 then
-                self.invadeTimer = math.random(10,20)
-                
-                
-                for _,foe in pairs(self.foes) do
-                    for _,region in pairs(map) do
-                        if self:isNeighbour(region.name) then
-                            if strongEnough(self, region.country) then
-                                if numOfInv == 0 then
-                                    if region.country.name == foe.name then
-                                        numOfInv = numOfInv + 1
-                                        
-                                        if region.country.name == Player.country then
-                                            msgBox:add(self.name.." took your clay!")
-                                        end
-                                        
-                                        region:changeOwner(self)
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-                
-                numOfInv = 0
-            end
-        end
-    end
+    if not self.isDead and not self.inBattle 
+    and self.name ~= Player.country and self.name ~= "Sea" then
+		-- Used for AI invasions
+		self.invadeTimer = self.invadeTimer - dt
+		
+		if self.invadeTimer <= 0 then
+			self.invadeTimer = math.random(10,20)
+			
+			
+			for _,foe in pairs(self.foes) do
+				for _,region in pairs(map) do
+						
+						if self.numOfInv == 0 
+						and region.country.name == foe.name 
+						and strongEnough(self, region.country)
+						and self:isNeighbour(region.name) then
+	
+						self.numOfInv = self.numOfInv + 1
+						
+						if region.country.name == Player.country then
+							msgBox:add(self.name.." took your clay!")
+						end
+						
+						region:changeOwner(self)
+
+					end
+				end
+			end
+			
+			self.numOfInv = 0
+		end
+	end
 end
 
 local soundT = love.filesystem.getDirectoryItems("assets/sounds/attack")
@@ -126,17 +122,19 @@ function Country:loseEnergy(amount)
     self.stats.energy = self.stats.energy - amount
 end
 
-function Country:isFoe(name)
-    local r = false
+function Country:isFoe(country)
+	local country = country
+	if type(country) == "string" then 
+		country = nameToCountry(country) 
+	end
+	
     for _,foe in pairs(self.foes) do
-        if name == foe.name then
-            r = true
-        else
-            r = false
+        if self.name == foe.name then
+            return true
         end
     end
     
-    return r
+    return false
 end
 
 function Country:war(foe, noPrintMsg)

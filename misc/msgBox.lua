@@ -50,20 +50,23 @@ function msgBox:update(dt)
     end
 end
 
-function msgBox:draw()
+function msgBox:draw(x,y)
+	local x = x or self.x
+	local y = y or self.y
+	
     love.graphics.setColor(guiColors.bg)
-    love.graphics.rectangle("fill", msgBox.x,msgBox.y, msgBox.width, msgBox.height)
-    love.graphics.rectangle("fill", msgBox.x,msgBox.y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
+    love.graphics.rectangle("fill", x,y, msgBox.width, msgBox.height)
+    love.graphics.rectangle("fill", x,y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
     love.graphics.setColor(guiColors.fg)
-    love.graphics.rectangle("line", msgBox.x,msgBox.y, msgBox.width, msgBox.height)
-    love.graphics.rectangle("line", msgBox.x,msgBox.y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
+    love.graphics.rectangle("line", x,y, msgBox.width, msgBox.height)
+    love.graphics.rectangle("line", x,y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
 
     love.graphics.setFont(gameFont[self.headSize])
-    love.graphics.printf("Global News", msgBox.x+PADDING, msgBox.y+PADDING, msgBox.width-PADDING, "left")
+    love.graphics.printf("Global News", x+PADDING, y+PADDING, msgBox.width-PADDING, "left")
     love.graphics.setFont(gameFont[self.bodySize])
     
     for i,msg in ipairs(msgBox.list) do
-        love.graphics.printf(msg, msgBox.x+PADDING, msgBox.y + self.headSize*(i-1)+PADDING*7, msgBox.width-PADDING, "left")
+        love.graphics.printf(msg, x+PADDING, y + self.headSize*(i-1)+PADDING*7, msgBox.width-PADDING, "left")
     end
     
     love.graphics.setColor(255,255,255)

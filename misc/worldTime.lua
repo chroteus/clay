@@ -81,8 +81,15 @@ local months = {
 	"July", "August", "September", "October", "November", "December"
 }
 
-function worldTime:draw()
+function worldTime:draw(x,y)
 	love.graphics.setColor(guiColors.fg)
-	love.graphics.printf(self.day .. " " .. months[self.month] .. " " .. self.year, 0, the.screen.height-25, the.screen.width-15, "right")
+	worldTime.str = self.day .." ".. months[self.month] .." ".. self.year
+	if not x or not y then
+		love.graphics.printf(worldTime.str, 0, the.screen.height-25, 
+							the.screen.width-15, "right")
+	else
+		love.graphics.print(worldTime.str, x, y)
+	end
+						
 	love.graphics.setColor(255,255,255)
 end

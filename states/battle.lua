@@ -99,8 +99,8 @@ function battle.turnEnd(prevFighter)
 
 	prevFighter.energy = prevFighter.maxEnergy
 	
-	-- progress 5 days
-	for i=1,5 do
+	-- progress 5-10 days
+	for i=1,math.random(5,10) do
 		worldTime:start(0)
 		
 		-- progress everything according to days passed
@@ -216,6 +216,21 @@ function battle:draw()
 	
 		love.graphics.setColor(255,255,255)
 	end
+	
+	
+	------------------
+	local msgx = the.screen.width/2  - msgBox.width/2
+	local msgy = the.screen.height/2 - msgBox.height/2 - 100
+	
+	msgBox:draw(msgx, msgy)
+	
+	local timeh = 30
+	guiRect(msgx, msgy+msgBox.height, msgBox.width, timeh)
+	local font = love.graphics.getFont()
+	worldTime:draw(
+		msgx + msgBox.width/2 -  font:getWidth(worldTime.str)/2,
+		msgy + msgBox.height + timeh/2 - font:getHeight()/2
+	)
 end
 
 function battle:mousereleased(x,y,button)
