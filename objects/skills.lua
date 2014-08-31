@@ -15,8 +15,8 @@ skills = {
 
     attack = Skill("(A)ttack", 3, 
         function(fighter, target)
-            target:loseHP(math.random(fighter.defense+5, target.attack + 10))
-            knockback(target, 1)
+			target:loseHP(math.floor(math.random(fighter.attack/1.5, fighter.attack*1.5)))
+			knockback(target, 1)
         end),
         
     heal = Skill("(H)eal", 7, function(fighter) fighter:gainHP(math.random(10,20)) end),

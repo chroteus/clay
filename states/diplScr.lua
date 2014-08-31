@@ -3,35 +3,11 @@ diplScr.margin = 20
 diplScr.country = ""
 diplScr.enabled = false -- indicates if player clicked on the country to talk
 
-local randMsg = { 
-    foe = function(foe)
-        local m = {
-            "Freedom ain't free. You, "..Player.country..", is the sacrifice.",
-            "What do you want, "..Player.country.."?!",
-            "Stop stealing my clay, "..Player.country.."!",
-            "Who the hell are you? Oh right, you're that barbarian "..Player.country.."!",
-            "Do you like my sword? My shiny, curved sword?",
-        }
-            
-        return m[math.random(#m)]
-    end,
-    
-    denyPeace = function()
-        local m = {
-            "Peace? Ha! No way.",
-            "You're a barbarian. Peace is not possible with you.",
-            "No.",
-            "Our proud nation will not be happy until it exterminates barbarians like you.",
-            "Never!",
-        }
-        
-        return m[math.random(#m)]
-    end,
-}
-
 local rectW,rectH = 130,80
 
 function diplScr:init()
+	diplScr.msg = require "misc.randMsg"
+	
     diplCam = Camera(the.screen.width/2, the.screen.height/2)
     
     local btnW,btnH = 150,50
@@ -41,7 +17,7 @@ function diplScr:init()
         peace = Button(the.screen.width/2-btnW/2, the.screen.height/2 + 100, btnW, btnH,
                     "Offer peace",
                     function()
-                        diplScr.message = randMsg.denyPeace()
+                        diplScr.message = diplScr.msg.foe.denyPeace()
                     end
                 ),
     }
@@ -56,7 +32,7 @@ function diplScr:init()
 						function() 
 							diplScr.country = foe
 							diplScr.enabled = true
-							diplScr.message = randMsg.foe(foe)
+							diplScr.message = diplScr.msg.foe.enter(foe)
 						end
 					)
 				)

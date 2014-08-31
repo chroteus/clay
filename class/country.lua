@@ -207,7 +207,13 @@ function Country:peace(country)
 				
 				if r == 1 then
 					local dbox = DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
-						{"Refuse", function() end}, {"Accept", function() peace(country) end}
+						{"Refuse", function() end}, 
+						{"Accept", function() 
+							peace(country) 
+							if Gamestate.current == battle then
+								Gamestate.switch(game)
+							end
+						end}
 					)
 					
 					dbox:show(function() love.mouse.setVisible(false) end)
@@ -222,6 +228,10 @@ function Country:peace(country)
 							function()
 								peace(country)
 								country:addMoney(moneyAmnt)
+								
+								if Gamestate.current == battle then
+									Gamestate.switch(game)
+								end
 							end
 						}
 					)

@@ -15,5 +15,11 @@ function Buff:exec(target)
 end
 
 function Buff:apply(target)
+	for k,buff in pairs(target.buffs) do
+		if buff.name == self.name then
+			table.remove(target.buffs, k)
+		end
+	end
+	
 	table.insert(target.buffs, self:clone())
 end

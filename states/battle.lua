@@ -8,6 +8,10 @@ function battle.start(player, enemy) -- Sets opponents, and switches to battle g
 	battle.player = nameToCountry(player)
 	battle.enemy = nameToCountry(enemy)
 	
+	-- controlling random events
+	battle.player.inBattle = true
+	battle.enemy.inBattle = true
+	
 	battle.player.hp = battle.player.maxHP
 	battle.enemy.hp = battle.enemy.maxHP
 	
@@ -95,12 +99,12 @@ function battle.turnEnd(prevFighter)
 
 	prevFighter.energy = prevFighter.maxEnergy
 	
-	-- progress 10 days
-	for i=1,10 do
+	-- progress 5 days
+	for i=1,5 do
 		worldTime:start(0)
 		
-		-- progress everything according to days passed / 1.5
-		game:update(worldTime.dayLength/1.5)
+		-- progress everything according to days passed
+		game:update(worldTime.dayLength)
 	end
 	worldTime:stop()
 
@@ -251,6 +255,7 @@ function battle:leave()
 		fighter.buffs = {}
 		fighter.hp = fighter.maxHP
 		fighter.energy = fighter.maxEnergy
+		fighter.inBattle = false
 	end
     
     startedBattle = false

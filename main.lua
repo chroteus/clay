@@ -132,7 +132,7 @@ function love.load()
     for i=1,#musicFiles do musicFiles[i] = "/assets/music/main/"..musicFiles[i] end
         
     TEsound.playLooping(musicFiles, "music", math.huge, .6)
-    musicPaused = false
+    musicMute = false
 end
 
 function love.update(dt)
@@ -153,12 +153,12 @@ function love.keypressed(key, u)
 		end
 	else
 		if key == "m" then
-			if not musicPaused then
-				TEsound.pause("music")
-				musicPaused = true
+			if not musicMute then
+				TEsound.volume("all", 0)
+				musicMute = true
 			else
-				TEsound.resume("music")
-				musicPaused = false
+				TEsound.volume("all", 1)
+				musicMute = false
 			end
 		elseif key == "home" and DEBUG then
 			debug.debug()
