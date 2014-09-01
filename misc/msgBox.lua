@@ -12,7 +12,23 @@ msgBox = {
 local Msg = class("Msg")
 function Msg:initialize(str)
 	self.str = str
+	self.x = PADDING
+	
+	if love.graphics.getFont():getWidth(self.str) > msgBox.width then
+		-- double-line
+		self.y = msgBox.y + msgBox.height - msgBox.bodySize*2 - PADDING*3
+		self.dbline = true
+	else
+		-- single-line
+		self.y = msgBox.y + msgBox.height - msgBox.bodySize - PADDING*2.5
+	end
+end
 
+function Msg:draw(x,y)
+	if self.y > PADDING then
+		love.graphics.printf(self.str, x + self.x, y + self.y, msgBox.width, "left")
+	end
+end
 
 function msgBox:reset()
     self.x = PADDING
@@ -24,28 +40,25 @@ end
 msgBox.list = {}
 
 function msgBox:add(str)
-	local LIMIT = msgBox.height/(love.graphics.getFont():getHeight()+10)
-	LIMIT = math.floor(LIMIT)
-	
-	
-	local function slide()
-		for _,m in pairs(msgBox.list) do
-            Timer.tween(0.3, m, {y = m.y + 20}, "out-quad") -- slide down
+	print(#msgBox.list)
+	local function slide(amount)
+		for _,m in pairs(msgBox.list) do 
+            Timer.tween(0.3, m, {y = m.y + amount}, "out-quad")
         end
     end
     
-    if #msgBox.list > 0 then
-		slide()
-        if love.graphics.getFont():getWidth(str) > self.width then
-			table.remove(msgBox.list, 1)
-			slide()
-		end
+	if love.graphics.getFont():getWidth(str) > self.width then			
+		slide(-40)
+	else
+		slide(-20)
     end
     
-    table.insert(self.list, str)
+    table.insert(self.list, Msg(str))
     
-    if #msgBox.list > LIMIT then
-        table.remove(msgBox.list, 1)
+    for k,msg in pairs(msgBox.list) do
+		if msg.y < PADDING then
+			table.remove(msgBox.list, k)
+		end
     end
 end
 
@@ -67,18 +80,21 @@ function msgBox:draw(x,y)
 	
     love.graphics.setColor(guiColors.bg)
     love.graphics.rectangle("fill", x,y, msgBox.width, msgBox.height)
-    love.graphics.rectangle("fill", x,y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
     love.graphics.setColor(guiColors.fg)
     love.graphics.rectangle("line", x,y, msgBox.width, msgBox.height)
-    love.graphics.rectangle("line", x,y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
-
-    love.graphics.setFont(gameFont[self.headSize])
-    love.graphics.printf("Global News", x+PADDING, y+PADDING, msgBox.width-PADDING, "left")
-    love.graphics.setFont(gameFont[self.bodySize])
     
     for i,msg in ipairs(msgBox.list) do
-        love.graphics.printf(msg, x+PADDING, y + self.headSize*(i-1)+PADDING*7, msgBox.width-PADDING, "left")
+        msg:draw(x,y)
     end
+    
+    love.graphics.setColor(guiColors.bg[1], guiColors.bg[2], guiColors.bg[3], 255)
+	love.graphics.rectangle("fill", x,y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
+	love.graphics.setColor(guiColors.fg)
+	love.graphics.rectangle("line", x,y, msgBox.width, gameFont[self.headSize]:getHeight()+PADDING*2)
+	
+	love.graphics.setFont(gameFont[self.headSize])
+    love.graphics.printf("Global News", x+PADDING, y+PADDING, msgBox.width-PADDING, "left")
+    love.graphics.setFont(gameFont[self.bodySize])
     
     love.graphics.setColor(255,255,255)
 end

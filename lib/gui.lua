@@ -72,8 +72,6 @@ function Button:draw(rgba)
 	
 	love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
 
-
-	if self.state == "active" then love.graphics.setLineWidth(2) end
 	love.graphics.setColor(self.colors[self.state].fg)
     love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
     love.graphics.setLineWidth(1)
