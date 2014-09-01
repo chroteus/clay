@@ -199,7 +199,11 @@ function battle:draw()
 		love.graphics.print("Energy: " .. fighter.energy .. "/" .. fighter.maxEnergy, enBarX + 10, enBarY + barHeight/2 - love.graphics.getFont():getHeight()/2)
 	
 		for i,buff in pairs(fighter.buffs) do
-			love.graphics.draw(buff.image, enBarX + ((i-1)*50), enBarY - 50)
+			local x = enBarX + ((i-1)*50)
+			local y = enBarY - 50
+			
+			love.graphics.draw(buff.image,  x,y)
+			bgPrintf(buff.duration, 0, 10, buff.image:getWidth(), "center")
 		end
 	end
 	

@@ -4,7 +4,7 @@ BATTLE DMG SHOW.
 Economy:
 	Ability to improve land in order to passively gain money.
     Countries should be able to give money to each other, to improve relations.
-    A simulation of an (simple) economy.
+    A simulation of (a simple) economy.
 end
 
 Diplomacy:  
@@ -12,27 +12,20 @@ Diplomacy:
 end
 
 Time:
-    Time would pass in-game and it could be sped up, like in Pandemic.
-    In battles, time would pass after each turn depending on how much    energy was spent or how many moves were used.
-
+    Time would pass in-game [OK] and it could be sped up, like in Pandemic.
 end
+
 Random events:
-    Riots, which decrease countries' amount of money or make its regions join neighbouring countries. (Khohol Power!)
+    Riots, which decrease countries' amount of money or make its regions 
+    join neighbouring countries. (Khohol Power!)
 end
-
-
-RPG elements:
-    Item shop (thus items)
-end                                        
 
 "Upgrade" system:
     Countries cannot attack each other over sea unless they have a navy (they must have a region adjacent to water). 
 end
 
-Naval warfare
-
-Bonus stage [AFTER RELEASE] [MAYBE]:
-    One of your soldiers gets stuck up in an 8bit world. You guide him back to Earth.
+Army battle:
+	You'll have armies of countryballs to fight alongside you.
 end
 
 Uninhabitated land:

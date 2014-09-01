@@ -23,6 +23,7 @@ function diplScr:init()
     }
     
     diplScr.initBtn = function()
+		diplScr.btn = nil
         diplScr.btn = {}
         local btnH = 30
         for i,foe in ipairs(Player:returnCountry(true).foes) do
@@ -44,6 +45,7 @@ function diplScr:init()
 end
 
 function diplScr:enter()
+	removeDuplicates(Player:returnCountry(true).foes)
     love.mouse.setVisible(true)
     
     love.graphics.setFont(gameFont[22])
@@ -81,7 +83,7 @@ function diplScr:draw()
     if not diplScr.enabled then
         diplCam:attach()
         
-        for i,foe in ipairs(Player:returnCountry(true).foes) do
+        for i,foe in pairs(Player:returnCountry(true).foes) do
 			if not foe.isDead then
 				love.graphics.setColor(guiColors.bg)
 				love.graphics.rectangle("fill",the.screen.width/2-rectW/2, ((rectH*1.5)*i), rectW, rectH)

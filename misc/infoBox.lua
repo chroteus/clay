@@ -30,7 +30,10 @@ function infoBox:draw(x,y)
 	local y = y or self.y
 	
 	guiRect(x, y, self.width, self.height)
+	
+
 	love.graphics.setColor(guiColors.fg)
+	
 	if countries[self.id].name ~= "Sea" then
 		love.graphics.printf(self.name..", "..self.countryName, x+5, y+5, self.width, "left")
 	else

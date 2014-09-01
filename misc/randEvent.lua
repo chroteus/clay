@@ -14,6 +14,8 @@ function(country) -- war
 				
 				break
 			end
+			
+			break
 		end
 	end
 end,   

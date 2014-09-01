@@ -8,6 +8,12 @@ msgBox = {
     headSize = 18,
     bodySize = 16,
 }
+
+local Msg = class("Msg")
+function Msg:initialize(str)
+	self.str = str
+
+
 function msgBox:reset()
     self.x = PADDING
     self.y = PADDING
@@ -19,20 +25,25 @@ msgBox.list = {}
 
 function msgBox:add(str)
 	local LIMIT = msgBox.height/(love.graphics.getFont():getHeight()+10)
-    --[[
-    if #msgBox.list > 0 then
-        for _,m in pairs(msgBox.list) do
-            --Timer.tween(0.3, m, {y = m.y + 20}, "out-quad") -- slide down
+	LIMIT = math.floor(LIMIT)
+	
+	
+	local function slide()
+		for _,m in pairs(msgBox.list) do
+            Timer.tween(0.3, m, {y = m.y + 20}, "out-quad") -- slide down
         end
     end
-    ]]
+    
+    if #msgBox.list > 0 then
+		slide()
+        if love.graphics.getFont():getWidth(str) > self.width then
+			table.remove(msgBox.list, 1)
+			slide()
+		end
+    end
     
     table.insert(self.list, str)
     
-    if love.graphics.getFont():getWidth(str) > self.width then
-		LIMIT = LIMIT - 1
-	end
-	
     if #msgBox.list > LIMIT then
         table.remove(msgBox.list, 1)
     end

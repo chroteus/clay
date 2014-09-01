@@ -128,7 +128,7 @@ function Country:isFoe(country)
 		country = nameToCountry(country) 
 	end
 	
-    for _,foe in pairs(self.foes) do
+    for _,foe in pairs(country.foes) do
         if self.name == foe.name then
             return true
         end
@@ -138,7 +138,7 @@ function Country:isFoe(country)
 end
 
 function Country:war(foe, noPrintMsg)
-	if not self.isDead then
+	if not self.isDead and not foe.isDead then
 		local foe = foe
 		if type(foe) == "string" then foe = nameToCountry(foe) end
 		
@@ -148,24 +148,11 @@ function Country:war(foe, noPrintMsg)
 				msgBox:add(self.name.." declared war on "..foe.name.."!")
 			end
 			
-			if #foe.foes == 0 then 
+			if  not foe:isFoe(Player.country) 
+			and not self:isFoe(foe.name) then
 				table.insert(foe.foes, self)
-			else
-				if not foe:isFoe(Player.country) then
-					table.insert(foe.foes, self)
-				end
-			end
-			
-			if #self.foes == 0 then
 				table.insert(self.foes, foe)
-			else
-				if not self:isFoe(foe.name) then
-					table.insert(self.foes, foe)
-				end
 			end
-				
-			removeDuplicates(foe.foes)
-			removeDuplicates(self.foes)
 		end
 	end
 end
@@ -208,7 +195,8 @@ function Country:peace(country)
 						{"Refuse", function() end}, 
 						{"Accept", function() 
 							peace(country) 
-							if Gamestate.current == battle then
+							if Gamestate.current == battle
+							and country.name == battle.enemy.name then
 								Gamestate.switch(game)
 							end
 						end}
@@ -227,14 +215,19 @@ function Country:peace(country)
 								peace(country)
 								country:addMoney(moneyAmnt)
 								
-								if Gamestate.current == battle then
+								if Gamestate.current == battle 
+								and country.name == battle.enemy.name then
 									Gamestate.switch(game)
 								end
 							end
-						}
-					)
+						})
 					
-					dbox:show(function() love.mouse.setVisible(false) end)
+					dbox:show(
+						function() 
+							if Gamestate.current == game then
+								love.mouse.setVisible(false)
+							end
+						end)
 				end
 			else
 				-- for AI
