@@ -80,11 +80,12 @@ function loadMap() -- Load an existing map.
     
     for k,v in pairs(mapTable.player) do
         Player[k] = v
+        Player.items = {}
     end
     
-    for k,item in pairs(Player.items) do
-		items[rmSpc(item)]:add()
-		table.remove(Player.items, k)
+    for k,item in pairs(mapTable.player.items) do
+		items[rmSpc(item[1])]:add()
+		Player.items[#Player.items].equipped = item[2]
 	end
     
     for countryN,foeTable in pairs(mapTable.foes) do
@@ -162,7 +163,8 @@ function saveMap(name)
 			-- items
             stringV = "{"
             for k,v in pairs(v) do 
-				stringV = stringV.. '"' .. v.name .. '",'
+				stringV = stringV.. '{"' .. v.name .. '",' 
+				.. tostring(v.equipped) .. "},"
             end
             stringV = stringV.."}"
         

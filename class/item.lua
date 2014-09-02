@@ -43,7 +43,7 @@ function Item:drawInfo(x,y)
 	
 	local font = love.graphics.getFont()
 	local _,linenum = font:getWrap(self.info, w)
-	local h = linenum * font:getHeight() + title_h + PADDING
+	local h = linenum * font:getHeight() + title_h + PADDING*2
 
 	local fontHeight = font:getHeight()
 	
