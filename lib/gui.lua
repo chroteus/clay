@@ -112,7 +112,14 @@ function Button:draw(rgba)
 			love.graphics.setColor(255,255,255)
 		end
 		
+		
+		
 		love.graphics.draw(self.img, self.x+(self.width/2-self.img:getWidth()/2), (self.y-h)+self.height/2-self.img:getHeight()/2)
+	
+		if checkCollision(self.x,self.y-h, self.width, self.height+h,the.mouse.x, the.mouse.y, 1,1) then
+			self.item:drawInfo(the.mouse.x, the.mouse.y)
+		end
+		
 	end
 end
 
@@ -279,6 +286,7 @@ function ShopButton:initialize(item, x,y)
 	self.width = 150
 	self.height = 50
 	
+	self.item = item
 	self.img = item.img
     self.text = item.name .. ", " .. item.cost .. "G"
     
