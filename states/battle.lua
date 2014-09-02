@@ -111,7 +111,7 @@ function battle.turnEnd(prevFighter)
 	-- apply all buffs
 	for _,fighter in pairs(battle.fighters) do
 		for k,buff in pairs(fighter.buffs) do
-			if buff.duration <= 0 then
+			if buff.duration <= 1 then
 				table.remove(fighter.buffs, k)
 			else
 				buff:exec(fighter)
@@ -201,9 +201,11 @@ function battle:draw()
 		for i,buff in pairs(fighter.buffs) do
 			local x = enBarX + ((i-1)*50)
 			local y = enBarY - 50
-			
+			local fontHeight = love.graphics.getFont():getHeight()
 			love.graphics.draw(buff.image,  x,y)
-			bgPrintf(buff.duration, 0, 10, buff.image:getWidth(), "center")
+			bgPrintf(buff.duration, x, 
+					y + buff.image:getHeight()/2-fontHeight/2, 
+					buff.image:getWidth(), "center")
 		end
 	end
 	

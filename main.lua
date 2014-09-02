@@ -13,6 +13,8 @@ require "lib.the" -- Gives easy access info on such things as screen width, heig
 require "lib.gui" -- GUI lib.
 require "lib.TEsound"
 
+require "misc.worldTime"
+
 -- States
 require "states.menu"
 require "states.countrySelect"
@@ -50,7 +52,6 @@ require "misc.msgBox"
 require "misc.dialogBox"
 require "misc.randEvent"
 require "misc.screenBtn"
-require "misc.worldTime"
 require "misc.infoBox"
 
 require "lib.collision"

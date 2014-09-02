@@ -148,12 +148,7 @@ InvButton = Button:subclass("InvButton")
 	
 function InvButton:initialize(item, x, y)
 	self.item = item
-	
-	if self.item.equipped then
-		self.text = item.name .. " [EQUIPPED]"
-	else
-		self.text = item.name .. " [UNEQUIPPED]"
-	end
+	self.text = item.name
 	
 	self.x = x or 0
 	self.y = y or 0
@@ -163,15 +158,46 @@ function InvButton:initialize(item, x, y)
 	
 	self.func = function()
 		if self.item.equipped then
-			self.text = self.item.name .. " [UNEQUIPPED]"
 			self.item:unequip()
 		else
-			self.text = self.item.name .. " [EQUIPPED]"
 			self.item:equip()
 		end
 	end
 
 	Button.initialize(self, self.x, self.y, self.width, self.height, self.text, self.func)
+end
+
+function InvButton:draw()
+	Button.draw(self)
+	--guiRect(self.x, self.y + self.height, self.width, self.height/2)
+	
+	if self.item.equipped then
+		love.graphics.setColor(0,0,0,128)
+		love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+		love.graphics.setColor(255,255,255)
+	end
+		
+	if checkCol(self, the.mouse) then
+		self.item:drawInfo(the.mouse.x, the.mouse.y)
+	end
+	
+--	love.graphics.setColor(guiColors.fg)
+	
+	--[[------#
+	local str
+	if self.item.equipped then str = "[EQUIPPED]"
+	else str = "[UNEQUIPPED]" end
+	
+	love.graphics.setColor(guiColors.fg)
+	local fontHeight = (gameFont[16]:getHeight(self.text))
+	love.graphics.printf(
+		str, self.x, 
+		self.y + self.height + self.height/4 - fontHeight/2, 
+		self.width, "center"
+	)
+		
+	love.graphics.setColor(255,255,255)
+	]]
 end
 
 

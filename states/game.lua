@@ -107,15 +107,6 @@ function game:keyreleased(key)
         venus.switch(transState.lastState)
 	end
     
-     if key == "1" then
-			msgBox:add(
-				"HUGE AND LONG TEXT TO TEST MSGBOX'S CAPABILITIES!"
-				.. math.random(100)
-			)
-	elseif key == "2" then
-		msgBox:add("Sml msg" .. math.random(100))
-	end
-    
     if DEBUG then
         if key == "b" then
             if mapBorderCheck then
@@ -133,6 +124,10 @@ function game:keyreleased(key)
             end
         end
         
+        if key == "9" then
+			Player.money = Player.money + 1
+		end
+		
         if editMode.enabled then
             if key == "q" then
                 venus.switch(selection)

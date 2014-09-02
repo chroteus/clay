@@ -8,7 +8,7 @@ function Buff:initialize(name, duration, effect)
 end
 
 function Buff:exec(target)
-	if self.duration > 0 then
+	if self.duration > 1 then
 		self.effect(target)
 		self.duration = self.duration - 1
 	end

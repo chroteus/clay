@@ -72,25 +72,33 @@ function Country:invade(dt)
 		self.invadeTimer = self.invadeTimer - dt
 		
 		if self.invadeTimer <= 0 then
-			self.invadeTimer = math.random(10,20)
+			self.invadeTimer = math.random(20*worldTime.dayLength,40*worldTime.dayLength)
 			
 			
 			for _,foe in pairs(self.foes) do
+				local possible_regions = {}
 				for _,region in pairs(map) do
 						
+					if region.country.name == foe.name
+					and self:isNeighbour(region.name) then
+						table.insert(possible_regions, region)
+					end
+					
+					if #possible_regions > 0 then
+						local r = math.random(#possible_regions)
+						local region = possible_regions[r]
+						
 						if self.numOfInv == 0 
-						and region.country.name == foe.name 
-						and strongEnough(self, region.country)
-						and self:isNeighbour(region.name) then
-	
-						self.numOfInv = self.numOfInv + 1
+						and strongEnough(self, region.country) then
 						
-						if region.country.name == Player.country then
-							msgBox:add(self.name.." took your clay!")
+							self.numOfInv = self.numOfInv + 1
+							
+							if region.country.name == Player.country then
+								msgBox:add(self.name.." took your clay!")
+							end
+							
+							region:changeOwner(self)
 						end
-						
-						region:changeOwner(self)
-
 					end
 				end
 			end

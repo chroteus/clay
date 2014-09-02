@@ -46,7 +46,7 @@ local function randCountry()
     return countries[r]
 end
 
-local randEventTimer = math.random(5,10)
+local randEventTimer = math.random(10*worldTime.dayLength,20*worldTime.dayLength)
 
 function randEvent(dt)
     if not DEBUG then

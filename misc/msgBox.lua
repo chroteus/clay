@@ -40,7 +40,6 @@ end
 msgBox.list = {}
 
 function msgBox:add(str)
-	print(#msgBox.list)
 	local function slide(amount)
 		for _,m in pairs(msgBox.list) do 
             Timer.tween(0.3, m, {y = m.y + amount}, "out-quad")
