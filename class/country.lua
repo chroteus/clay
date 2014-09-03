@@ -30,7 +30,6 @@ function Country:initialize(name, color, attack, defense, hp)
     
     self.foes = {}
     self.allies = {}
-    self.neutrals = {}
     
     self.isDead = false
     self.deadMessagePrinted = false

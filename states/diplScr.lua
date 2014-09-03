@@ -119,11 +119,61 @@ function diplScr:draw()
     
     else -- if talking with country
         love.graphics.setFont(gameFont[22])
-        love.graphics.draw(diplScr.country.leftImage, the.screen.width/2 - diplScr.country.leftImage:getWidth()/2, the.screen.height/2 - diplScr.country.leftImage:getHeight())
-        love.graphics.printf(diplScr.country.name, 0, diplScr.margin, the.screen.width, "center")
-        love.graphics.printf(diplScr.message, the.screen.width/4, the.screen.height/2 + diplScr.margin, the.screen.width/2, "center")
+        love.graphics.draw(
+			diplScr.country.leftImage, 
+			the.screen.width/2 - diplScr.country.leftImage:getWidth()/2,
+			the.screen.height/2 - diplScr.country.leftImage:getHeight())
+ 
+        love.graphics.printf(diplScr.country.name, 0, diplScr.margin, 
+							 the.screen.width, "center")
+       
+        love.graphics.printf(diplScr.message, the.screen.width/4, 
+							the.screen.height/2 + diplScr.margin, 
+							the.screen.width/2, "center")
+	
+		-- enemies and allies columns
+		local y = the.screen.height/2 - diplScr.country.leftImage:getHeight()
+		local w = 150
+		local pad = 5 -- padding
+		
+		local space = 150 -- space between image and columns
+		local enemies_x = the.screen.width/2 - w*2 - space
+		
+		-- enemies column
+		guiRect(enemies_x-pad, y-pad,w+pad,the.screen.height-y*2)
+		guiRect(enemies_x-pad, y-pad,w+pad, 22+pad*2)
+		
+		love.graphics.setColor(guiColors.fg)
+		love.graphics.printf("Enemies", enemies_x,y, w, "left")	
         love.graphics.setFont(gameFont[16])
         
+        local foeStr = ""
+        for _,foe in pairs(diplScr.country.foes) do
+			foeStr = foeStr .. foe.name .. "\n"
+		end
+		
+		if foeStr == "" then foeStr = "No enemies" end
+		love.graphics.printf(foeStr, enemies_x, y+35, w, "left")
+		
+		-- allies column
+		local allies_x = the.screen.width/2 + space + w
+		guiRect(allies_x-pad, y-pad,w+pad,the.screen.height-y*2)
+		guiRect(allies_x-pad, y-pad,w+pad, 22+pad*2)
+		
+		love.graphics.setFont(gameFont[22])
+		love.graphics.setColor(guiColors.fg)
+		love.graphics.printf("Allies", allies_x,y, w, "left")	
+		love.graphics.setFont(gameFont[16])
+		
+		local alliesStr = ""
+        for _,ally in pairs(diplScr.country.allies) do
+			alliesStr = alliesStr .. ally.name .. "\n"
+		end
+		
+		if alliesStr == "" then alliesStr = "No allies" end
+		love.graphics.printf(alliesStr, allies_x, y+35, w, "left")
+		--------------
+		
         for _,btn in pairs(diplScr.cBtn) do
             btn:draw()
         end
