@@ -27,59 +27,21 @@ function initMap()
         country = "Ukraine", -- Selected country. Paints this country on map.
         buttons = {},
         
-        currPoint = {
-            x = -10,
-            y = -10,
-        },
-        
-        lastPoint = {
-            x = -5,
-            y = -5
-        },
-        
-        prevLastPoint = {
-            x = -30,
-            y = -30,
-        },
-        
-        firstPoint = {
-            x = -20,
-            y = -20,
-        },
-        
-        helpPoint1 = {
-            x = -70,
-            y = -70,
-        },
-
-        helpPoint2 = {
-            x = -80,
-            y = -80,
-        },
+        currPoint = {x = -10,y = -10},
+        firstPoint = {x = -20,y = -20,},
         
         fpActive = false, -- first point
-            
-        radius = 4,
-        
+		radius = 4,
         currPolygon = {},
-        
         polFin = false,
-        
     }
     
     function editMode.resetPoints()
         local fp = editMode.firstPoint
         local cp = editMode.currPoint
-        local lp = editMode.lastPoint
-        local plp = editMode.prevLastPoint
-        local hp1, hp2 = editMode.helpPoint1, editMode.helpPoint2
         
         fp.x,fp.y = -10,-10
         cp.x,cp.y = -20,-20
-        lp.x,lp.y = -30,-30
-        plp.x,plp.y = -40,-40
-        hp1.x,hp1.y = -80,-80
-        hp2.x,hp2.y = -90,-90
     end
 
     function editMode.pair() pairVertices(editMode.currPolygon) end
@@ -201,13 +163,11 @@ end
 function mousereleasedMap(x,y,button)
     local fp = editMode.firstPoint
     local cp = editMode.currPoint
-    local lp = editMode.lastPoint
-    local plp = editMode.prevLastPoint
 
     if editMode.enabled then
         local radius = editMode.radius/mapCam.scale
         
-        if button == "l" and not love.keyboard.isDown("lalt") or not love.keyboard.isDown("lshift") then
+        if button == "l" and not love.keyboard.isDown("lalt") and not love.keyboard.isDown("lshift") then
             if pointCollidesMouse(fp.x, fp.y, 5) then
                 cp.x, cp.y = fp.x, fp.y
                 
@@ -221,13 +181,12 @@ function mousereleasedMap(x,y,button)
                         editMode.resetPoints()
                     end
                     
-                    local dbox = DialogBoxes:newInputDBox(20, function() dboxFunc() end)
+                    local dbox = DialogBoxes:newInputDBox(20, dboxFunc)
                     
                     if editMode.country == "Sea" then
                         game.seaId = game.seaId + 1
                         table.insert(map, Region(1, countries[1].color, "sea"..game.seaId, editMode.currPolygon))
-                        
-                        --Regions.generateBorders()
+
                         editMode.currPolygon = {}
                         editMode.resetPoints()
                     else
@@ -240,23 +199,26 @@ function mousereleasedMap(x,y,button)
             else
                 cp.x, cp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
             end
+           
             
-            plp.x, plp.y = lp.x, lp.y
-            lp.x, lp.y = cp.x, cp.y
-            
-        elseif button == "r" then
+        elseif button == "r" and not love.keyboard.isDown("lalt") 
+        and not love.keyboard.isDown("lshift") then
             if pointCollidesMouse(fp.x, fp.y, 5) then
                 editMode.currPolygon = {}
                 editMode.resetPoints()
-            end
-            
-            if #editMode.currPolygon >= 2 then
-                table.remove(editMode.currPolygon)
-                table.remove(editMode.currPolygon)
-                
-                lp.x, lp.y = plp.x, plp.y
-                cp.x, cp.y = lp.x, lp.y
-            end
+            else
+				if #editMode.currPolygon >= 2 then
+					table.remove(editMode.currPolygon)
+					table.remove(editMode.currPolygon)
+					
+					if #editMode.currPolygon == 0 then
+						editMode.resetPoints()
+					end
+					
+					local pol = editMode.currPolygon
+					cp.x, cp.y = pol[#pol-1], pol[#pol]
+				end
+			end
         end
     end
     
@@ -267,7 +229,8 @@ function mousereleasedMap(x,y,button)
     
     
     if editMode.enabled then
-        if button == "l" and not love.keyboard.isDown("lalt") then
+        if button == "l" and not love.keyboard.isDown("lalt")
+        and not love.keyboard.isDown("lshift") then
             if fp.x < 0 then
                 fp.x, fp.y = math.round(mapMouse.x, 1), math.round(mapMouse.y, 1)
             end
@@ -311,15 +274,11 @@ function drawMap()
         love.graphics.setLineWidth(2/mapCam.scale)
         
         local radius = editMode.radius/mapCam.scale
-        local lp = editMode.lastPoint
         local cp = editMode.currPoint
         local fp = editMode.firstPoint
-        local hp1 = editMode.helpPoint1
-        local hp2 = editMode.helpPoint2
         
        -- love.graphics.setColor(20,20,200)
         love.graphics.setColor(255,255,255)
-        love.graphics.circle("fill", lp.x, lp.y, radius)
         love.graphics.circle("fill", cp.x, cp.y, radius)        
         
 
@@ -339,11 +298,6 @@ function drawMap()
         
         love.graphics.setColor(255,255,255)
         
-        if lp.x > 0 then   
-            love.graphics.line(lp.x,lp.y, cp.x,cp.y)
-            
-        end
-        
         if cp.x > 0 then
             if #editMode.currPolygon > 0 then
                 love.graphics.setColor(0,0,0)
@@ -352,11 +306,6 @@ function drawMap()
                 love.graphics.setColor(255,255,255)
                 love.graphics.setLineWidth(4.5/mapCam.scale)
                 love.graphics.line(cp.x,cp.y, mapMouse.x, mapMouse.y)
-
-                love.graphics.setColor(20,255,20)    
-                love.graphics.circle("fill", hp1.x, hp1.y, radius*3)
-                love.graphics.circle("fill", hp2.x, hp2.y, radius*3)
-                love.graphics.setColor(255,255,255)
             end
         end
         

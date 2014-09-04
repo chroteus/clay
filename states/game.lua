@@ -6,7 +6,9 @@ function game:init()
     
     game.mapDrawn = true
     
-    game.editModeString = "Q: Select country, E: Exit, B: Disable cam limits, LMB: Place a point, Alt+LMB: Place a helper point, RMB: Undo, LShift + RMB: Delete a region,"
+    game.editModeString = "Q: Select country, E: Exit, "
+						  .."LMB: Place a point RMB: Undo, "
+						  .."LShift + RMB: Delete a region"
 
     function game.endTutorial()
         prefs.firstPlay = false
@@ -26,7 +28,11 @@ function game:enter()
             dbox:show()
         else
             DialogBoxes:new(
-                "Attacking others is easy. Choose one of your regions and all the neighboring regions will be selected.\n Clicking a region of a neutral or enemy country will trigger a battle.",
+                "Attacking others is easy. Choose one of your regions "
+                .."and all the neighboring regions will be selected.\n "
+                .."Clicking a region of a neutral or enemy country "
+                .."will trigger a battle.",
+                
                 {"Hide this box.", function() end}
             ):show()
         end
@@ -74,7 +80,8 @@ function game:draw()
     
     if editMode.enabled then
         bgPrintf(game.editModeString, 1, the.screen.height-50, the.screen.width, "left")
-        bgPrintf("Current chosen country: "..editMode.country, 0, the.screen.height-70, the.screen.width, "left")
+        bgPrintf("Currently chosen country: "..editMode.country, 0,
+        the.screen.height-70, the.screen.width, "left")
     else
         if DEBUG then
             bgPrintf("E - Enter edit mode.", 0, the.screen.height-50, the.screen.width, "left")
