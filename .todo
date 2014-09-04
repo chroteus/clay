@@ -6,6 +6,9 @@ Economy:
     Countries should be able to give money to each other, to improve relations.
     A simulation of (a simple) economy.
 end
+Game end:
+	Game end upon conquering everything.
+end
 
 Diplomacy:  
     Peace for money.
@@ -34,3 +37,4 @@ Uninhabitated land:
 end
 
 Make enemy lists for a country scrollable.
+

@@ -30,7 +30,7 @@ function battle.load()
 	player.y = the.screen.height/2 - player.rightImage:getHeight()
 	
 	local enemy = battle.enemy
-	enemy.x = the.screen.width - enemy.leftImage:getWidth() - padding*2
+	enemy.x = the.screen.width - enemy.leftImage:getWidth() - padding
 	enemy.y = the.screen.height/2 - enemy.leftImage:getHeight()
 
 	battle.fighters = {player, enemy}

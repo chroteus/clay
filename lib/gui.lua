@@ -114,7 +114,7 @@ function Button:draw(rgba)
 		
 		
 		
-		love.graphics.draw(self.img, self.x+(self.width/2-self.img:getWidth()/2), (self.y-h)+self.height/2-self.img:getHeight()/2)
+		love.graphics.draw(self.img, self.x+(self.width/2-self.img:getWidth()/2), (self.y-h)+h/2-self.img:getHeight()/2)
 	
 		if checkCollision(self.x,self.y-h, self.width, self.height+h,the.mouse.x, the.mouse.y, 1,1) then
 			self.item:drawInfo(the.mouse.x, the.mouse.y)

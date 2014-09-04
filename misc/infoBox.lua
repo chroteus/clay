@@ -31,6 +31,11 @@ function infoBox:draw(x,y)
 	
 	guiRect(x, y, self.width, self.height)
 	
+	local fontH = love.graphics.getFont():getHeight()
+	local padding = 5
+	guiRect(x,y,self.width, fontH + padding*2)
+	
+	
 
 	love.graphics.setColor(guiColors.fg)
 	

@@ -381,7 +381,7 @@ function drawMap()
     love.graphics.setColor(100,100,100)
     love.graphics.setLineWidth(2)
     love.graphics.circle("line", the.mouse.x, the.mouse.y, radius, 100)
-    love.graphics.setLineWidth(1) 
+    love.graphics.setLineWidth(1)
     love.graphics.setColor(255,255,255)
     love.graphics.circle("fill", the.mouse.x, the.mouse.y, radius, 100)
 end
