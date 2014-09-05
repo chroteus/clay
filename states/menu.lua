@@ -31,6 +31,21 @@ function menu:init()
     )
     
 	menu.logo = love.graphics.newImage("assets/image/Clay_logo.png")
+	menu.credits = [[
+		Game by: 
+			Chroteus
+		
+		Art by: 
+			Bernd
+	]]
+	
+	menu.mus_credits = [[
+		Music by: 
+		EliteFerrex
+		chainsaw_09 
+		ParagonX9
+		Waterflame
+	]]
 end
 
 function menu:enter()
@@ -60,9 +75,17 @@ function menu:draw()
     love.graphics.setFont(gameFont[80])
     --love.graphics.printf("Clay", 0, 60, the.screen.width, "center")
     love.graphics.setFont(gameFont[16])
-    love.graphics.draw(menu.logo, the.screen.width/2-menu.logo:getWidth()/2, 50)
     
-    love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 100, the.screen.width, "center")
+    local logoX = the.screen.width/2-menu.logo:getWidth()/2
+    local logoY = 50
+    love.graphics.draw(menu.logo, logoX, logoY)
+    
+    --love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 100, the.screen.width, "center")
+	local font = love.graphics.getFont()
+    love.graphics.printf(menu.credits, logoX - font:getWidth(menu.credits), logoY + 10, 100, "right")
+    love.graphics.printf(menu.mus_credits, 
+		logoX + menu.logo:getWidth() + 10, 
+		logoY+10, 100, "left")
 end
 
 function menu:mousereleased(x,y,button)
