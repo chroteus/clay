@@ -66,12 +66,12 @@ end
 
 function battle.showDmg(fighter, dmg)
 		if fighter.dmgColor[2] > 200 then
-		Timer.tween(0.1, fighter.dmgColor, {[2] = 0})
+		battle.timer:tween(0.1, fighter.dmgColor, {[2] = 0})
 		
-		Timer.tween(0.1, fighter.dmgColor, {[3] = 0}, "linear",
+		battle.timer:tween(0.1, fighter.dmgColor, {[3] = 0}, "linear",
 			function()
-				Timer.tween(0.2, fighter.dmgColor, {[2] = 255})
-				Timer.tween(0.2, fighter.dmgColor, {[3] = 255})
+				battle.timer:tween(0.2, fighter.dmgColor, {[2] = 255})
+				battle.timer:tween(0.2, fighter.dmgColor, {[3] = 255})
 			end
 		)
 	end
@@ -94,7 +94,7 @@ function battle.turnEnd(prevFighter)
 	nextFighter.turnFinished = false
 
 	if nextFighter == battle.enemy then
-		Timer.add(1, function() battle.ai() end)
+		battle.timer:add(1, function() battle.ai() end)
 	end
 
 	prevFighter.energy = prevFighter.maxEnergy
@@ -133,12 +133,15 @@ function battle.ai()
 			enemy.skills.attack:exec(enemy, player)
 		end
 		
-		Timer.add(1, function() battle.ai() end)
+		battle.timer:add(1, function() battle.ai() end)
 	end
 end
 
+
+-- state funcs
 function battle:init()
 	battle.load()
+	battle.timer = Timer.new()
 end
 
 function battle:enter()
@@ -155,6 +158,8 @@ function battle:enter()
 end
 
 function battle:update(dt)
+	battle.timer:update(dt)
+
 	for _,btn in pairs(battle.btn) do btn:update(dt) end
 	if not battle.player.turnFinished then battle.endTurnBtn:update(dt) end
 	
@@ -279,5 +284,7 @@ function battle:leave()
 		fighter.inBattle = false
 	end
     
+    
+	battle.timer:clear()
     startedBattle = false
 end
