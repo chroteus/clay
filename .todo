@@ -24,7 +24,8 @@ Random events:
 end
 
 "Upgrade" system:
-    Countries cannot attack each other over sea unless they have a navy (they must have a region adjacent to water). 
+    Countries cannot attack each other over sea unless they have a navy 
+    (they must have a region adjacent to water). 
 end
 
 Army battle:
@@ -32,7 +33,9 @@ Army battle:
 end
 
 Uninhabitated land:
-    Most of the Africa is uninhabited allowing you to claim it, but you'll need to fight natives first.
+    Most of the Africa is uninhabited allowing you to claim it, 
+    but you'll need to fight natives first.
+    
     OPTIONAL: Wild life
 end
 
