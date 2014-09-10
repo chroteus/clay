@@ -27,7 +27,9 @@ function pause:draw()
 	
 	if gameSaved then
         if DEBUG then
-            love.graphics.printf("Saved the map in: "..love.filesystem.getSaveDirectory(), 0, 200, the.screen.width, "center")
+            love.graphics.printf("Saved the map in: "
+								..love.filesystem.getSaveDirectory(), 
+								0, 200, the.screen.width, "center")
         else
             love.graphics.printf("Saved!", 0, 200, the.screen.width, "center")
         end

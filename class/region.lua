@@ -9,6 +9,7 @@ function Region:initialize(id, color, name, ...)
     self.country = countries[self.id]
     
     self.selected = false
+    self.upg_state = {}
     
     local arg = {...}
     
@@ -305,6 +306,15 @@ function Regions.generateBorders()
     end
 end
 
+function Region:createUpgState()
+	self.state = {}
+	
+	function self.state:enter()
+		self.state.btn = nil
+		self.state.btn = GuiOrderedTable()
+	end	
+end
+	
 --[[ #### POINT REMOVAL -- OLD CODE
 for i,vertex in ipairs(self.vertices) do
     if pointCollidesMouse(vertex.x, vertex.y, self.vertRadius) then

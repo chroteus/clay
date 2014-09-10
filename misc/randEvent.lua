@@ -19,13 +19,17 @@ function(country) -- war
 		end
 	end
 end,   
- 
+
 function(country) -- peace
-	for _,foe in pairs(country.foes) do
-		country:peace(foe)
-		break
+	if #country.foes == 0 then
+		randEvent(math.huge)
+	else
+		for _,foe in pairs(country.foes) do
+			country:peace(foe)
+			break
+		end
 	end
-end
+end,
 
 }
 
