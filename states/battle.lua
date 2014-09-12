@@ -43,7 +43,7 @@ function battle.load()
 		
 		fighter.buffs = {}
 		
-		fighter.dmgColor = {255,255,255}
+		fighter.dmgColor = {255,255,255,255}
 	end
 	
 	player.turnFinished = false; enemy.turnFinished = true
@@ -64,12 +64,15 @@ function battle.load()
 	)
 end
 
-function battle.showDmg(fighter, dmg)
-		if fighter.dmgColor[2] > 200 then
-		battle.timer:tween(0.1, fighter.dmgColor, {[2] = 0})
+function battle.flash(fighter, color)
+	if fighter.dmgColor then
+		battle.timer:tween(0.1, fighter.dmgColor, {[1] = color[1]})
+		battle.timer:tween(0.1, fighter.dmgColor, {[2] = color[2]})
+		battle.timer:tween(0.1, fighter.dmgColor, {[3] = color[3]})
 		
-		battle.timer:tween(0.1, fighter.dmgColor, {[3] = 0}, "linear",
+		battle.timer:add(0.11,
 			function()
+				battle.timer:tween(0.2, fighter.dmgColor, {[1] = 255})
 				battle.timer:tween(0.2, fighter.dmgColor, {[2] = 255})
 				battle.timer:tween(0.2, fighter.dmgColor, {[3] = 255})
 			end
