@@ -34,17 +34,18 @@ require "states.loading"
 require "states.shop"
 require "states.inventory"
 
--- Misc
 require "class.player"
 require "class.base"
 require "class.skill"
 require "class.item"
 require "class.region"
 require "class.buff"
+require "class.upgrade"
 
 require "objects.skills"
 require "objects.items"
 require "objects.buffs"
+require "objects.upgrades"
 
 require "misc.map"
 require "misc.mapHelp"

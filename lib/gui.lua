@@ -99,28 +99,6 @@ function Button:draw(rgba)
         self:drawBall()
         love.graphics.pop()
     end
-
-	if self:isInstanceOf(ShopButton) then
-		local h = 120
-		
-		
-		guiRect(self.x, self.y - h, self.width, h)
-		
-		if self.used then 
-			love.graphics.setColor(0,0,0,128)
-			love.graphics.rectangle("fill", self.x, self.y-h, self.width, self.height+h)
-			love.graphics.setColor(255,255,255)
-		end
-		
-		
-		
-		love.graphics.draw(self.img, self.x+(self.width/2-self.img:getWidth()/2), (self.y-h)+h/2-self.img:getHeight()/2)
-	
-		if checkCollision(self.x,self.y-h, self.width, self.height+h,the.mouse.x, the.mouse.y, 1,1) then
-			self.item:drawInfo(the.mouse.x, the.mouse.y)
-		end
-		
-	end
 end
 
 CountrySelectBtn = Button:subclass("CountrySelectBtn")
@@ -322,7 +300,23 @@ function ShopButton:initialize(item, x,y)
     Button.initialize(self, x, y, self.width, self.height, self.text, buy)
 end
 
-function ShopButton:drawIcon()
+function ShopButton:draw()
+	Button.draw(self)
+	local h = 120
+	guiRect(self.x, self.y - h, self.width, h)
+	
+	if self.used then 
+		love.graphics.setColor(0,0,0,128)
+		love.graphics.rectangle("fill", self.x, self.y-h, self.width, self.height+h)
+		love.graphics.setColor(255,255,255)
+	end
+	
+	love.graphics.draw(self.img, self.x+(self.width/2-self.img:getWidth()/2), (self.y-h)+h/2-self.img:getHeight()/2)
+
+	if checkCollision(self.x,self.y-h, self.width, self.height+h,the.mouse.x, the.mouse.y, 1,1) then
+		self.item:drawInfo(the.mouse.x, the.mouse.y)
+	end
+	
     love.graphics.draw(self.icon, self.x - (35*scaleFactor), self.y)
     love.graphics.print(self.variable, self.x - (23*scaleFactor), self.y)
 end

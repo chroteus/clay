@@ -60,8 +60,12 @@ function createMap() -- Fresh map. Used to load map at first play.
         
         for _,region in pairs(mapTable.map) do
             local country = countries[region[1]]
-            table.insert(map, Region(country.id, country.color, region[2], region[3]))
+            table.insert(map, Region(country.id, country.color, region[2], region[3])) 
             map[#map].pairedVertices = pairVertices(map[#map].vertices)
+            
+            if map[#map].country.name == Player.country then
+				map[#map]:createUpgState()
+			end
         end
         
         mapFile:close()

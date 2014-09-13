@@ -9,7 +9,6 @@ function Region:initialize(id, color, name, ...)
     self.country = countries[self.id]
     
     self.selected = false
-    self.upg_state = {}
     
     local arg = {...}
     
@@ -41,6 +40,13 @@ end
 function Region:mousereleased(x,y,button)
     if button == "l" then
         if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+			-- Switching to upgrade state
+			if not editMode.enabled then
+				if self.state then
+					Gamestate.switch(self.state)
+				end
+			end
+        
             for _,region in pairs(map) do
                 region.selected = false
             end
@@ -56,8 +62,7 @@ function Region:mousereleased(x,y,button)
                         {"OK", function() end}
                     ):show()
                 end
-                --------------------
-                
+                -------------------
             else
                 if not editMode.enabled then
                     for _,mapNeighbour in pairs(game.neighbours) do
@@ -308,11 +313,26 @@ end
 
 function Region:createUpgState()
 	self.state = {}
+	local state = self.state
 	
-	function self.state:enter()
-		self.state.btn = nil
-		self.state.btn = GuiOrderedTable()
-	end	
+	function state:init()
+		state.btn = GuiOrderedTable()
+		for _,upg in pairs(upgrades) do
+			state.btn:insert(upg)
+		end
+	end
+	
+	function state:enter() love.mouse.setVisible(true) end
+	function state:update(dt) state.btn:update(dt) end
+	function state:draw() state.btn:draw() end
+	function state:mousereleased(x,y,btn) state.btn:mousereleased(x,y,btn) end
+	function state:leave() love.mouse.setVisible(false) end
+	
+	function state:keypressed(key)
+		if key == "escape" then
+			Gamestate.switch(game)
+		end
+	end
 end
 	
 --[[ #### POINT REMOVAL -- OLD CODE
