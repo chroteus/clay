@@ -1,13 +1,13 @@
 Battle buff effects with specifiable color.
 
 Army and warfare:
-
+end
 
 Economy:
 	Ability to improve land in order to passively gain money.
-    Countries should be able to give money to each other, to improve relations.
     A simulation of (a simple) economy.
 end
+
 Game end:
 	Game end upon conquering everything.
 end

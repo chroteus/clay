@@ -4,7 +4,8 @@ function Upgrade:initialize(arg)
 	self.text = tostring(arg.name) or "Undefined name"
 	self.desc = tostring(arg.desc) or "Undefined desc"
 	self.cost = tonumber(arg.cost) or 0
-	self.func = assert(arg.func)
+	self.upg_func = function(level) arg.func(level) end
+	self.func = function() self:upgrade() end
 									
 	self.max_level = max_level or 10
 	
@@ -42,6 +43,7 @@ function Upgrade:upgrade(disregard)
 		
 		if player.money - self.cost >= 0 then
 			self.level = self.level + 1
+			self.upg_func(self.level)
 			player.money = player.money - self.cost
 		else
 			DialogBoxes:new("Not enough money!",
@@ -68,6 +70,7 @@ function Upgrade:draw()
 	
 	-- draw info
 	if checkCol(the.mouse, self) then
+		local x,y = the.mouse.x, the.mouse.y
 		local PADDING = 5
 		local w = 150
 		local title_h = 30

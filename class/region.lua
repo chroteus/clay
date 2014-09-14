@@ -251,15 +251,19 @@ function Region:draw()
 end
 
 function Region:changeOwner(owner)
+	local owner = owner
+	
     if type(owner) == "string" then owner = nameToCountry(owner) end
     
-    if type(owner) == "table" then
-        self.id = owner.id
-        self.color = owner.color
-        self.country = owner
-    else
-        error("Region:changeOwner accepts instance of a country or its name only")
-    end
+	self.id = owner.id
+	self.color = owner.color
+	self.country = owner
+
+	if owner.name == Player.country and not self.state then
+		self:createUpgState()
+	elseif owner.name ~= Player.country and self.state then
+		self.state = nil
+	end
 end
 
 Regions = {} -- Table to hold functions which affect all regions.
