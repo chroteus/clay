@@ -114,6 +114,10 @@ function game:keyreleased(key)
         venus.switch(transState.lastState)
 	end
     
+    if love.keyboard.isDown("1") and key == "return" then
+		Player.money = Player.money + 100
+	end
+    
     if DEBUG then
         if key == "b" then
             if mapBorderCheck then

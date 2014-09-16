@@ -235,8 +235,8 @@ function Region:draw()
 			if (self.country.name == "Sea" and PointWithinShape(self.unpairedVertices, mapMouse.x, mapMouse.y))
 			or self.country.name ~= "Sea" then
 				
-				local alpha = 30*mapCam.scale
-				alpha = math.clamp(0,alpha,255)
+				local alpha = 20*mapCam.scale
+				alpha = math.clamp(0,alpha,128)
 				
 				love.graphics.setLineWidth(1.2)
 				love.graphics.setColor(self.color[1], self.color[2],self.color[3],alpha)

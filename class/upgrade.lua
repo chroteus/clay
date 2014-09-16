@@ -3,7 +3,7 @@ Upgrade = Button:subclass "Upgrade"
 function Upgrade:initialize(arg)
 	self.text = tostring(arg.name) or "Undefined name"
 	self.desc = tostring(arg.desc) or "Undefined desc"
-	self.cost = tonumber(arg.cost) or 0
+	self.cost = tonumber(arg.cost) or error("No cost defined")
 	self.upg_func = function(level) arg.func(level) end
 	self.func = function() self:upgrade() end
 									
@@ -20,31 +20,40 @@ end
 function Upgrade:upgrade(disregard)
 	local disregard = disregard or false
 	
-	if self.level + 1 >= self.max_level and not disregard then
-		local dbox2 = DialogBoxes:new(
-			"Well, for triple the price, we can upgrade disregarding"..
-			" the level cap.\n *the merchant is rubbing his hands*",
-			{"Cancel", dbox2},
-			{"Upgrade", function() self:upgrade(true) end}
-		)
-			
+	if self.level + 1 > self.max_level and not disregard then
+		
+		local show = false
 		DialogBoxes:new("Maximum level reached!",
-						{"Unacceptable!", function() dbox2:show() end},
+						{"Unacceptable!", function() 
+								 DialogBoxes:new(
+									"Well, for triple the price, "..
+									"we can upgrade disregarding"..
+									" the level cap.\n *the merchant "..
+									"is rubbing his hands*",
+									{"Cancel", dbox2},
+									{"Upgrade", function() 
+										self:upgrade(true)
+										self.tricked = true
+									end}
+								 
+								 ):show()
+							 end
+						
+						},
 						{"OK", function() end}
 		):show()
 		
 	else
-		local player = Player:returnCountry()
-		
 		local cost
 		if disregard then cost = self.cost*3 
 		else cost = self.cost
 		end
 		
-		if player.money - self.cost >= 0 then
+		if Player.money - cost >= 0 then
+			if disregard then self.max_level = self.max_level+1 end
 			self.level = self.level + 1
 			self.upg_func(self.level)
-			player.money = player.money - self.cost
+			Player.money = Player.money - self.cost
 		else
 			DialogBoxes:new("Not enough money!",
 							{"OK", function() end}
@@ -62,10 +71,15 @@ function Upgrade:draw()
 	local y = self.y+self.height - height - PADDING
 	
 	love.graphics.setColor(guiColors.fg)
-	love.graphics.rectangle("line", x,y,width,height)
-	love.graphics.setColor(guiColors.bg)
-	love.graphics.rectangle("fill", x,y, 
-							(width/self.max_level)*self.level,height)
+	if not self.tricked then
+		love.graphics.rectangle("line", x,y,width,height)
+		love.graphics.setColor(guiColors.bg)
+		love.graphics.rectangle("fill", x,y, 
+								(width/self.max_level)*self.level,height)
+	else
+		love.graphics.printf(self.level, x,self.y+self.height-PADDING*4, width-PADDING, "right")
+	end
+	
 	love.graphics.setColor(255,255,255)
 	
 	-- draw info
