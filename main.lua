@@ -125,6 +125,7 @@ function love.load()
         end
     }
     setmetatable(gameFont, fontHandle)
+    gameFont["default"] = gameFont[16]
     
     love.graphics.setFont(gameFont[16])
     

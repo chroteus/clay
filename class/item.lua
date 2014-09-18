@@ -37,28 +37,7 @@ function Item:unequip()
 end
 
 function Item:drawInfo(x,y)
-	local PADDING = 5
-	local w = 150
-	local title_h = 30
-	
-	local font = love.graphics.getFont()
-	local _,linenum = font:getWrap(self.info, w)
-	local h = linenum * font:getHeight() + title_h + PADDING*2
-
-	local fontHeight = font:getHeight()
-	
-	guiRect(x,y,w,h)
-	guiRect(x,y,w,title_h)
-	
-	local nameStr = self.name
-	if self:isInstanceOf(OffensiveItem) then
-		nameStr = nameStr .. " +"..self.amount
-	end
-		
-	love.graphics.setColor(guiColors.fg)
-	love.graphics.printf(nameStr, x+PADDING, y+title_h/2-fontHeight/2, w, "left")
-	love.graphics.printf(self.info, x+PADDING, y+title_h+PADDING, w, "left")
-	love.graphics.setColor(255,255,255)
+	guiInfoBox(x,y, self.name,self.info)
 end
 
 OffensiveItem = Item:subclass("OffensiveItem")

@@ -1,7 +1,7 @@
 upgrades = {
 	defense = Upgrade{name = "Defense", 
-					  desc = "Adds to the defense when being attacked.",
-					  func = function(level) print(level) end,
-					  cost = 10}
+					  desc = "Adds to the defense when attacked.",
+					  func = function(self, level) self.defense = level end,
+					  cost = 15},
 					 
 }

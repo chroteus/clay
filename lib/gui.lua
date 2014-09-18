@@ -316,9 +316,6 @@ function ShopButton:draw()
 	if checkCollision(self.x,self.y-h, self.width, self.height+h,the.mouse.x, the.mouse.y, 1,1) then
 		self.item:drawInfo(the.mouse.x, the.mouse.y)
 	end
-	
-    love.graphics.draw(self.icon, self.x - (35*scaleFactor), self.y)
-    love.graphics.print(self.variable, self.x - (23*scaleFactor), self.y)
 end
     
 SkillBtn = Button:subclass("SkillBtn")
@@ -338,4 +335,25 @@ function SkillBtn:keypressed(key)
     if self.hotkey and string.lower(key) == self.hotkey then
         self.func()
     end
+end
+
+function guiInfoBox(x,y, title,text)
+	local PADDING = 5
+	local w = 150
+	local title_h = 30
+	
+	local font = love.graphics.getFont()
+	local _,linenum = font:getWrap(text, w)
+	local h = linenum * font:getHeight() + title_h + PADDING*2
+
+	local fontHeight = font:getHeight()
+	local x,y = x+10, y+10
+	
+	guiRect(x,y,w+PADDING,h)
+	guiRect(x,y,w+PADDING,title_h)
+	
+	love.graphics.setColor(guiColors.fg)
+	love.graphics.printf(title, x+PADDING, y+title_h/2-fontHeight/2, w, "left")
+	love.graphics.printf(text, x+PADDING, y+title_h+PADDING, w, "left")
+	love.graphics.setColor(255,255,255)
 end

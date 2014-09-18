@@ -4,7 +4,7 @@ function Upgrade:initialize(arg)
 	self.text = tostring(arg.name) or "Undefined name"
 	self.desc = tostring(arg.desc) or "Undefined desc"
 	self.cost = tonumber(arg.cost) or error("No cost defined")
-	self.upg_func = function(level) arg.func(level) end
+	self.upg_func = function(self, level) arg.func(self, level) end
 	self.func = function() self:upgrade() end
 									
 	self.max_level = max_level or 10
@@ -17,35 +17,35 @@ function Upgrade:initialize(arg)
 					 self.text, self.func)
 end
 
-function Upgrade:upgrade(disregard)
-	local disregard = disregard or false
-	
-	if self.level + 1 > self.max_level and not disregard then
+function Upgrade:upgrade()
+	if self.level + 1 > self.max_level and not self.tricked then
 		
 		local show = false
-		DialogBoxes:new("Maximum level reached!",
-						{"Unacceptable!", function() 
-								 DialogBoxes:new(
-									"Well, for triple the price, "..
-									"we can upgrade disregarding"..
-									" the level cap.\n *the merchant "..
-									"is rubbing his hands*",
-									{"Cancel", dbox2},
-									{"Upgrade", function() 
-										self:upgrade(true)
-										self.tricked = true
-									end}
-								 
-								 ):show()
-							 end
-						
-						},
-						{"OK", function() end}
-		):show()
 		
+		if not self.tricked then
+			DialogBoxes:new("Maximum level reached!",
+							{"Unacceptable!", function() 
+									 DialogBoxes:new(
+										"Well, for triple the price, "..
+										"we can upgrade disregarding"..
+										" the level cap.\n *the merchant "..
+										"is rubbing his hands*",
+										{"Cancel", dbox2},
+										{"Upgrade", function()
+											self.tricked = true
+											self:upgrade()
+										end}
+									 
+									 ):show()
+								 end
+							
+							},
+							{"OK", function() end}
+			):show()
+		end
 	else
 		local cost
-		if disregard then cost = self.cost*3 
+		if self.tricked then cost = self.cost*3 
 		else cost = self.cost
 		end
 		
@@ -77,31 +77,21 @@ function Upgrade:draw()
 		love.graphics.rectangle("fill", x,y, 
 								(width/self.max_level)*self.level,height)
 	else
-		love.graphics.printf(self.level, x,self.y+self.height-PADDING*4, width-PADDING, "right")
+		love.graphics.setFont(gameFont[12])
+		love.graphics.printf("Level: " .. self.level, x,self.y+self.height-PADDING*4, width-PADDING, "right")
+		love.graphics.setFont(gameFont["default"])
 	end
 	
 	love.graphics.setColor(255,255,255)
 	
-	-- draw info
+	local cost
+	if self.tricked then cost = self.cost*3
+	else cost = self.cost
+	end
+	
 	if checkCol(the.mouse, self) then
-		local x,y = the.mouse.x, the.mouse.y
-		local PADDING = 5
-		local w = 150
-		local title_h = 30
-		
-		local font = love.graphics.getFont()
-		local _,linenum = font:getWrap(self.desc, w)
-		local h = linenum * font:getHeight() + title_h + PADDING*2
-
-		local fontHeight = font:getHeight()
-		
-		guiRect(x,y,w+PADDING,h)
-		guiRect(x,y,w+PADDING,title_h)
-		
-		love.graphics.setColor(guiColors.fg)
-		love.graphics.printf(self.text, x+PADDING, y+title_h/2-fontHeight/2, w, "left")
-		love.graphics.printf(self.desc, x+PADDING, y+title_h+PADDING, w, "left")
-		love.graphics.setColor(255,255,255)
+		guiInfoBox(the.mouse.x, the.mouse.y, self.text 
+					.. " ("..cost.."G)",self.desc)
 	end
 end
 	
