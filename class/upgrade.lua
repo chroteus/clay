@@ -33,6 +33,8 @@ function Upgrade:upgrade()
 										{"Cancel", dbox2},
 										{"Upgrade", function()
 											self.tricked = true
+											self.cost = self.cost*3
+											
 											self:upgrade()
 										end}
 									 
@@ -44,20 +46,14 @@ function Upgrade:upgrade()
 			):show()
 		end
 	else
-		local cost
-		if self.tricked then cost = self.cost*3 
-		else cost = self.cost
-		end
-		
-		if Player.money - cost >= 0 then
+		if Player.money - self.cost >= 0 then
 			if disregard then self.max_level = self.max_level+1 end
 			self.level = self.level + 1
-			self.upg_func(self.level)
+			self.upg_func(self, self.level)
 			Player.money = Player.money - self.cost
 		else
 			DialogBoxes:new("Not enough money!",
-							{"OK", function() end}
-			):show()
+							{"OK", function() end}):show()
 		end
 	end
 end
@@ -66,32 +62,29 @@ function Upgrade:draw()
 	Button.draw(self)
 	
 	local PADDING = 5
-	local x = self.x + PADDING
-	local width, height = self.width-PADDING*2, 10
-	local y = self.y+self.height - height - PADDING
+	local barH = 10
 	
-	love.graphics.setColor(guiColors.fg)
 	if not self.tricked then
-		love.graphics.rectangle("line", x,y,width,height)
 		love.graphics.setColor(guiColors.bg)
-		love.graphics.rectangle("fill", x,y, 
-								(width/self.max_level)*self.level,height)
+		love.graphics.rectangle("fill", self.x+2,self.y+self.height-barH-1,self.width-4,barH)
+		--love.graphics.setColor(guiColors.fg)
+		love.graphics.rectangle("fill", self.x+2,self.y+self.height-barH-1, 
+								((self.width-4)/self.max_level)*self.level,barH)
 	else
+		love.graphics.setColor(guiColors.fg)
 		love.graphics.setFont(gameFont[12])
-		love.graphics.printf("Level: " .. self.level, x,self.y+self.height-PADDING*4, width-PADDING, "right")
+		love.graphics.printf("Level: " .. self.level, self.x,
+							self.y+self.height-PADDING*4, 
+							self.width-PADDING, "center")
+							
 		love.graphics.setFont(gameFont["default"])
 	end
 	
 	love.graphics.setColor(255,255,255)
 	
-	local cost
-	if self.tricked then cost = self.cost*3
-	else cost = self.cost
-	end
-	
 	if checkCol(the.mouse, self) then
 		guiInfoBox(the.mouse.x, the.mouse.y, self.text 
-					.. " ("..cost.."G)",self.desc)
+					.. " ("..self.cost.."G)",self.desc)
 	end
 end
 	
