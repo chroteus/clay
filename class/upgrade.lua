@@ -6,7 +6,7 @@ function Upgrade:initialize(arg)
 	
 	self.desc = tostring(arg.desc) or "Undefined desc"
 	self.cost = tonumber(arg.cost) or error("No cost defined")
-	self.upg_func = function(self, level) arg.func(self, level) end
+	self.upg_func = function(self, level, region) arg.func(self, level, region) end
 	self.func = function() self:upgrade() end
 									
 	self.max_level = arg.max_level or 10
@@ -14,6 +14,8 @@ function Upgrade:initialize(arg)
 	self.width  = arg.width  or 140
 	self.height = arg.height or 60
 	self.level = 0
+	
+	if arg.region then self.region = arg.region end
 	
 	Button.initialize(self, 0,0, self.width, self.height, 
 					 self.text, self.func)
@@ -44,7 +46,7 @@ function Upgrade:upgrade()
 								 end
 							
 							},
-							{"OK", function() end}
+							{"OK"}
 			):show()
 		end
 	else
@@ -55,7 +57,7 @@ function Upgrade:upgrade()
 			Player.money = Player.money - self.cost
 		else
 			DialogBoxes:new("Not enough money!",
-							{"OK", function() end}):show()
+							{"OK"}):show()
 		end
 	end
 end
@@ -66,12 +68,10 @@ function Upgrade:draw()
 	local PADDING = 5
 	local barH = 10
 	
-	if not self.tricked then
-		love.graphics.setColor(guiColors.bg)
-		love.graphics.rectangle("fill", self.x+2,self.y+self.height-barH-1,self.width-4,barH)
-		--love.graphics.setColor(guiColors.fg)
-		love.graphics.rectangle("fill", self.x+2,self.y+self.height-barH-1, 
-								((self.width-4)/self.max_level)*self.level,barH)
+	if not (self.level > self.max_level) then
+		love.graphics.setColor(100,120,160, 100)
+		love.graphics.rectangle("fill", self.x,self.y, 
+								((self.width)/self.max_level)*self.level,self.height)
 	else
 		love.graphics.setColor(guiColors.fg)
 		love.graphics.setFont(gameFont[12])

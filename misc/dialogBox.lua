@@ -9,7 +9,7 @@ function DialogBox:initialize(text, ...)
     self.height = 150
     self.x = the.screen.width/2-self.width/2
     self.y = the.screen.height/2-self.height/2
-    self.hideFunc = "" -- Defined in show() method. Called after DialogBox is hidden. Often used to hide the mouse cursor again.
+    self.hideFunc = nil -- Defined in show() method. Called after DialogBox is hidden. Often used to hide the mouse cursor again.
     self.alpha = 255
     
     self.enabled = false
@@ -25,7 +25,10 @@ function DialogBox:initialize(text, ...)
         local text = argFunc[i][1]
         local func = function() 
             self:hide()
-            argFunc[i][2]()
+            
+            if argFunc[i][2] then
+				argFunc[i][2]()
+			end
         end
         
         table.insert(self.buttons,

@@ -326,10 +326,10 @@ function Region:createUpgState()
 				Upgrade{name = upg.name,
 						desc = upg.desc,
 						cost = upg.cost,
-						func = function(self,level) upg.upg_func(self,level) end,
+						func = function(self,level,region) upg.upg_func(self,level,region) end,
 						max_level = upg.max_level,
 						width = upg.width,
-						height = upg.height
+						height = upg.height,
 				}
 			)
 		end
