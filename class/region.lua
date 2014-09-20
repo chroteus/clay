@@ -322,7 +322,16 @@ function Region:createUpgState()
 	function state:init()
 		state.btn = GuiOrderedTable()
 		for _,upg in pairs(upgrades) do
-			state.btn:insert(upg)
+			state.btn:insert(
+				Upgrade{name = upg.name,
+						desc = upg.desc,
+						cost = upg.cost,
+						func = function(self,level) upg.upg_func(self,level) end,
+						max_level = upg.max_level,
+						width = upg.width,
+						height = upg.height
+				}
+			)
 		end
 	end
 	

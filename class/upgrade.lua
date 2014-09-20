@@ -1,13 +1,15 @@
 Upgrade = Button:subclass "Upgrade"
 
 function Upgrade:initialize(arg)
-	self.text = tostring(arg.name) or "Undefined name"
+	self.name = tostring(arg.name) or "Undefined name"
+	self.text = self.name -- text to be displayed on the button
+	
 	self.desc = tostring(arg.desc) or "Undefined desc"
 	self.cost = tonumber(arg.cost) or error("No cost defined")
 	self.upg_func = function(self, level) arg.func(self, level) end
 	self.func = function() self:upgrade() end
 									
-	self.max_level = max_level or 10
+	self.max_level = arg.max_level or 10
 	
 	self.width  = arg.width  or 140
 	self.height = arg.height or 60
