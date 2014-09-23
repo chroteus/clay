@@ -290,6 +290,8 @@ function Regions.generateNeighbours()
     end
 end
 
+-- NOT TO BE USED.
+-- Generates bad looking borders.
 function Regions.generateBorders()
     for _,region in pairs(map) do
         region.border = {}
@@ -319,14 +321,14 @@ function Region:createUpgState()
 	self.state = {}
 	local state = self.state
 	
-	function state:init()
+	function state.init()
 		state.btn = GuiOrderedTable()
 		for _,upg in pairs(upgrades) do
 			state.btn:insert(
 				Upgrade{name = upg.name,
 						desc = upg.desc,
 						cost = upg.cost,
-						func = function(self,level,region) upg.upg_func(self,level,region) end,
+						func = function(level) upg.upg_func(level,self) end,
 						max_level = upg.max_level,
 						width = upg.width,
 						height = upg.height,

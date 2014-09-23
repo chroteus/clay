@@ -6,7 +6,7 @@ function Upgrade:initialize(arg)
 	
 	self.desc = tostring(arg.desc) or "Undefined desc"
 	self.cost = tonumber(arg.cost) or error("No cost defined")
-	self.upg_func = function(self, level, region) arg.func(self, level, region) end
+	self.upg_func = function(level, region) arg.func(level, region) end
 	self.func = function() self:upgrade() end
 									
 	self.max_level = arg.max_level or 10
@@ -14,8 +14,6 @@ function Upgrade:initialize(arg)
 	self.width  = arg.width  or 140
 	self.height = arg.height or 60
 	self.level = 0
-	
-	if arg.region then self.region = arg.region end
 	
 	Button.initialize(self, 0,0, self.width, self.height, 
 					 self.text, self.func)

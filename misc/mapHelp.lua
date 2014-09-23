@@ -23,7 +23,8 @@ end
 
 function pointCollidesMouse(x, y, radius)
     local radius = radius or 1
-    return checkCollision(x,y,(radius*2)/mapCam.scale,(radius*2)/mapCam.scale, mapMouse.x,mapMouse.y,5/mapCam.scale,5/mapCam.scale)
+    return checkCollision(x,y,(radius*2)/mapCam.scale,(radius*2)/mapCam.scale, 
+						  mapMouse.x,mapMouse.y,5/mapCam.scale,5/mapCam.scale)
 end
 
 function getRegion(name)
@@ -49,6 +50,7 @@ function convertStr(str)
     return s
 end
 
+-- load and saving of game
 
 function createMap() -- Fresh map. Used to load map at first play.
     if love.filesystem.exists("assets/map.lua") then
@@ -77,14 +79,38 @@ function loadMap() -- Load an existing map.
     local mapFile = love.filesystem.load("map.lua")
     local mapTable = mapFile() -- Call the return of mapFile
     
-    for _,region in pairs(mapTable.map) do
-        local country = countries[region[1]]
-        table.insert(map, Region(country.id, country.color, region[2], region[3]))
-    end
-    
     for k,v in pairs(mapTable.player) do
         Player[k] = v
         Player.items = {}
+    end
+    
+     for _,save_region in pairs(mapTable.map) do
+        local country = countries[save_region[1]]
+        table.insert(map, Region(country.id, country.color, save_region[2], save_region[3]))
+     
+		-- Region upgrades loading.
+		local region_inst = map[#map]
+        if region_inst.country.name == Player.country 
+        and save_region.u then
+        
+			region_inst:createUpgState()
+			region_inst.state.init()
+			region_inst.state.init = nil
+			
+			for k_reg,region_upg in pairs(region_inst.state.btn.btn) do
+				for k_sv, save_upg in pairs(save_region.u) do
+					print(save_upg[1])
+					if region_upg.name == save_upg[1] then
+						local level = tonumber(save_upg[2])
+						
+						local region_upg = region_inst.state.btn.btn[k_reg]
+						print(region_upg)
+						region_upg.level = level
+						region_upg.upg_func(level, region_inst)
+					end
+				end
+			end
+		end			
     end
     
     for k,item in pairs(mapTable.player.items) do
@@ -127,9 +153,9 @@ function loadMap() -- Load an existing map.
 		worldTime[k] = v
 	end
 
-    Player:returnCountry(true).attack = Player.attack
-    Player:returnCountry(true).defense = Player.defense
-    Player:returnCountry(true).money = Player.money
+    Player:returnCountry().attack  = Player.attack
+    Player:returnCountry().defense = Player.defense
+    Player:returnCountry().money   = Player.money
 end
 
 function saveMap(name)
@@ -144,16 +170,27 @@ function saveMap(name)
     
     append("map = {")
     for k,region in pairs(map) do
-        append("{"..region.id..",")
-        append('"'..region.name..'"'..",")
-        
         append("{")
-        for k,vertex in pairs(region.unpairedVertices) do
-            append(vertex..",")
-        end
-        
-        append("}")
-        append("},")
+			append(region.id..",")
+			append('"'..region.name..'"'..",")
+				
+			append("{")
+				for k,vertex in pairs(region.unpairedVertices) do
+					append(vertex..",")
+				end
+			append("},")
+			
+			if region.state and region.state.btn then
+				append("u={")
+					for _,upg in pairs(region.state.btn.btn) do
+						if upg.level > 0 then
+							append("{" .. '"'..upg.name..'"' .. "," .. upg.level .. "},")
+						end
+					end
+				append("},")
+			end
+			
+		append("},")
     end
     append("},")
     
