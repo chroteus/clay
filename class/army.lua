@@ -1,11 +1,16 @@
 Soldier = class "Soldier"
 
 function Soldier:initialize(arg)
-	self.attack = arg.attack
-	self.defense = arg.defense
-	self.hp = arg.hp
-	self.maxHP = self.hp
-	self.image = arg.image
+	self.attack = arg.attack or 10
+	self.defense = arg.defense or 10
+	self.hp = arg.hp or 10
+	self.maxHP = self.hp or 10
+	self.image = arg.image or error("Image for soldier not set")
+end
+
+function Soldier:setPos(x,y)
+	self.x = x
+	self.y = y
 end
 
 function Soldier:getDamage(attack)
@@ -15,18 +20,26 @@ function Soldier:getDamage(attack)
 	self.hp = self.hp - netAtt
 end
 
+function Soldier:moveTo(x,y, duration)
+	local duration = duration or 0.5
+	Timer.tween(duration, self, {x = x}, "out-quad")
+	Timer.tween(duration, self, {y = y}, "out-quad")
+end
+
 function Soldier:attack(soldier)
 	local origX,origY = self.x, self.y
-	local function backToOrig()
-		Timer.tween(0.5, self, {x = origX}, "out-quad")
-		Timer.tween(0.5, self, {y = origY}, "out-quad")
-	end
-	
+	self:moveTo(soldier.x, soldier.y)
 	soldier:getDamage(self.attack)
-	
-	Timer.tween(0.5, self, {x = soldier.x}, "out-quad")
-	Timer.tween(0.5, self, {y = soldier.y}, "out-quad", backToOrig)
+	self:moveTo(origX,origY)
 end
+
+function Soldier:draw()
+	if not self.x or self.y then error("Position for soldier not set") end
+	
+	love.graphics.draw(self.image, self.x, self.y)
+end
+	
+	
 
 Army = class "Army"
 
