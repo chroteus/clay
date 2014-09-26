@@ -1,3 +1,5 @@
+local anim8 = require "anim8"
+
 Soldier = class "Soldier"
 
 function Soldier:initialize(arg)
@@ -5,8 +7,19 @@ function Soldier:initialize(arg)
 	self.defense = arg.defense or 10
 	self.hp = arg.hp or 10
 	self.maxHP = self.hp or 10
-	self.image = arg.image or error("Image for soldier not set")
-end
+	
+	if not arg.frames then error("Frames for soldier not set")
+	local frames = love.graphics.newImage(arg.frames)
+	local grid = anim8.newGrid(14,14, frames:getWidth(), frames:getHeight())
+	self.anim = {
+		still_south = anim8.newAnimation(grid(1,1), 0.1),
+		south = anim8.newAnimation(grid("2-3", 1),  0.1),
+		east  = anim8.newAnimation(grid("4-6", 1),  0.1),
+		west  = anim8.newAnimation(grid("4-6", 1),  0.1):flipH(),
+		still_north = anim8.newAnimation(grid(7,1), 0.1),
+		north = anim8.newAnimation(grid("8-9", 1), 0.1),
+	}
+end	
 
 function Soldier:setPos(x,y)
 	self.x = x
@@ -31,6 +44,9 @@ function Soldier:attack(soldier)
 	self:moveTo(soldier.x, soldier.y)
 	soldier:getDamage(self.attack)
 	self:moveTo(origX,origY)
+end
+
+function Soldier:update(dt)
 end
 
 function Soldier:draw()
