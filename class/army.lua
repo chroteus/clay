@@ -11,7 +11,7 @@ function Soldier:initialize(arg)
 	if not arg.frames then error("Frames for soldier not set") end
 	self.frames = love.graphics.newImage(arg.frames)
 	self.frames:setFilter("nearest", "nearest")
-	local grid = anim8.newGrid(15,14, self.frames:getWidth()-4, self.frames:getHeight(),3,0,0)
+	local grid = anim8.newGrid(15,14, self.frames:getWidth()-6, self.frames:getHeight(),3,0,0)
 	self.anim = {
 		still_south = anim8.newAnimation(grid(1,1), 0.1),
 		south = anim8.newAnimation(grid("2-3", 1),  0.1),
@@ -47,14 +47,27 @@ function Soldier:getDamage(attack)
 end
 
 function Soldier:moveTo(x,y)
+	self.timer:clear()
 	local duration = math.dist(self.x,self.y, x,y)/50/self.scale
-	if self.x > x then self.anim_state = "west"
-	elseif self.x < x then self.anim_state = "east"
+	local xDiff = math.abs(self.x - x)
+	local yDiff = math.abs(self.y - y)
+	
+	if xDiff > yDiff then
+		if self.x > x then self.anim_state = "west"
+		elseif self.x < x then self.anim_state = "east"
+		end
+	else
+		if self.y > y then self.anim_state = "north"
+		elseif self.y < y then self.anim_state = "south"
+		end
 	end
 	
 	self.timer:tween(duration, self, {x = x})
 	self.timer:tween(duration, self, {y = y})
-	self.timer:add(duration, function() self.anim_state = "still_south" end)
+	self.timer:add(duration, 
+					function()
+						self.anim_state = "still_south" 
+					end)
 end
 
 function Soldier:attack(soldier)

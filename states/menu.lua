@@ -48,8 +48,7 @@ function menu:init()
 	]]
 	
 	menu.soldier = Soldier{frames = "assets/image/battle_mini/Poland.png"}
-	menu.soldier:setPos(500,200)
-	menu.soldier:moveTo(200,200)
+	menu.soldier:setPos(200,500)
 	menu.soldier:setScale(5)
 end
 
@@ -79,15 +78,11 @@ function menu:draw()
         button:draw()
     end
     
-    love.graphics.setFont(gameFont[80])
-    --love.graphics.printf("Clay", 0, 60, the.screen.width, "center")
-    love.graphics.setFont(gameFont[16])
-    
     local logoX = the.screen.width/2-menu.logo:getWidth()/2
     local logoY = 50
     love.graphics.draw(menu.logo, logoX, logoY)
     
-    --love.graphics.printf("M - Mute", 0, menuButtons.debugBtn.y + 100, the.screen.width, "center")
+    love.graphics.printf("M - Mute", 0, the.screen.height-100, the.screen.width, "center")
 	local font = love.graphics.getFont()
     love.graphics.printf(menu.credits, logoX - font:getWidth(menu.credits), logoY + 10, 100, "right")
     love.graphics.printf(menu.mus_credits, 
@@ -100,5 +95,7 @@ function menu:mousereleased(x,y,button)
         for _,button in pairs(menuButtons) do
             button:mousereleased(x,y,button)
         end
+        
+        menu.soldier:moveTo(x-32,y-12)
     end
 end
