@@ -14,11 +14,11 @@ function Soldier:initialize(arg)
 	local grid = anim8.newGrid(15,14, self.frames:getWidth()-6, self.frames:getHeight(),3,0,0)
 	self.anim = {
 		still_south = anim8.newAnimation(grid(1,1), 0.1),
-		south = anim8.newAnimation(grid("2-3", 1),  0.1),
+		south = anim8.newAnimation(grid("1-3", 1),  0.1),
 		east  = anim8.newAnimation(grid("4-6", 1),  0.1),
 		west  = anim8.newAnimation(grid("4-6", 1),  0.1):flipH(),
 		still_north = anim8.newAnimation(grid(7,1), 0.1),
-		north = anim8.newAnimation(grid("8-9", 1), 0.1),
+		north = anim8.newAnimation(grid("7-9", 1), 0.1),
 	}
 	
 	self.timer = Timer.new()
@@ -51,6 +51,7 @@ function Soldier:moveTo(x,y)
 	local duration = math.dist(self.x,self.y, x,y)/50/self.scale
 	local xDiff = math.abs(self.x - x)
 	local yDiff = math.abs(self.y - y)
+	local goingUp = self.y > y
 	
 	if xDiff > yDiff then
 		if self.x > x then self.anim_state = "west"
@@ -66,7 +67,9 @@ function Soldier:moveTo(x,y)
 	self.timer:tween(duration, self, {y = y})
 	self.timer:add(duration, 
 					function()
-						self.anim_state = "still_south" 
+						if goingUp then self.anim_state = "still_north" 
+						else self.anim_state = "still_south" 
+						end
 					end)
 end
 
