@@ -1,4 +1,4 @@
-local anim8 = require "anim8"
+local anim8 = require "lib.anim8"
 
 Soldier = class "Soldier"
 
@@ -7,10 +7,11 @@ function Soldier:initialize(arg)
 	self.defense = arg.defense or 10
 	self.hp = arg.hp or 10
 	self.maxHP = self.hp or 10
-	
-	if not arg.frames then error("Frames for soldier not set")
-	local frames = love.graphics.newImage(arg.frames)
-	local grid = anim8.newGrid(14,14, frames:getWidth(), frames:getHeight())
+
+	if not arg.frames then error("Frames for soldier not set") end
+	self.frames = love.graphics.newImage(arg.frames)
+	self.frames:setFilter("nearest", "nearest")
+	local grid = anim8.newGrid(15,14, self.frames:getWidth()-4, self.frames:getHeight(),3,0,0)
 	self.anim = {
 		still_south = anim8.newAnimation(grid(1,1), 0.1),
 		south = anim8.newAnimation(grid("2-3", 1),  0.1),
@@ -19,11 +20,23 @@ function Soldier:initialize(arg)
 		still_north = anim8.newAnimation(grid(7,1), 0.1),
 		north = anim8.newAnimation(grid("8-9", 1), 0.1),
 	}
+	
+	self.timer = Timer.new()
+	self.anim_state = "still_south"
+	self.scale = 1
 end	
 
 function Soldier:setPos(x,y)
 	self.x = x
 	self.y = y
+	
+	return self
+end
+
+function Soldier:setScale(scale)
+	self.scale = scale
+	
+	return self
 end
 
 function Soldier:getDamage(attack)
@@ -33,10 +46,15 @@ function Soldier:getDamage(attack)
 	self.hp = self.hp - netAtt
 end
 
-function Soldier:moveTo(x,y, duration)
-	local duration = duration or 0.5
-	Timer.tween(duration, self, {x = x}, "out-quad")
-	Timer.tween(duration, self, {y = y}, "out-quad")
+function Soldier:moveTo(x,y)
+	local duration = math.dist(self.x,self.y, x,y)/50/self.scale
+	if self.x > x then self.anim_state = "west"
+	elseif self.x < x then self.anim_state = "east"
+	end
+	
+	self.timer:tween(duration, self, {x = x})
+	self.timer:tween(duration, self, {y = y})
+	self.timer:add(duration, function() self.anim_state = "still_south" end)
 end
 
 function Soldier:attack(soldier)
@@ -47,12 +65,16 @@ function Soldier:attack(soldier)
 end
 
 function Soldier:update(dt)
+	self.timer:update(dt)
+	self.anim[self.anim_state]:update(dt)
 end
 
 function Soldier:draw()
-	if not self.x or self.y then error("Position for soldier not set") end
-	
-	love.graphics.draw(self.image, self.x, self.y)
+	if not self.x or not self.y then error("Position for soldier not set") end
+
+	self.anim[self.anim_state]:draw(self.frames, self.x, self.y, 0,
+									self.scale, self.scale)
+
 end
 	
 	

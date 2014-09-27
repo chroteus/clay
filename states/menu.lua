@@ -46,6 +46,11 @@ function menu:init()
 		ParagonX9
 		Waterflame
 	]]
+	
+	menu.soldier = Soldier{frames = "assets/image/battle_mini/Poland.png"}
+	menu.soldier:setPos(500,200)
+	menu.soldier:moveTo(200,200)
+	menu.soldier:setScale(5)
 end
 
 function menu:enter()
@@ -62,12 +67,14 @@ function menu:enter()
 end
 
 function menu:update(dt)
+	menu.soldier:update(dt)
     for _,button in pairs(menuButtons) do
         button:update()
     end
 end
 
 function menu:draw()
+	menu.soldier:draw()
     for _,button in pairs(menuButtons) do
         button:draw()
     end
