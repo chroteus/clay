@@ -48,7 +48,10 @@ function menu:init()
 	]]
 	
 	menu.soldier = Soldier{frames = "assets/image/battle_mini/Poland.png"}
-	menu.soldier:setScale(3)
+	menu.soldier:setScale(5)
+	
+	menu.army = Army():setPos(menuButtons.start.x, 5*menuButtons.debugBtn.height*2)
+	menu.army:populateWith(5, menu.soldier)
 end
 
 function menu:enter()
@@ -62,20 +65,17 @@ function menu:enter()
     
         menuButtons.continue = GenericButton(2, "Continue", function() loading.switch(game) end)
     end
-    
-    local btn = menuButtons.debugBtn
-	menu.soldier:setPos(btn.x+btn.width/2-15,btn.y+btn.height+50)
 end
 
 function menu:update(dt)
-	menu.soldier:update(dt)
+	menu.army:update(dt)
     for _,button in pairs(menuButtons) do
         button:update()
     end
 end
 
 function menu:draw()
-	menu.soldier:draw()
+	menu.army:draw()
     for _,button in pairs(menuButtons) do
         button:draw()
     end
@@ -98,6 +98,6 @@ function menu:mousereleased(x,y,button)
             button:mousereleased(x,y,button)
         end
         
-        menu.soldier:moveTo(x-32,y-12)
+        menu.army:moveTo(x,y)
     end
 end
