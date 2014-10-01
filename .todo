@@ -1,11 +1,12 @@
 Battle buff effects with specifiable color.
+Fix region upgrades load-save bug.
+Make region screen appear on right-click or double-click
 
 Army and warfare:
 	Make balls animated.
 end
 
 Economy:
-	Ability to improve land in order to passively gain money.
     A simulation of (a simple) economy.
 end
 

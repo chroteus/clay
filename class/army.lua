@@ -1,9 +1,9 @@
 local anim8 = require "lib.anim8"
 
-Soldier = class "Soldier"
+Soldier = class("Soldier")
 
 function Soldier:initialize(arg)
-	self.attack = arg.attack or 10
+	self.attack_stat = arg.attack_stat or 10
 	self.defense = arg.defense or 10
 	self.hp = arg.hp or 10
 	self.maxHP = self.hp or 10
@@ -52,8 +52,8 @@ function Soldier:setScale(scale)
 	return self
 end
 
-function Soldier:getDamage(attack)
-	local netAtt = attack - self.defense
+function Soldier:getDamage(attack_arg)
+	local netAtt = attack_arg - self.defense
 	if netAtt < 0 then netAtt = 0 end
 	
 	self.hp = self.hp - netAtt
@@ -86,9 +86,13 @@ end
 
 function Soldier:attack(soldier)
 	local origX,origY = self.x, self.y
-	self:moveTo(soldier.x, soldier.y)
-	soldier:getDamage(self.attack)
-	self:moveTo(origX,origY)
+	self:moveTo(soldier.x, soldier.y,
+		function()
+		-- finish func
+			soldier:getDamage(self.attack_stat)
+			self:moveTo(origX,origY)
+		end
+	)
 end
 
 function Soldier:update(dt)
@@ -126,8 +130,8 @@ end
 function Army:addSoldier(soldier, padding)
 	local padding = padding or 20
 	local lastSoldier = self.soldiers[#self.soldiers] or {x = self.x, y = self.y}
-	soldier:setPos(lastSoldier.x + padding + math.random(1,3), 
-				   lastSoldier.y + padding + math.random(1,3))
+	soldier:setPos(lastSoldier.x + padding + math.random(-2,2), 
+				   lastSoldier.y + padding + math.random(-2,2))
 	table.insert(self.soldiers, soldier)
 end
 
@@ -149,11 +153,22 @@ function Army:draw()
 	end
 end
 
+function Army:attack(army)
+	for num,enemy in pairs(army.soldiers) do
+		if self.soldiers[num] ~= nil then
+			self.soldiers[num]:attack(enemy)
+		else
+			local rand = self.soldiers[math.random(#self.soldiers)]
+			rand:attack(enemy)
+		end
+	end
+end
+			
 function Army:moveTo(x,y)
 	local padding = padding or 20
 	for num,soldier in pairs(self.soldiers) do
 		self.x, self.y = x,y
-		soldier:moveTo(self.x + (num-1)*padding/2 + math.random(1,3), 
-					   self.y + (num-1)*padding   + math.random(1,3))
+		soldier:moveTo(self.x + (num-1)*padding/2 + math.random(1,2), 
+					   self.y + (num-1)*padding   + math.random(1,2))
 	end
 end

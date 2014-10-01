@@ -49,9 +49,15 @@ function menu:init()
 	
 	menu.soldier = Soldier{frames = "assets/image/battle_mini/Poland.png"}
 	menu.soldier:setScale(5)
-	
 	menu.army = Army():setPos(menuButtons.start.x, 5*menuButtons.debugBtn.height*2)
 	menu.army:populateWith(5, menu.soldier)
+	
+	menu.soldier2 = Soldier{frames = "assets/image/battle_mini/Poland.png"}
+	menu.soldier2:setScale(4)
+	menu.army2 = Army():setPos(600,0)
+	menu.army2:populateWith(2, menu.soldier2)
+	
+	menu.army:attack(menu.army2)
 end
 
 function menu:enter()
@@ -69,6 +75,7 @@ end
 
 function menu:update(dt)
 	menu.army:update(dt)
+	menu.army2:update(dt)
     for _,button in pairs(menuButtons) do
         button:update()
     end
@@ -76,6 +83,7 @@ end
 
 function menu:draw()
 	menu.army:draw()
+	menu.army2:draw()
     for _,button in pairs(menuButtons) do
         button:draw()
     end
