@@ -17,7 +17,7 @@ function Soldier:initialize(arg)
 	end
 	
 	self.frames:setFilter("nearest", "nearest")
-	local grid = anim8.newGrid(15,14, self.frames:getWidth()-6, self.frames:getHeight(),3,0,0)
+	local grid = anim8.newGrid(75,70, self.frames:getWidth()-30, self.frames:getHeight(),15,0,0)
 	self.anim = {
 		still_south = anim8.newAnimation(grid(1,1), 0.1),
 		south = anim8.newAnimation(grid("1-3", 1),  0.1),
@@ -104,8 +104,7 @@ function Soldier:draw()
 	if not self.x or not self.y then error("Position for soldier not set") end
 
 	self.anim[self.anim_state]:draw(self.frames, 
-									self.x, self.y, 0,
-									self.scale, self.scale)
+									self.x, self.y)
 
 end
 
