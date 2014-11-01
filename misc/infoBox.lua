@@ -10,7 +10,6 @@ function infoBox:init()
 	infoBox.x = the.screen.width/2-infoBox.width/2
 	infoBox.y = 5
 	infoBox.countryName = ""
-	infoBox.name = ""
 	infoBox.id = 1
 end
 
@@ -18,7 +17,6 @@ function infoBox:update(dt)
 	for _,region in pairs(map) do
 		if PointWithinShape(region.vertices, mapMouse.x, mapMouse.y) then
 			self.countryName = countries[region.id].name
-			self.name = region.name
 			self.region = region
 			self.id = region.id
 		end
@@ -34,16 +32,9 @@ function infoBox:draw(x,y)
 	local fontH = love.graphics.getFont():getHeight()
 	local padding = 5
 	guiRect(x,y,self.width, fontH + padding*2)
-	
-	
 
-	love.graphics.setColor(guiColors.fg)
-	
-	if countries[self.id].name ~= "Sea" then
-		love.graphics.printf(self.name..", "..self.countryName, x+5, y+5, self.width, "left")
-	else
-		love.graphics.printf(self.countryName, x+5, y+5, self.width, "left")
-	end
+	love.graphics.setColor(guiColors.fg)	
+    love.graphics.printf(self.countryName, x+5, y+5, self.width, "left")
 	
 	love.graphics.setColor(255,255,255)
 end

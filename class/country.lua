@@ -202,8 +202,7 @@ function Country:peace(country)
 						{"Refuse", function() end}, 
 						{"Accept", function() 
 							peace(country) 
-							if Gamestate.current == battle
-							and country.name == battle.enemy.name then
+							if Gamestate.current == battle then
 								Gamestate.switch(game)
 							end
 						end}
@@ -222,8 +221,7 @@ function Country:peace(country)
 								peace(country)
 								country:addMoney(moneyAmnt)
 								
-								if Gamestate.current == battle 
-								and country.name == battle.enemy.name then
+								if Gamestate.current == battle then
 									Gamestate.switch(game)
 								end
 							end

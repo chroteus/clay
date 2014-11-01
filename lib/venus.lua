@@ -53,7 +53,9 @@ function venus.registerEvents(timer)
             registry[f](...)
 
             if DialogBoxes:present() then
-                if f ~= "update" and f ~= "mousereleased" and f ~= "mousepressed" and f ~= "keyreleased" and f ~= "keypressed" then
+                if f ~= "update" and f ~= "mousereleased" 
+                and f ~= "mousepressed" and f ~= "keyreleased" 
+                and f ~= "keypressed" then
                     (venus.current[f] or __NULL__)(self,...)
                     
                     if f == "draw" then

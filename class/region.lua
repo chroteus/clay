@@ -40,12 +40,6 @@ end
 function Region:mousereleased(x,y,button)
     if button == "l" then
         if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
-			-- Switching to upgrade state
-			if not editMode.enabled then
-				if self.state then
-					Gamestate.switch(self.state)
-				end
-			end
         
             for _,region in pairs(map) do
                 region.selected = false
@@ -82,6 +76,15 @@ function Region:mousereleased(x,y,button)
                             end
                         end
                     end 
+                end
+            end
+        end
+    elseif button == "r" then
+        if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
+            -- Switching to upgrade state
+            if not editMode.enabled then
+                if self.state then
+                    Gamestate.switch(self.state)
                 end
             end
         end
