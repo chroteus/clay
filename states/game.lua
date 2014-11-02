@@ -76,11 +76,11 @@ function game:draw()
     love.graphics.setColor(guiColors.fg)
     love.graphics.rectangle("line", 0, the.screen.height-guiRectH, the.screen.width, guiRectH)
     
-    local padding = 20
-    local sumX = 0
+    local padding = 5
+    local sumX = 5
     for i,text in pairs(game.statusbarTexts) do
-        love.graphics.print(text, sumX+padding, the.screen.height-25)
-        sumX = sumX + gameFont["default"]:getWidth(text) + padding*2
+        love.graphics.print(text, sumX, the.screen.height-25)
+        sumX = sumX + gameFont["default"]:getWidth(text) + padding
         love.graphics.line(sumX,the.screen.height-guiRectH, sumX,the.screen.height)
     end
     

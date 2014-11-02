@@ -45,7 +45,7 @@ function winState:enter()
     winResultXp = winFinXp - winStartXp
     
     winMoneyAmnt = math.random(netResult*2*Player.level, netResult*5*Player.level)
-    Player:returnCountry(true):addMoney(winMoneyAmnt)
+    Player:returnCountry():addMoney(winMoneyAmnt)
 end
 
 function winState:update(dt)

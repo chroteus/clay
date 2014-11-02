@@ -28,8 +28,8 @@ countries = {
     Country("France", 		  {230,230,230}, 8,  		5, 		90),
     Country("Austria", 		  {180,80,80},   10, 		4, 		70),
     Country("Belarus", 		  {0, 60, 0},    9,  		3, 		80),
-    Country("Poland", 		  {220,20,60},   8,  		4, 		70),
-    Country("Netherlands", 	  {66,140,255},  9,  		4, 		75),
+    Country("Poland", 		  {200,0,40},    8,  		4, 		70),
+    Country("Netherlands", 	  {96,170,255},  9,  		4, 		75),
     Country("Hungary", 		  {0,128,0},     8,  		4, 		80),
 }
 

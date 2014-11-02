@@ -11,17 +11,10 @@ function charScr:init()
         if amount > 0 then numText = "+" end
         
         local function upgFn()
-            if Player[variable] + amount > 0 then
-                if numText == "+" then
-                    if Player.unspentPoints > 0 then
-                        Player[variable] = Player[variable] + amount
-                        Player.unspentPoints = Player.unspentPoints - 1
-                    end
-                else
-                    if Player.unspentPoints >= 0 then
-                        Player[variable] = Player[variable] + amount
-                        Player.unspentPoints = Player.unspentPoints + 1
-                    end
+           if amount > 0 then
+                if Player.unspentPoints > 0 then
+                    Player[variable] = Player[variable] + amount
+                    Player.unspentPoints = Player.unspentPoints - 1
                 end
             end
         end
@@ -94,8 +87,6 @@ function charScr:draw()
     drawText(charScr.btn.minusDef, "Defense")
 
     love.graphics.printf(charScr.text, the.screen.width/3, charScr.btn.minusDef.y + 80, the.screen.width/3, "center")
-    
-    DialogBoxes:draw()
 end
 
 function charScr:mousereleased(x,y,button)

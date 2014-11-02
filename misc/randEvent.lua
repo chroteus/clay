@@ -1,35 +1,56 @@
 randEvents = {
 
-function(country) -- war
-	for _,region in pairs(map) do
-		if region.country.name == country.name then
-			for _,neighbour in pairs(region.neighbours) do
-				local foeRegion = getRegion(neighbour)
-				
-				if country:isFoe(foeRegion.country) then
-					randEvent(math.huge)
-				else
-					country:war(foeRegion.country.name)
-				end
-				
-				break
-			end
-			
-			break
-		end
-	end
-end,   
+war = {
+    chance = 5,
 
-function(country) -- peace
-	if #country.foes == 0 then
-		randEvent(math.huge)
-	else
-		for _,foe in pairs(country.foes) do
-			country:peace(foe)
-			break
-		end
-	end
-end,
+    fn = function(country)
+        for _,region in pairs(map) do
+            if region.country.name == country.name then
+                for _,neighbour in pairs(region.neighbours) do
+                    local foeRegion = getRegion(neighbour)
+                    
+                    if country:isFoe(foeRegion.country) then
+                        randEvent(math.huge)
+                    else
+                        country:war(foeRegion.country.name)
+                    end
+                    
+                    break
+                end
+                
+                break
+            end
+        end
+    end
+},
+
+peace = {
+    chance = 3,
+    
+    fn = function(country)
+        if #country.foes == 0 then
+            randEvent(math.huge)
+        else
+            for _,foe in pairs(country.foes) do
+                country:peace(foe)
+                break
+            end
+        end
+    end
+},
+
+riots = {
+    chance = 1,
+    
+    fn = function(country)
+        local cost = math.random(5,15)
+        msgBox:add("Riots in " .. country.name .. " caused "
+                   .. cost .. "G worth of damage.")
+    
+        country.money = country.money - cost
+    end
+
+},
 
 }
 
@@ -56,10 +77,19 @@ function randEvent(dt)
     if not DEBUG then
         randEventTimer = randEventTimer - dt
         if randEventTimer <= 0 then
-            local r = math.random(#randEvents)
+            local possible_events = {}
+            
+            for k,rand_e in pairs(randEvents) do
+                for i=1,rand_e.chance do
+                    table.insert(possible_events, k)
+                end
+            end
+            
+            local randE_k = possible_events[math.random(#possible_events)]
             
             local country = randCountry()
-            randEvents[r](country)
+            print(randE_k)
+            randEvents[randE_k]["fn"](country)
             lastCountry = country.name
             
             randEventTimer = math.random(5,10)
