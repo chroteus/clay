@@ -45,7 +45,13 @@ function diplScr:init()
 end
 
 function diplScr:enter()
-	removeDuplicates(Player:returnCountry(true).foes)
+    local player_country = Player:returnCountry()
+	for k,foe in pairs(player_country.foes) do
+        if foe.isDead then
+            table.remove(player_country.foes, k)
+        end
+    end
+    
     love.mouse.setVisible(true)
     
     love.graphics.setFont(gameFont[22])

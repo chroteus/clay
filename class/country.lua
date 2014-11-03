@@ -195,9 +195,9 @@ function Country:peace(country)
 			end
 			
 			if country.name == Player.country then
-				local r = math.random(2)
+				local r = math.random(3)
 				
-				if r == 1 then
+				if r <= 2 then
 					local dbox = DialogBoxes:new(self.name.." wants to sign a peace treaty with us.",
 						{"Refuse", function() end}, 
 						{"Accept", function() 

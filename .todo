@@ -1,10 +1,5 @@
 Battle buff effects with specifiable color.
 BUG: Mid-battle peace doesn't give money.
-BUG: Dead enemies are still on the list, but not drawn.
-
-Economy:
-    A simulation of (a simple) economy.
-end
 
 Game end:
 	Game end upon conquering everything.
