@@ -11,6 +11,9 @@ countries = {
 	-- indent width: 4
 	--	    ######			  #######	  ########  #########  ####
     --      #name#            #color#     #attack#  #defense#  #hp#
+
+    --      ##########
+    --      #fighters#  
   
     Country("Sea", 			  {255,255,255}, 0,  		0, 		0),
   
@@ -22,13 +25,17 @@ countries = {
     Country("Sweden", 		  {0,0,60},      10, 		4, 		60),
     Country("Cyprus", 		  {237,128,0},   9,  		3, 		70),
     Country("Bavaria", 		  {0,162,232},   9,  		3, 		65),
-    Country("Germany", 		  {255,0,0},     11, 		4, 		90),
+    
+    Country("Germany", 		  {255,0,0},     11, 		4, 		90,
+            {{name = "Germany"}}),
+            
     Country("Finland", 		  {0,83,255},    9,  		5, 		65),
     Country("Denmark", 		  {100,50,50},   9,  		4, 		80),
     Country("France", 		  {230,230,230}, 8,  		5, 		90),
     Country("Austria", 		  {180,80,80},   10, 		4, 		70),
     Country("Belarus", 		  {0, 60, 0},    9,  		3, 		80),
-    Country("Poland", 		  {200,0,40},    8,  		4, 		70),
+    Country("Poland", 		  {200,0,40},    8,  		4, 		70,
+            {{name = "Poland"}}),
     Country("Netherlands", 	  {96,170,255},  9,  		4, 		75),
     Country("Hungary", 		  {0,128,0},     8,  		4, 		80),
 }

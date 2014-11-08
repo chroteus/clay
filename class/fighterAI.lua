@@ -15,7 +15,6 @@ function FighterAI:attack(fighter)
 end
 
 function FighterAI:update(dt)
-    self:ai()
     Fighter.update(self, dt)
 end
 

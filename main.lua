@@ -4,10 +4,10 @@ DEBUG = false
 Timer = require "lib.hump.timer"
 Camera = require "lib.amo" --require "lib.hump.camera"
 venus = require "lib.venus"
+anim8 = require "lib.anim8"
 
 Gamestate = venus
 class = require "lib.middleclass"
-loader = require "lib.love-loader"
 
 require "lib.the" -- Gives easy access info on such things as screen width, height, fps, etc.
 require "lib.gui" -- GUI lib.
@@ -42,6 +42,12 @@ require "class.army"
 require "class.region"
 require "class.buff"
 require "class.upgrade"
+
+require "class.fighter"
+require "class.fighterAI"
+require "class.fighterItem"
+require "class.arena"
+require "class.fighterGroup"
 
 require "objects.skills"
 require "objects.items"

@@ -1,4 +1,4 @@
-Fighter = Base:subclass("Fighter")
+Fighter = class("Fighter")
 
 function Fighter:initialize(arg)
     self.name = arg.name or "Undefined name"
@@ -17,7 +17,7 @@ function Fighter:initialize(arg)
 
     local frames
 	if not arg.frames and self.name then 
-        frames = "assets/images/balls/" .. self.name .. ".png"
+        frames = "assets/image/fighters/balls/" .. self.name .. ".png"
     elseif not arg.frames and not self.name then
         error("Neither name nor frames file defined")
     else
@@ -67,6 +67,11 @@ function Fighter:initialize(arg)
     self.alpha = 255
     
 	return self
+end
+
+function Fighter:setPos(x,y)
+    self.x = x
+    self.y = y
 end
 
 function Fighter:getDamage(attack_arg)
@@ -293,9 +298,9 @@ function Fighter:draw(x,y, noHP)
         love.graphics.rectangle("line", self.x, self.y-10, self.width, 12)
         love.graphics.rectangle("fill", self.x, self.y-10, (self.width/self.max_hp)*self.hp, 12)
         love.graphics.setColor(255,255,255)
-        love.graphics.setFont(FONT[14])
+        love.graphics.setFont(gameFont[14])
         love.graphics.print(self.hp .. "/" .. self.max_hp, 
-                            self.x, self.y - 10 - FONT[14]:getHeight()/4 + 2)
+                            self.x, self.y - 10 - gameFont[14]:getHeight()/4 + 2)
         love.graphics.setColor(255,255,255)
     end
 end

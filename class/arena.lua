@@ -1,4 +1,5 @@
-Arena = Class("Arena")
+-- Arena: Fighters (or FighterGroups) manager
+Arena = class("Arena")
 
 function Arena:initialize(arg)
     self.x = arg.x
@@ -28,7 +29,15 @@ function Arena:to(team)
     assert(self.temp_fighter ~= nil, "Set fighter to add to team with Arena:add")
     
     if self.teams[team] == nil then self.teams[team] = {} end
-    table.insert(self.teams[team], self.temp_fighter)
+    
+    if self.temp_fighter:isInstanceOf(FighterGroup) then
+        for _,fighter in pairs(self.temp_fighter.fighters) do
+            table.insert(self.teams[team], fighter)
+        end
+    else
+        table.insert(self.teams[team], self.temp_fighter)
+    end
+    
     self.temp_fighter = nil
     
     return self
@@ -36,7 +45,7 @@ end
     
 ------------------------------------------------------------------------
 
-function Arena:start(arg)
+function Arena:start()
     for _,team in pairs(self.teams) do
         for _,fighter in pairs(team) do            
             -- Add enemies for fighter to attack
@@ -46,11 +55,6 @@ function Arena:start(arg)
                 end
             end
         end
-    end
-    
-    if not(arg and arg.dont_switch) then
-        game.arena = self
-        Gamestate.switch(game)
     end
 end
 
@@ -77,18 +81,9 @@ function Arena:draw()
     end
 end
 
-function Arena:keypressed(key)
-    for _,team in pairs(self.teams) do
-        for _,fighter in pairs(team) do
-            if fighter:isInstanceOf(Player) then
-                fighter:keypressed(key)
-            end
-        end
-    end
-end
 
 function Arena:attachToState(state)
-    local callbacks = {"update", "draw", "keypressed"}
+    local callbacks = {"update", "draw"}
     for _,callback in pairs(callbacks) do
         if state[callback] == nil then
             state[callback] = function(state, ...) end

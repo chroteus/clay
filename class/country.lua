@@ -8,7 +8,7 @@ Country = Base:subclass("Country")
 
 local lg = love.graphics
 
-function Country:initialize(name, color, attack, defense, hp)
+function Country:initialize(name, color, attack, defense, hp, fighters)
     self.id = nil -- Id is defined in for-loop in coutries.lua
     self.name = name
     self.color = color
@@ -43,6 +43,12 @@ function Country:initialize(name, color, attack, defense, hp)
         attack = skills.attack:clone(),
         fire = skills.fire:clone(),
     } 
+    
+    -- table of fighters
+    self.fighters = fighters or {}
+    for k,fighter in pairs(self.fighters) do
+        self.fighters[k] = FighterAI(fighter) -- init using stats of that fighter
+    end
     
     self.invadeTimer = math.random(10,20)
     self.numOfInv = 0

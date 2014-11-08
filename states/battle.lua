@@ -14,8 +14,23 @@ function battle.start(player, enemy) -- Sets opponents, and switches to battle g
 	
 	battle.player.hp = battle.player.maxHP
 	battle.enemy.hp = battle.enemy.maxHP
+    
+    battle.arena = Arena{x = 0, y = 0, width = the.screen.width, height = the.screen.height}
+    
+    local playerGroup = FighterGroup(battle.player.fighters)
+    battle.arena:add(playerGroup):to("allies")
+    playerGroup:setPos(padding, the.screen.height/2)
+    
+    
+    local enemyGroup = FighterGroup(battle.enemy.fighters)
+    battle.arena:add(enemyGroup):to("enemies")
+    enemyGroup:setPos(the.screen.width - battle.enemy.leftImage:getWidth() - padding,
+                      the.screen.height/2)
+
+    
+    battle.arena:start()
 	
-    venus.switch(battle)
+    Gamestate.switch(battle)
 end
 
 -- backwards compatiblity
@@ -121,6 +136,10 @@ function battle.turnEnd(prevFighter)
 			end
 		end
 	end
+    
+    for _,country_fighter in pairs(nextFighter.fighters) do
+        country_fighter:ai()
+    end
 end
 
 
@@ -169,6 +188,8 @@ function battle:update(dt)
 	if battle.player.hp <= 0 then venus.switch(loseState)
 	elseif battle.enemy.hp <= 0 then venus.switch(winState)
 	end
+    
+    battle.arena:update(dt)
 end
 
 function battle:draw()
@@ -245,6 +266,8 @@ function battle:draw()
 		msgx + msgBox.width/2 -  font:getWidth(worldTime.str)/2,
 		msgy + msgBox.height + timeh/2 - font:getHeight()/2
 	)
+    
+    battle.arena:draw()
 end
 
 function battle:mousereleased(x,y,button)

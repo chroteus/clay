@@ -1,6 +1,6 @@
-Item = Class "Item"
+FighterItem = class "FighterItem"
 
-function Item:initialize(arg)
+function FighterItem:initialize(arg)
     self.name = arg.name or error("Name not defined.")
     self.text = arg.text or "Undefined text"
     
@@ -8,7 +8,7 @@ function Item:initialize(arg)
     or arg.type == "tertiary" then
         self.type = arg.type
     else
-        error("Type for an Item must be either primary, secondary "..
+        error("Type for an FighterItem must be either primary, secondary "..
               " or tertiary.")
     end
     
@@ -18,12 +18,12 @@ function Item:initialize(arg)
     --------------------------------------------------------------------
     -- VISUALS
     
-    self.icon = love.graphics.newImage("assets/images/items/icons/" ..
+    self.icon = love.graphics.newImage("assets/image/fighters/items/icons/" ..
                                         arg.name .. ".png")
     
     local frames
 	if not arg.frames and self.name then 
-        frames = "assets/images/items/images/" .. self.name .. ".png"
+        frames = "assets/image/fighters/items/images/" .. self.name .. ".png"
     elseif not arg.frames and not self.name then
         error("Neither name nor frames file defined")
     else
@@ -66,11 +66,11 @@ function Item:initialize(arg)
     self.anim_state = "still_south"
 end
 
-function Item:update(dt)
+function FighterItem:update(dt)
     self.anim[self.anim_state]:update(dt)
 end
 
-function Item:draw(state, x,y)
+function FighterItem:draw(state, x,y)
     -- state, x,y: passed down by Fighter
     self.anim_state = state
     self.anim[state]:draw(self.frames, x,y)

@@ -1,6 +1,11 @@
 Battle buff effects with specifiable color.
 BUG: Mid-battle peace doesn't give money.
 
+Army:
+    Implement country battles where the main ball plays leader role.
+    Balls can be custom, like UPA-ball for Ukraine, for example.
+end
+
 Game end:
 	Game end upon conquering everything.
 end
