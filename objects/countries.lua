@@ -27,7 +27,7 @@ countries = {
     Country("Bavaria", 		  {0,162,232},   9,  		3, 		65),
     
     Country("Germany", 		  {255,0,0},     11, 		4, 		90,
-            {{name = "Germany"}}),
+            {{name = "Germany", attack = 6}}),
             
     Country("Finland", 		  {0,83,255},    9,  		5, 		65),
     Country("Denmark", 		  {100,50,50},   9,  		4, 		80),

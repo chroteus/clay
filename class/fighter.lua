@@ -60,7 +60,7 @@ function Fighter:initialize(arg)
     self.stop_moving = true
     self.enemies = {}
     
-    self.attack_zone = arg.attack_zone or self.width
+    self.attack_zone = arg.attack_zone or math.floor(self.width/1.5)
     self.timer = Timer.new()
     
     self.items = {}
@@ -82,7 +82,7 @@ function Fighter:getDamage(attack_arg)
 end
 
 function Fighter:knockback(angle, power, onEnd)
-    local power = power or 60
+    local power = power or 90
     
     self.timer:add(0.3, onEnd)
     self.timer:tween(0.3, self, {x = self.x + power*math.cos(angle)}, "out-quad")
@@ -119,7 +119,14 @@ function Fighter:moveTo(x,y, arg)
     end
     
     
-    if arg and arg.onArrival then self.funcOnArrival = arg.onArrival end
+    if arg then
+        if arg.onArrival then self.funcOnArrival = arg.onArrival end
+        if arg.attacking then 
+            self.attacking = true
+        else
+            self.attacking = false
+        end
+    end
     
     return self
 end
@@ -225,6 +232,15 @@ function Fighter:_move(dt)
     if  (goal_x-3 <= self.x and self.x <= goal_x+3) 
     and (goal_y-3 <= self.y and self.y <= goal_y+3)  then
         self:_onArrival()
+    end
+    
+    if self:inAttackZone() then
+        self.x = self.x - (self.speed * math.cos(angle)) * dt
+        self.y = self.y - (self.speed * math.sin(angle)) * dt
+    
+        if self.attacking then
+            self:_attackAnim()
+        end
     end
 end
 

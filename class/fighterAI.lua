@@ -10,7 +10,7 @@ function FighterAI:attack(fighter)
     if self:inAttackZone() then
         self:_attackAnim()
     else
-        self:moveTo(fighter, {onArrival = function(self) self:attack(fighter) end})
+        self:moveTo(fighter, {attacking = true})
     end
 end
 

@@ -19,13 +19,16 @@ function battle.start(player, enemy) -- Sets opponents, and switches to battle g
     
     local playerGroup = FighterGroup(battle.player.fighters)
     battle.arena:add(playerGroup):to("allies")
-    playerGroup:setPos(padding, the.screen.height/2)
-    
+    playerGroup:setPos(padding*2 + barWidth, the.screen.height/2)
+    playerGroup:lookAt(the.screen.width - barWidth - padding*2,
+                      the.screen.height/2, {still = true})
     
     local enemyGroup = FighterGroup(battle.enemy.fighters)
     battle.arena:add(enemyGroup):to("enemies")
-    enemyGroup:setPos(the.screen.width - battle.enemy.leftImage:getWidth() - padding,
+    enemyGroup:setPos(0,0) -- without setting group's pos, width cannot be taken
+    enemyGroup:setPos(the.screen.width - barWidth - padding*2 - enemyGroup:getWidth() - 100 ,
                       the.screen.height/2)
+    enemyGroup:lookAt(padding*2 + barWidth, the.screen.height/2, {still = true})
 
     
     battle.arena:start()
@@ -137,8 +140,10 @@ function battle.turnEnd(prevFighter)
 		end
 	end
     
-    for _,country_fighter in pairs(nextFighter.fighters) do
-        country_fighter:ai()
+    for _,fighter in pairs(battle.fighters) do
+        for _,country_fighter in pairs(fighter.fighters) do
+            country_fighter:ai()
+        end
     end
 end
 
@@ -255,7 +260,7 @@ function battle:draw()
 	
 	------------------
 	local msgx = the.screen.width/2  - msgBox.width/2
-	local msgy = the.screen.height/2 - msgBox.height/2 - 100
+	local msgy = the.screen.height/2 - msgBox.height/2 - 200
 	
 	msgBox:draw(msgx, msgy)
 	

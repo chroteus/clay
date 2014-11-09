@@ -13,27 +13,68 @@ function FighterGroup:setPos(x,y)
     self:formation(5)
 end
 
+function FighterGroup:getWidth()
+    local smallestX,biggestX = math.huge,0
+    
+    for _,fighter in pairs(self.fighters) do
+        print(fighter.x)
+        if fighter.x < smallestX then
+            smallestX = fighter.x
+        end
+        
+        if fighter.x > biggestX then
+            biggestX = fighter.x+fighter.width
+        end
+    end
+    
+    return biggestX-smallestX
+end
+
+function FighterGroup:getHeight()
+    local smallestY,biggestY = math.huge,0
+    
+    for _,fighter in pairs(self.fighters) do
+        if fighter.y < smallestY then
+            smallestY = fighter.y
+        end
+        
+        if fighter.y > biggestY then
+            biggestY = fighter.y+fighter.width
+        end
+    end
+    
+    return biggestY-smallestY
+end
+    
+function FighterGroup:getBBox()
+    return self.x, self.y, self:getWidth(), self.getHeight()
+end
+
 function FighterGroup:add(fighter)
     table.insert(self.fighters, fighter)
 end
 
 function FighterGroup:formation(maxWidth, noAnim)
     assert(self.x and self.y, "Position for group not set")
-    
+    local maxWidth = maxWidth or 5
     local noAnim = noAnim or false
     
     local xPos = 0
     local yPos = 0
     
     for _,fighter in pairs(self.fighters) do
-        print(fighter:isInstanceOf(Fighter))
         fighter:setPos(self.x + (fighter.width  * xPos),
                        self.y + (fighter.height * yPos))
                        
         xPos = xPos + 1
         if xPos > maxWidth then yPos = yPos + 1; xPos = 0 end
         
-        print(fighter.x)
+    end
+end
+
+function FighterGroup:lookAt(x,y, arg)
+    for _,fighter in pairs(self.fighters) do
+        fighter:lookAt(x,y, arg)
     end
 end
 
