@@ -1,5 +1,6 @@
 -- Independent fighters, "mercenaries"
 
 fighters = {
-    smaili = FighterAI{name = "Smaili", attack = 8}
+    FighterAI{name = "Smaili", attack = 8},
+    
 }

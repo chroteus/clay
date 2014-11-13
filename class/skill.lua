@@ -21,11 +21,5 @@ function Skill:exec(fighter, target)
 				minEnergy = skill.energy
 			end
 		end
-		
-		-- end turn only if there are no usable moves left
-		
-		if fighter.energy < minEnergy then
-			battle.turnEnd(fighter)
-		end
     end
 end

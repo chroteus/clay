@@ -55,7 +55,7 @@ function Fighter:initialize(arg)
 	self.timer = Timer.new()
 	self.anim_state = "still_south"
 	self.scale = arg.scale or 1
-    self.speed = arg.speed or 150
+    self.speed = arg.speed or 200
     
     self.stop_moving = true
     self.enemies = {}
@@ -74,7 +74,7 @@ function Fighter:setPos(x,y)
     self.y = y
 end
 
-function Fighter:getDamage(attack_arg)
+function Fighter:loseHP(attack_arg)
 	local netAtt = attack_arg - (self.defense/2)
 	if netAtt < 1 then netAtt = 1 end
 	
@@ -165,12 +165,22 @@ function Fighter:_attackAnim()
                 self:_onArrival()
                 self:_onAttack(enemy)
             end)
-            
+        
+        local enemyX,enemyY
+        
+        if enemy:isInstanceOf(Fighter) then
+            enemyX, enemyY = enemy.x + enemy.width/2, enemy.y + enemy.height/2
+            print("Attacked enemy is a Fighter!")
+        else
+            enemyX, enemyY = enemy.x + enemy.width/2, enemy.y + enemy.height - self.height
+            print("Attacked enemy is a Country!")
+        end
+        
         self.timer:tween(total_time/3, self, {x = self.x - self.width/3  * math.cos(angle)}, "in-quint")
         self.timer:tween(total_time/3, self, {y = self.y - self.height/3 * math.sin(angle)}, "in-quint",
             function()
-                self.timer:tween(total_time/1.5, self, {x = enemy.x + math.random(-10,10)}, "out-quint")
-                self.timer:tween(total_time/1.5, self, {y = enemy.y + math.random(-10,10)}, "out-quint",
+                self.timer:tween(total_time/1.5, self, {x = enemyX + math.random(-10,10)}, "out-quint")
+                self.timer:tween(total_time/1.5, self, {y = enemyY + math.random(-10,10)}, "out-quint",
                     function() self.attack_anim_played = false end)
             end
         )
@@ -201,16 +211,21 @@ end
 
 function Fighter:_onAttack(enemy)
     local angle = math.atan2(enemy.y - self.y, enemy.x - self.x)
-    enemy:getDamage(self.attack_stat)
+    enemy:loseHP(self.attack_stat)
     
-    if enemy.hp <= 0 then
-        enemy:knockback(angle, 200, function() enemy:_onDie() end)
-        enemy.timer:tween(0.3, enemy, {alpha = 0}, "out-quad")
+    if enemy:isInstanceOf(Fighter) then
+        if enemy.hp <= 0 then
+            enemy:knockback(angle, 200, function() enemy:_onDie() end)
+            enemy.timer:tween(0.3, enemy, {alpha = 0}, "out-quad")
+        else
+            enemy:knockback(angle)
+        end
+    
+        enemy:_onHit()
     else
-        enemy:knockback(angle)
+        knockback(enemy, 1)
     end
     
-    enemy:_onHit()
     self:lookAt(enemy.x, enemy.y, {still = true})
 end
 ------------------------------------------------------------------------    
@@ -220,8 +235,8 @@ function Fighter:_move(dt)
     if type(self.goal_x) == "table" then self.goal_x = nil end
     if type(self.goal_y) == "table" then self.goal_y = nil end
     
-    local goal_x = self.goal_x or self.goal_entity.x
-    local goal_y = self.goal_y or self.goal_entity.y
+    local goal_x = self.goal_x or self.goal_entity.x + self.goal_entity.width/2
+    local goal_y = self.goal_y or self.goal_entity.y + self.goal_entity.height/2
     
     self:lookAt(goal_x, goal_y)
 

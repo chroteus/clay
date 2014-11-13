@@ -78,6 +78,12 @@ function FighterGroup:lookAt(x,y, arg)
     end
 end
 
+function FighterGroup:addEnemy(enemy)
+    for _,fighter in pairs(self.fighters) do
+        fighter:addEnemy(enemy)
+    end
+end
+
 function FighterGroup:update(dt)
     for _,fighter in pairs(self.fighters) do
         fighter:update(dt)

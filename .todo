@@ -1,6 +1,11 @@
 Battle buff effects with specifiable color.
 BUG: Mid-battle peace doesn't give money.
 
+FIX: AI cannot attack over sea
+FIX: No tutorial for region upgrades.
+
+ADD: Intro telling that the world is in chaos and no country trust another.
+
 Army:
     Implement country battles where the main ball plays leader role.
     Balls can be custom, like UPA-ball for Ukraine, for example.

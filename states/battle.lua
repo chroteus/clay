@@ -3,6 +3,7 @@ battle = {}
 local padding = 40
 local fixedHeight = 250
 local barWidth, barHeight = 200, 30
+local energyTime = 0.5
 
 function battle.start(player, enemy) -- Sets opponents, and switches to battle gamestate.
 	battle.player = nameToCountry(player)
@@ -18,12 +19,14 @@ function battle.start(player, enemy) -- Sets opponents, and switches to battle g
     battle.arena = Arena{x = 0, y = 0, width = the.screen.width, height = the.screen.height}
     
     local playerGroup = FighterGroup(battle.player.fighters)
+    playerGroup:addEnemy(battle.enemy)
     battle.arena:add(playerGroup):to("allies")
     playerGroup:setPos(padding*2 + barWidth, the.screen.height/2)
     playerGroup:lookAt(the.screen.width - barWidth - padding*2,
                       the.screen.height/2, {still = true})
     
     local enemyGroup = FighterGroup(battle.enemy.fighters)
+    enemyGroup:addEnemy(battle.player)
     battle.arena:add(enemyGroup):to("enemies")
     enemyGroup:setPos(0,0) -- without setting group's pos, width cannot be taken
     enemyGroup:setPos(the.screen.width - barWidth - padding*2 - enemyGroup:getWidth() - 100 ,
@@ -44,13 +47,18 @@ function battle.load()
 	battle.btn = {}
 
 	local player = battle.player
+    local enemy = battle.enemy
+    
 	player.x = padding
 	player.y = the.screen.height/2 - player.rightImage:getHeight()
-	
-	local enemy = battle.enemy
+    player.width = player.rightImage:getWidth()
+	player.height = player.rightImage:getHeight()
+    
 	enemy.x = the.screen.width - enemy.leftImage:getWidth() - padding
 	enemy.y = the.screen.height/2 - enemy.leftImage:getHeight()
-
+    enemy.width = enemy.leftImage:getWidth()    
+    enemy.height = enemy.leftImage:getHeight()
+    
 	battle.fighters = {player, enemy}
 	
 	-- for bars and such
@@ -64,7 +72,7 @@ function battle.load()
 		fighter.dmgColor = {255,255,255,255}
 	end
 	
-	player.turnFinished = false; enemy.turnFinished = true
+	--player.turnFinished = false; enemy.turnFinished = true
 	
 	local playerImg = battle.player.rightImage
 	local i = 0
@@ -72,14 +80,15 @@ function battle.load()
 		i = i + 1
 		table.insert(battle.btn, SkillBtn(battle.player.x + playerImg:getWidth()/2 - SkillBtn.width/2, battle.player.y + fixedHeight + (i * 50), skill))
 	end
-	
+    
+	--[[
 	local lastBtn = battle.btn[#battle.btn]
 	battle.endTurnBtn = Button(
 		lastBtn.x-10,lastBtn.y+lastBtn.height+80,
 		lastBtn.width+20, lastBtn.height+20, 
 		"End Turn", 
 		function() battle.turnEnd(battle.player) end
-	)
+	)]]
 end
 
 function battle.flash(fighter, color)
@@ -97,6 +106,8 @@ function battle.flash(fighter, color)
 		)
 	end
 end
+
+--[[
 
 function battle.turnEnd(prevFighter)
 	-- prevFighter: Fighter whose turn ends
@@ -146,22 +157,19 @@ function battle.turnEnd(prevFighter)
         end
     end
 end
-
+]]
 
 function battle.ai()
 	local enemy = battle.enemy
 	local player = battle.player
-	if not enemy.turnFinished then
-		if enemy.hp / enemy.maxHP < 0.6 then
-			local r = math.random(1,2)
-			if     r == 1 then enemy.skills.attack:exec(enemy, player)
-			elseif r == 2 then enemy.skills.heal:exec(enemy, player) end
-		else
-			enemy.skills.attack:exec(enemy, player)
-		end
-		
-		battle.timer:add(1, function() battle.ai() end)
-	end
+    
+    if enemy.hp / enemy.maxHP < 0.6 then
+        local r = math.random(1,2)
+        if     r == 1 then enemy.skills.attack:exec(enemy, player)
+        elseif r == 2 then enemy.skills.heal:exec(enemy, player) end
+    else
+        enemy.skills.attack:exec(enemy, player)
+    end
 end
 
 
@@ -174,13 +182,20 @@ end
 function battle:enter()
 	battle.load()
 	
+    for _,fighter in pairs(battle.fighters) do
+        battle.timer:addPeriodic(energyTime, 
+            function()
+                fighter.energy = math.clamp(0, fighter.energy+1, fighter.maxEnergy)
+            end)
+    end
+    
+    battle.timer:addPeriodic(energyTime, battle.ai)
+    
 	TEsound.stop("music")
-	
 	battle.music = love.filesystem.getDirectoryItems("assets/music/battle")
     for i=1,#battle.music do battle.music[i] = "/assets/music/battle/"..battle.music[i] end
-	
 	TEsound.play(battle.music, "bMusic")
-	
+    
 	love.mouse.setVisible(true)
 end
 
@@ -188,7 +203,7 @@ function battle:update(dt)
 	battle.timer:update(dt)
 
 	for _,btn in pairs(battle.btn) do btn:update(dt) end
-	if not battle.player.turnFinished then battle.endTurnBtn:update(dt) end
+	--if not battle.player.turnFinished then battle.endTurnBtn:update(dt) end
 	
 	if battle.player.hp <= 0 then venus.switch(loseState)
 	elseif battle.enemy.hp <= 0 then venus.switch(winState)
@@ -247,7 +262,7 @@ function battle:draw()
 	
 	for _,btn in pairs(battle.btn) do btn:draw() end
 	
-	battle.endTurnBtn:draw()
+	--[[battle.endTurnBtn:draw()
 	if battle.player.turnFinished then
 		love.graphics.setColor(0,0,0,140)
 		
@@ -256,7 +271,7 @@ function battle:draw()
 	
 		love.graphics.setColor(255,255,255)
 	end
-	
+	]]
 	
 	------------------
 	local msgx = the.screen.width/2  - msgBox.width/2
