@@ -5,16 +5,19 @@ function FighterAI:initialize(arg)
 end
 
 function FighterAI:attack(fighter)
-    self.enemy_to_attack = fighter
+    if not fighter.dead then
+        self.enemy_to_attack = fighter
 
-    if self:inAttackZone() then
-        self:_attackAnim()
-    else
-        self:moveTo(fighter, {attacking = true})
+        if self:inAttackZone() then
+            self:_attackAnim()
+        else
+            self:moveTo(fighter, {attacking = true})
+        end
     end
 end
 
 function FighterAI:update(dt)
+    self:ai()
     Fighter.update(self, dt)
 end
 

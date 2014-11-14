@@ -92,11 +92,20 @@ end
 function Fighter:inAttackZone(arg_dist)
     if self.enemy_to_attack then
         local enemy = self.enemy_to_attack
-        local d = math.dist(self.x+self.width/2,self.y+self.height/2, 
-                            enemy.x+enemy.width/2,enemy.y+enemy.height/2)
+        local attack_zone = self.attack_zone
+        
+        if enemy:isInstanceOf(Fighter) then
+            d = math.dist(self.x+self.width/2,self.y+self.height/2, 
+                          enemy.x+enemy.width/2,enemy.y+enemy.height/2)
+        else
+            d = math.dist(self.x+self.width/2,self.y+self.height/2, 
+                          enemy.x+enemy.width/2,enemy.y+enemy.height)
+        
+            attack_zone = attack_zone + 50
+        end
         
         
-        return d < (arg_dist or self.attack_zone)
+        return d < (arg_dist or attack_zone)
     else
         return false
     end
@@ -167,20 +176,23 @@ function Fighter:_attackAnim()
             end)
         
         local enemyX,enemyY
-        
         if enemy:isInstanceOf(Fighter) then
             enemyX, enemyY = enemy.x + enemy.width/2, enemy.y + enemy.height/2
-            print("Attacked enemy is a Fighter!")
-        else
-            enemyX, enemyY = enemy.x + enemy.width/2, enemy.y + enemy.height - self.height
-            print("Attacked enemy is a Country!")
+        else -- a country
+            enemyY = enemy.y + enemy.height - self.height
+            
+            if enemy.x < the.screen.width/2 then
+                enemyX = enemy.x + enemy.width - self.width
+            else
+                enemyX = enemy.x
+            end
         end
         
         self.timer:tween(total_time/3, self, {x = self.x - self.width/3  * math.cos(angle)}, "in-quint")
         self.timer:tween(total_time/3, self, {y = self.y - self.height/3 * math.sin(angle)}, "in-quint",
             function()
-                self.timer:tween(total_time/1.5, self, {x = enemyX + math.random(-10,10)}, "out-quint")
-                self.timer:tween(total_time/1.5, self, {y = enemyY + math.random(-10,10)}, "out-quint",
+                self.timer:tween(total_time/1.5, self, {x = enemyX}, "out-quint")
+                self.timer:tween(total_time/1.5, self, {y = enemyY}, "out-quint",
                     function() self.attack_anim_played = false end)
             end
         )
@@ -237,6 +249,17 @@ function Fighter:_move(dt)
     
     local goal_x = self.goal_x or self.goal_entity.x + self.goal_entity.width/2
     local goal_y = self.goal_y or self.goal_entity.y + self.goal_entity.height/2
+    
+    if not self.goal_entity:isInstanceOf(Fighter) then -- if country
+        local goal = self.goal_entity
+        goal_y = goal.y + goal.height - self.height
+        
+        if goal.x < the.screen.width/2 then
+            goal_x = goal.x + goal.width - self.width
+        else
+            goal_x = goal.x
+        end
+    end
     
     self:lookAt(goal_x, goal_y)
 
