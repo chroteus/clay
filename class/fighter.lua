@@ -101,7 +101,7 @@ function Fighter:inAttackZone(arg_dist)
             d = math.dist(self.x+self.width/2,self.y+self.height/2, 
                           enemy.x+enemy.width/2,enemy.y+enemy.height)
         
-            attack_zone = attack_zone + 50
+            attack_zone = attack_zone + 100
         end
         
         
@@ -193,7 +193,9 @@ function Fighter:_attackAnim()
             function()
                 self.timer:tween(total_time/1.5, self, {x = enemyX}, "out-quint")
                 self.timer:tween(total_time/1.5, self, {y = enemyY}, "out-quint",
-                    function() self.attack_anim_played = false end)
+                    function() 
+                        self.attack_anim_played = false 
+                    end)
             end
         )
         
@@ -237,8 +239,16 @@ function Fighter:_onAttack(enemy)
     else
         knockback(enemy, 1)
     end
-    
-    self:lookAt(enemy.x, enemy.y, {still = true})
+
+    if enemy:isInstanceOf(Fighter) then
+        self:lookAt(enemy.x, enemy.y, {still = true})
+    else -- if country
+        if enemy.x < the.screen.width/2 then
+            self:lookAt(enemy.x + enemy.width, self.y, {still = true}) -- look right 
+        else
+            self:lookAt(enemy.x, self.y, {still = true}) -- look left
+        end
+    end
 end
 ------------------------------------------------------------------------    
 
@@ -249,9 +259,10 @@ function Fighter:_move(dt)
     
     local goal_x = self.goal_x or self.goal_entity.x + self.goal_entity.width/2
     local goal_y = self.goal_y or self.goal_entity.y + self.goal_entity.height/2
+    local goal
     
     if not self.goal_entity:isInstanceOf(Fighter) then -- if country
-        local goal = self.goal_entity
+        goal = self.goal_entity
         goal_y = goal.y + goal.height - self.height
         
         if goal.x < the.screen.width/2 then
@@ -260,8 +271,17 @@ function Fighter:_move(dt)
             goal_x = goal.x
         end
     end
-    
-    self:lookAt(goal_x, goal_y)
+
+    if goal and goal:isInstanceOf(Country) then
+        print("ke")
+        if goal.x < the.screen.width/2 then
+            self:lookAt(goal.x + goal.width, self.y) -- look right 
+        else
+            self:lookAt(goal.x, self.y) -- look left
+        end
+    else
+        self:lookAt(goal_x, goal_y)
+    end
 
     local angle = math.atan2(goal_y - self.y, goal_x - self.x)
     self.x = self.x + (self.speed * math.cos(angle)) * dt
