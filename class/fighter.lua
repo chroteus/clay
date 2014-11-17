@@ -284,17 +284,6 @@ function Fighter:_move(dt)
 
 
     self:lookAt(goal_x, goal_y)
-    --[[
-    if goal and goal:isInstanceOf(Country) then
-        if goal.x > the.screen.width/2 then
-            self:lookAt(math.huge, self.y) -- look right 
-        else
-            self:lookAt(-math.huge, self.y) -- look left
-        end
-    else
-        self:lookAt(goal_x, goal_y)
-    end
-    ]]--
     
     local angle = math.atan2(goal_y - self.y, goal_x - self.x)
     self.x = self.x + (self.speed * math.cos(angle)) * dt

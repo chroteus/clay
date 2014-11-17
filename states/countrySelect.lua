@@ -8,6 +8,7 @@ function countrySelect:init()
 		end
 	end
     
+    countrySelect.space = love.graphics.newImage("assets/image/polan_in_space.png")
     countryCam = Camera(the.screen.width/2, the.screen.height/2)
     
     local boundHeight = #countrySelect.btn.btn * countrySelect.btn.btn[1].height * 2 + 100
@@ -22,9 +23,19 @@ function countrySelect:update(dt)
 	countrySelect.btn:update()
 end
 
+local function text(txt, y)
+    love.graphics.printf(txt, 0, y, the.screen.width, "center")
+end
+
 function countrySelect:draw()
     countryCam:attach()
-    love.graphics.printf("Scroll down!", 0, 40, the.screen.width, "center")
+    text("Scroll down!", 40)
+    text("Down, not up!", -1000)
+    text("OK, you've won the game.", -5000)
+    text("I bet your finger is tired by this point, eh?", -10000)
+    text("You're very stubborn! You will gain nothing from this, you know?", -20000)
+    love.graphics.draw(countrySelect.space, the.screen.width/2 - countrySelect.space:getWidth()/2,
+                                   -35000)
     
     countrySelect.btn:draw()
 
