@@ -82,7 +82,7 @@ function Fighter:loseHP(attack_arg)
 end
 
 function Fighter:knockback(angle, power, onEnd)
-    local power = power or 90
+    local power = power or 50
     
     self.timer:add(0.3, onEnd)
     self.timer:tween(0.3, self, {x = self.x + power*math.cos(angle)}, "out-quad")
@@ -199,8 +199,8 @@ function Fighter:_attackAnim()
         self.timer:tween(total_time/3, self, {x = self.x - self.width/3  * math.cos(angle)}, "in-quint")
         self.timer:tween(total_time/3, self, {y = self.y - self.height/3 * math.sin(angle)}, "in-quint",
             function()
-                self.timer:tween(total_time/1.5, self, {x = enemyX}, "out-quint")
-                self.timer:tween(total_time/1.5, self, {y = enemyY}, "out-quint",
+                self.timer:tween(total_time/1.5, self, {x = enemyX + math.random(-3,3)}, "out-quint")
+                self.timer:tween(total_time/1.5, self, {y = enemyY + math.random(-3, 3)}, "out-quint",
                     function() 
                         self.attack_anim_played = false
                     end)
@@ -224,7 +224,13 @@ function Fighter:_onArrival()
     end
 end
 
+-- sound of hitting
+local soundT = love.filesystem.getDirectoryItems("assets/sounds/attack")
+
 function Fighter:_onHit()
+    local randNum = math.random(#soundT)
+    local randSnd = soundT[randNum]
+    TEsound.play("assets/sounds/attack/"..randSnd)
 end
 
 function Fighter:_onDie()
@@ -242,7 +248,7 @@ function Fighter:_onAttack(enemy)
         else
             enemy:knockback(angle)
         end
-    
+        
         enemy:_onHit()
     else -- country
         knockback(enemy, 1)
@@ -267,8 +273,8 @@ function Fighter:_move(dt)
     if type(self.goal_x) == "table" then self.goal_x = nil end
     if type(self.goal_y) == "table" then self.goal_y = nil end
     
-    local goal_x = self.goal_x or self.goal_entity.x + self.goal_entity.width/2
-    local goal_y = self.goal_y or self.goal_entity.y + self.goal_entity.height/2
+    local goal_x = self.goal_x or self.goal_entity.x
+    local goal_y = self.goal_y or self.goal_entity.y
     local goal
     
     if not self.goal_entity:isInstanceOf(Fighter) then -- if country
