@@ -57,7 +57,11 @@ function menu:enter()
         
         menuButtons.start.action = function() menuConfirmBox:show() end
     
-        menuButtons.continue = GenericButton(2, "Continue", function() loading.switch(game) end)
+        menuButtons.continue = GenericButton(2, "Continue", 
+                            function() 
+                                loading.switch(game) 
+                                game.borders_map = love.graphics.newImage("assets/world_map_regions.png")
+                            end)
     end
 end
 

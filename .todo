@@ -4,10 +4,9 @@ BUG: Mid-battle peace doesn't give money.
 FIX: AI cannot attack over sea
 FIX: No tutorial for region upgrades.
 
-ADD: Intro telling that the world is in chaos and no country trust another.
+ADD: Intro telling that the world is in chaos and no country trusts another.
 
 Army:
-    Implement country battles where the main ball plays leader role.
     Balls can be custom, like UPA-ball for Ukraine, for example.
 end
 
@@ -24,7 +23,7 @@ Time:
 end
 
 Random events:
-    Riots, which decrease countries' amount of money 
+    Riots, which decrease countries' amount of money [DONE]
     or make its regions join neighbouring countries. (Khohol Power!)
 end
 
@@ -40,5 +39,5 @@ Uninhabitated land:
     OPTIONAL: Wild life
 end
 
-Make enemy lists for a country scrollable.
+Make enemy lists for a country scrollable. [MAYBE]
 

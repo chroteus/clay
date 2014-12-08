@@ -7,6 +7,7 @@ function game:init()
     game.mapDrawn = true
     
     game.editModeString = "Q: Select country, E: Exit, "
+                          .."Toggle regions map: F1, "
 						  .."LMB: Place a point RMB: Undo, "
 						  .."LShift + RMB: Delete a region"
 
@@ -56,6 +57,10 @@ function game:enter()
     end
     
     worldTime:start()
+    
+    game.regionMapWidth = game.borders_map:getWidth()
+    game.regionMapHeight = game.borders_map:getHeight()
+    game.borders_map:setFilter("nearest")
 end
 
 function game:update(dt)
@@ -67,8 +72,23 @@ function game:update(dt)
 end
 
 function game:draw()
-    drawMap() 
-     
+    drawMap()
+    
+    mapCam:attach()
+    -- Dev mode region map
+    if game.drawRegionMap then
+        local scalex = (mapW*mapImgScale)/game.regionMapWidth
+        local scaley = (mapH*mapImgScale*1.145)/game.regionMapHeight
+
+        love.graphics.push()
+        love.graphics.scale(scalex, scaley)
+        love.graphics.setColor(255,255,255,100)
+        love.graphics.draw(game.borders_map, 0,25)
+        love.graphics.setColor(255,255,255)
+        love.graphics.pop()
+    end
+    mapCam:detach()
+
     -- GUI
     local guiRectH = 30
     love.graphics.setColor(guiColors.bg)
@@ -111,6 +131,7 @@ function game:draw()
     if not prefs.firstPlay then
 		worldTime:draw()
 	end
+
 end
 
 function game:mousepressed(x, y, button)
@@ -126,7 +147,20 @@ function game:keyreleased(key)
         venus.switch(pause)
     elseif key == "tab" then
         venus.switch(transState.lastState)
-	end
+	elseif key == "h" then
+        -- ##########################
+        -- TEST ONLY!
+        -- DELETE AFTER TESTING!
+        
+        fightersScr.setCountry(nameToCountry(Player.country))
+        Gamestate.switch(fightersScr)
+    elseif key == "f1" then
+        if not game.drawRegionMap then
+            game.drawRegionMap = true
+        else
+            game.drawRegionMap = false
+        end
+    end
     
     if love.keyboard.isDown("1") and key == "return" then
 		Player.money = Player.money + 100

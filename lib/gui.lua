@@ -114,7 +114,12 @@ function CountrySelectBtn:initialize(country, x, y)
 	self.func = function() 
 		Player.country = country.name
 		Player.attack, Player.defense = country.attack, country.defense
-		loading.switch(game)
+		
+        if DEBUG then
+            game.borders_map = love.graphics.newImage("assets/world_map_regions.png")
+        end
+        
+        loading.switch(game)
 	end
 	
 	self.ball:setFilter("nearest", "nearest")
