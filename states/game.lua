@@ -78,12 +78,12 @@ function game:draw()
     -- Dev mode region map
     if game.drawRegionMap then
         local scalex = (mapW*mapImgScale)/game.regionMapWidth
-        local scaley = (mapH*mapImgScale*1.145)/game.regionMapHeight
+        local scaley = (mapH*mapImgScale*1.16)/game.regionMapHeight
 
         love.graphics.push()
         love.graphics.scale(scalex, scaley)
         love.graphics.setColor(255,255,255,100)
-        love.graphics.draw(game.borders_map, 0,25)
+        love.graphics.draw(game.borders_map, 0,60)
         love.graphics.setColor(255,255,255)
         love.graphics.pop()
     end
