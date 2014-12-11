@@ -7,7 +7,8 @@ screenBtn.states = {
     {"Character", charScr},
     {"Inventory", inventory},
     {"Diplomacy", diplScr},
-    {"Shop", shop}
+    {"Shop", shop},
+    {"Fighters", fightersScr},
 }
 
 screenBtn.list = {}

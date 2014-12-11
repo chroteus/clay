@@ -16,7 +16,8 @@ function fighterScr:enter()
 end
 
 function fighterScr:update(dt)
-    fighterScr.fighter:update(dt)
+    local fighter = fighterScr.fighter
+    fighter.anim[fighter.anim_state]:update(dt)
 end
 
 function fighterScr:draw()

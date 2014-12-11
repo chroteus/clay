@@ -32,10 +32,10 @@ function countrySelect:draw()
     text("Scroll down!", 40)
     text("Down, not up!", -1000)
     text("OK, you've won the game.", -5000)
-    text("I bet your finger is tired by this point, eh?", -10000)
-    text("You're very stubborn! You will gain nothing from this, you know?", -20000)
+    text("I bet your finger is tired by this point, eh?", -15000)
+    text("You're very stubborn! You will gain nothing from this, you know?", -25000)
     love.graphics.draw(countrySelect.space, the.screen.width/2 - countrySelect.space:getWidth()/2,
-                                   -35000)
+                                   -40000)
     
     countrySelect.btn:draw()
 
@@ -52,4 +52,8 @@ end
 
 function countrySelect:mousereleased(x, y, button)
 	countrySelect.btn:mousereleased(x, y, button)
+end
+
+function countrySelect:leave()
+    fightersScr.setCountry(nameToCountry(Player.country))
 end

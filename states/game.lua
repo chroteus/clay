@@ -58,9 +58,11 @@ function game:enter()
     
     worldTime:start()
     
-    game.regionMapWidth = game.borders_map:getWidth()
-    game.regionMapHeight = game.borders_map:getHeight()
-    game.borders_map:setFilter("nearest")
+    if game.borders_map then
+        game.regionMapWidth = game.borders_map:getWidth()
+        game.regionMapHeight = game.borders_map:getHeight()
+        game.borders_map:setFilter("nearest")
+    end
 end
 
 function game:update(dt)
@@ -76,14 +78,14 @@ function game:draw()
     
     mapCam:attach()
     -- Dev mode region map
-    if game.drawRegionMap then
+    if game.drawRegionMap and game.borders_map then
         local scalex = (mapW*mapImgScale)/game.regionMapWidth
         local scaley = (mapH*mapImgScale*1.16)/game.regionMapHeight
 
         love.graphics.push()
         love.graphics.scale(scalex, scaley)
         love.graphics.setColor(255,255,255,100)
-        love.graphics.draw(game.borders_map, 0,60)
+        love.graphics.draw(game.borders_map, -2,58)
         love.graphics.setColor(255,255,255)
         love.graphics.pop()
     end
@@ -147,13 +149,6 @@ function game:keyreleased(key)
         venus.switch(pause)
     elseif key == "tab" then
         venus.switch(transState.lastState)
-	elseif key == "h" then
-        -- ##########################
-        -- TEST ONLY!
-        -- DELETE AFTER TESTING!
-        
-        fightersScr.setCountry(nameToCountry(Player.country))
-        Gamestate.switch(fightersScr)
     elseif key == "f1" then
         if not game.drawRegionMap then
             game.drawRegionMap = true

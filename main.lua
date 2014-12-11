@@ -34,6 +34,7 @@ require "states.loading"
 require "states.shop"
 require "states.inventory"
 require "states.fightersScr"
+require "states.fighterScr"
 
 require "class.player"
 require "class.base"

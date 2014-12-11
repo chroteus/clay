@@ -14,6 +14,7 @@ local function addFighters()
         fighter.orig_y = fighter.y
 
         fighter:setPos(xOrder*fighter.width - 5, fy + math.random(-3,3))
+        fighter:lookAt(fighter.x, fighter.y + 1, {still = true})
     end
 end
 
@@ -22,6 +23,7 @@ function fightersScr:init()
 end
 
 function fightersScr:enter()
+    love.mouse.setVisible(true)
     addFighters()
 end
 
@@ -30,8 +32,21 @@ function fightersScr:update(dt)
 end
 
 function fightersScr:draw()
-   for _,fighter in pairs(fightersScr.fighters) do
+    for _,fighter in pairs(fightersScr.fighters) do
         fighter:draw()
+        love.graphics.printf(fighter.name, fighter.x, fighter.y - 30,
+                             fighter.width, "center")
+    end
+end
+
+function fightersScr:mousereleased(x,y,btn)
+    if btn == "l" then
+        for _,fighter in pairs(fightersScr.fighters) do
+            if fighter:collidesWith(the.mouse.x, the.mouse.y, 1,1) then
+                fighterScr.set(fighter)
+                Gamestate.switch(fighterScr)
+            end
+        end
     end
 end
 

@@ -1,43 +1,44 @@
-Battle buff effects with specifiable color.
-BUG: Mid-battle peace doesn't give money.
-
+FIX: Mid-battle peace doesn't give money.
 FIX: AI cannot attack over sea
 FIX: No tutorial for region upgrades.
 
 ADD: Intro telling that the world is in chaos and no country trusts another.
 
-Army:
-    Balls can be custom, like UPA-ball for Ukraine, for example.
-end
+################### [Coherent gameplay] ################################
+    Make use of region upgrades to balance the game and to make
+    countries with lots of clay a bit more powerful than they are.
+    
+#======================================================================#
 
-Game end:
+
+################### [Army and fighter balls] ###########################
+    Custom balls like UPA-ball for Ukraine, for example.
+    A mercenary "shop"
+    Levelling up of balls.
+#======================================================================#
+
+
+######################### [Game end] ###################################
 	Game end upon conquering everything.
-end
+#======================================================================#
 
-Diplomacy:  
+
+####################### [Diplomacy] ####################################
     Peace for money.
-end
+#======================================================================#
 
-Time:
-    Time would pass in-game [DONE] and it could be sped up.
-end
 
-Random events:
+#################### [Random events] ###################################
     Riots, which decrease countries' amount of money [DONE]
     or make its regions join neighbouring countries. (Khohol Power!)
-end
+#======================================================================#
 
-"Upgrade" system:
-    Countries cannot attack each other over sea unless they have a navy 
-    (they must have a region adjacent to water). 
-end
 
-Uninhabitated land:
+##################### [Africa] #########################################
     Most of the Africa is uninhabited allowing you to claim it, 
-    but you'll need to fight natives first.
-    
-    OPTIONAL: Wild life
-end
+    but you'll need to fight natives first. This is done because creating
+    every country in Africa is hard.
+#======================================================================#
 
-Make enemy lists for a country scrollable. [MAYBE]
+Make enemy lists for a country scrollable. [MAYBE, not really needed]
 

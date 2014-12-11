@@ -69,6 +69,11 @@ function Fighter:initialize(arg)
 	return self
 end
 
+function Fighter:collidesWith(x,y,w,h)
+    return checkCollision(self.x, self.y, self.width, self.height,
+                          x,y,w,h)
+end
+
 function Fighter:setPos(x,y)
     self.x = x
     self.y = y
