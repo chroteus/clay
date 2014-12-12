@@ -14,6 +14,7 @@ local function addFighters()
         fighter.orig_y = fighter.y
 
         fighter:setPos(xOrder*fighter.width - 5, fy + math.random(-3,3))
+        -- look down
         fighter:lookAt(fighter.x, fighter.y + 1, {still = true})
     end
 end

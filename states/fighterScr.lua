@@ -7,12 +7,15 @@ end
 
 
 function fighterScr:init()
+    fighterScr.fighter:setPos(200,the.screen.height/2 - fighterScr.fighter.height/2)
 end
 
 function fighterScr:enter()
     if fighterScr.fighter == nil then 
         error("Set fighter to display with fighterScr.set") 
     end
+    
+    fighterScr.fighter:setPos(200,the.screen.height/2 - fighterScr.fighter.height/2)
 end
 
 function fighterScr:update(dt)
