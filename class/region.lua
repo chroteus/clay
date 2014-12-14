@@ -142,7 +142,7 @@ function Region:draw()
 	
     if drawRegion then
         if #self.unpairedVertices > 2 then       
-			self.color[4] = 225 -- opacity
+			self.color[4] = 255 -- opacity
 			love.graphics.setColor(self.color)
             
             if self.country.name ~= "Sea" then

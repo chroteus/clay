@@ -1,6 +1,9 @@
 FIX: Mid-battle peace doesn't give money.
 FIX: AI cannot attack over sea
 FIX: No tutorial for region upgrades.
+FIX: Fighter balls save
+
+IMPROVEMENT: Account fighter balls' stats when calculating chance of clay taken.
 
 ADD: Intro telling that the world is in chaos and no country trusts another.
 

@@ -8,14 +8,24 @@ end
 
 local function addFighters()
     local fy = the.screen.height - 200
+    local total = #fightersScr.fighters
+    local xorder_right = 0 -- for right side
     
     for xOrder,fighter in pairs(fightersScr.fighters) do
         fighter.orig_x = fighter.x
         fighter.orig_y = fighter.y
 
-        fighter:setPos(xOrder*fighter.width - 5, fy + math.random(-3,3))
-        -- look down
-        fighter:lookAt(fighter.x, fighter.y + 1, {still = true})
+        if xOrder-1 < math.ceil(total/2) then
+            fighter:setPos(the.screen.width/2 - ((xOrder-0.5) * fighter.width), 
+                           fy)
+            fighter.name = "TEST"
+        else
+            xorder_right = xorder_right + 1
+            fighter:setPos(the.screen.width/2 + ((xorder_right-0.5) * fighter.width), 
+                           fy)
+        end
+            -- look down
+            fighter:lookAt(fighter.x, fighter.y + 1, {still = true})
     end
 end
 
@@ -33,10 +43,22 @@ function fightersScr:update(dt)
 end
 
 function fightersScr:draw()
+    love.graphics.setFont(gameFont[32])
+    love.graphics.printf("Fighters", 0, 60, the.screen.width, "center")
+    love.graphics.setFont(gameFont["default"])
+    
     for _,fighter in pairs(fightersScr.fighters) do
-        fighter:draw()
-        love.graphics.printf(fighter.name, fighter.x, fighter.y - 30,
-                             fighter.width, "center")
+        fighter:draw(fighter.x, fighter.y, true)
+        
+        if fighter:collidesWith(the.mouse.x, the.mouse.y, 1,1) then
+            love.graphics.printf(fighter.name, fighter.x, fighter.y - 30,
+                                 fighter.width, "center")
+        end
+    end
+    
+    if #fightersScr.fighters == 0 then
+        love.graphics.printf("You have no fighters.", 0, the.screen.height - 200,
+                             the.screen.width, "center")
     end
 end
 
@@ -45,7 +67,7 @@ function fightersScr:mousereleased(x,y,btn)
         for _,fighter in pairs(fightersScr.fighters) do
             if fighter:collidesWith(the.mouse.x, the.mouse.y, 1,1) then
                 fighterScr.set(fighter)
-                Gamestate.switch(fighterScr)
+                Gamestate.switch(fighterScr, "none")
             end
         end
     end
