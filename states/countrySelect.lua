@@ -53,7 +53,3 @@ end
 function countrySelect:mousereleased(x, y, button)
 	countrySelect.btn:mousereleased(x, y, button)
 end
-
-function countrySelect:leave()
-    fightersScr.setCountry(nameToCountry(Player.country))
-end

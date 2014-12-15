@@ -1,5 +1,11 @@
 Fighter = class("Fighter")
 
+
+function Fighter:_saveString()
+    return "{".."'"..self.name.."'"..","..self.defense..","..
+           self.hp..","..self.speed..","..self.attack_stat.."}"
+end
+
 function Fighter:initialize(arg)
     self.name = arg.name or "Undefined name"
 
@@ -7,14 +13,15 @@ function Fighter:initialize(arg)
     -- with method named "attack"
 	self.attack_stat = arg.attack or 5
 	self.attack_stat = math.ceil(self.attack_stat)
-    
+
     self.defense = arg.defense or 5
 	self.defense = math.ceil(self.defense)
     
     self.hp = arg.hp or 50
     self.hp = math.ceil(self.hp)
     self.max_hp = self.hp
-
+    self.speed = speed or 200
+    
     local frames
 	if not arg.frames and self.name then 
         frames = "assets/image/fighters/balls/" .. self.name .. ".png"
@@ -55,12 +62,11 @@ function Fighter:initialize(arg)
 	self.timer = Timer.new()
 	self.anim_state = "still_south"
 	self.scale = arg.scale or 1
-    self.speed = arg.speed or 200
     
     self.stop_moving = true
     self.enemies = {}
     
-    self.attack_zone = arg.attack_zone or math.floor(self.width/1.5)
+    self.attack_zone = math.floor(self.width/1.5)
     self.timer = Timer.new()
     
     self.items = {}

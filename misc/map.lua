@@ -16,6 +16,7 @@ function initMap()
         createMap()
     end
     
+    
     game.finishedLoading = false
     game.neighbours = {} -- adjacent cells of the selected cell.
 

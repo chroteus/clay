@@ -153,9 +153,19 @@ function loadMap() -- Load an existing map.
 		worldTime[k] = v
 	end
 
-    Player:returnCountry().attack  = Player.attack
-    Player:returnCountry().defense = Player.defense
-    Player:returnCountry().money   = Player.money
+    local player = Player:returnCountry()
+    player.attack  = Player.attack
+    player.defense = Player.defense
+    player.money   = Player.money
+    
+    -- load fighters
+    player.fighters = {}
+    for _,fighter in pairs(mapTable.fighters) do
+        table.insert(player.fighters,
+            FighterAI{name = fighter[1], defense = fighter[2],
+                      hp = fighter[3], speed = fighter[4], attack = fighter[5]}
+        )
+    end
 end
 
 function saveMap(name)
@@ -250,6 +260,15 @@ function saveMap(name)
     
     --save time
     append("time = { day=" .. worldTime.day .. ", month=".. worldTime.month .. ",year=" .. worldTime.year .. "},")
+    
+    --save fighters
+    append("fighters = {")
+    for _,fighter in pairs(Player:returnCountry().fighters) do
+        append(fighter:_saveString())
+        append(",")
+    end
+    append("},")
+    
     -- finish
     append("}")
     

@@ -7,6 +7,10 @@ end
 -------
 
 local function addFighters()
+    if fighterScr.fighters == nil then
+        fightersScr.setCountry(Player:returnCountry())
+    end
+    
     local fy = the.screen.height - 200
     local total = #fightersScr.fighters
     local xorder_right = 0 -- for right side
@@ -18,7 +22,6 @@ local function addFighters()
         if xOrder-1 < math.ceil(total/2) then
             fighter:setPos(the.screen.width/2 - ((xOrder-0.5) * fighter.width), 
                            fy)
-            fighter.name = "TEST"
         else
             xorder_right = xorder_right + 1
             fighter:setPos(the.screen.width/2 + ((xorder_right-0.5) * fighter.width), 
