@@ -292,8 +292,9 @@ function Regions.generateNeighbours()
         region.neighbours = removeDuplicates(region.neighbours)
     end
 end
-
--- NOT TO BE USED.
+-- #############################################
+-- ########## NOT TO BE USED.###################
+-- #############################################
 -- Generates bad looking borders.
 function Regions.generateBorders()
     for _,region in pairs(map) do

@@ -31,9 +31,11 @@ function winState:enter()
         ):show()
     end
 
-    local p = Player:returnCountry(true)
+    local p = Player:returnCountry()
     local netResult = (winState.enemy.def+winState.enemy.att) - (p.attack+p.defense)
     if netResult <= 0 then netResult = 1 end
+    
+    
     
     math.randomseed(os.time())
     --local xpAmnt = math.random(Player.level*3+math.random(2), Player.level*4+math.random(netResult))
@@ -44,6 +46,7 @@ function winState:enter()
     winFinXp, leveledUp = Player:gainXP(xpAmnt) -- gainXP returns the final xp value, and true if player leveled up
     winResultXp = winFinXp - winStartXp
     
+    math.randomseed(math.random(os.time()))
     winMoneyAmnt = math.random(netResult*2*Player.level, netResult*5*Player.level)
     Player:returnCountry():addMoney(winMoneyAmnt)
 end

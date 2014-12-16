@@ -1,15 +1,20 @@
 FIX: Mid-battle peace doesn't give money.
 FIX: AI cannot attack over sea
 FIX: No tutorial for region upgrades.
-FIX: Fighter balls save
 
-IMPROVEMENT: Account fighter balls' stats when calculating chance of clay taken.
+IMPROVEMENT: Account fighter balls' stats when calculating chance of clay takeç
 
 ADD: Intro telling that the world is in chaos and no country trusts another.
 
 ################### [Coherent gameplay] ################################
     Make use of region upgrades to balance the game and to make
     countries with lots of clay a bit more powerful than they are.
+    
+    Player will be stripped of fighters at start, and must get them afterwards.
+    Although player will be weak at first, he will get stronger.
+    To counter boredom that the easiness will give, enemy fighters'
+    and countries' stats will rise (something like Oblivion), but with
+    a limit, to counter a problem: bandits with Daedric armor, but with Clay.
     
 #======================================================================#
 

@@ -59,6 +59,14 @@ end
 local function strongEnough(self, foe)
     local winChance = (self.attack/(foe.defense*5))*100
     
+    for _,fighter in pairs(self.fighters) do
+        winChance = winChance + fighter.attack_stat/5
+    end
+    
+    for _,fighter in pairs(foe.fighters) do
+        winChance = winChance - fighter.defense/5
+    end
+    
     if winChance > 100 then winChance = 100
     elseif winChance < 1 then winChance = 1
     end
