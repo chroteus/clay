@@ -10,8 +10,7 @@ function game:init()
                           .."Toggle regions map: F1, "
 						  .."LMB: Place a point RMB: Undo, "
 						  .."LShift + RMB: Delete a region"
-
-
+                          
     game.statusbarTexts = {Player.country,
                            " Level: "..Player.level,
                            " XP: "..Player.xp.."/"..Player.xpToUp,
@@ -63,6 +62,15 @@ function game:enter()
         game.regionMapHeight = game.borders_map:getHeight()
         game.borders_map:setFilter("nearest")
     end
+
+    
+    -- update text
+    game.statusbarTexts = {
+       Player.country,
+       " Level: "..Player.level,
+       " XP: "..Player.xp.."/"..Player.xpToUp,
+       " Money: "..Player.money.."G"
+    }
 end
 
 function game:update(dt)
