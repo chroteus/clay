@@ -304,9 +304,6 @@ function battle:leave()
     local player = battle.player
     
     if enemy.hp <= 0 then
-        winState.enemy.att = enemy.attack
-        winState.enemy.def = enemy.defense
-        
         for i,region in ipairs(map) do
             if region.name == battle.attackedRegion then
                 local player = Player:returnCountry() 

@@ -1,10 +1,5 @@
 winState = {}
 
-winState.enemy = {
-    att = 0,
-    def = 0
-}
-
 function winState:init()
     winImg = love.graphics.newImage("assets/image/winImg.png")
     winBtn = GenericButton(the.screen.height/2 + 200, "Continue >>", function() Gamestate.switch(game) end)
@@ -32,7 +27,19 @@ function winState:enter()
     end
 
     local p = Player:returnCountry()
-    local netResult = (winState.enemy.def+winState.enemy.att) - (p.attack+p.defense)
+    local netResult = (battle.enemy.defense+battle.enemy.attack) - (p.attack+p.defense)
+    
+    -- Account for fighters
+    for _,fighter in pairs(battle.player.fighters) do
+        netResult = netResult - fighter.attack_stat/50
+        netResult = netResult - fighter.defense/50
+    end
+    
+    for _,fighter in pairs(battle.enemy.fighters) do
+        netResult = netResult + fighter.attack_stat/50
+        netResult = netResult + fighter.defense/50
+    end
+    
     if netResult <= 0 then netResult = 1 end
     
     
@@ -58,23 +65,25 @@ function winState:update(dt)
 end
 
 function winState:draw()
+    local rect = winXpRect
+    
     love.graphics.draw(winImg, the.screen.width/2-winImg:getWidth()/2, the.screen.height/2-winImg:getHeight())
     winBtn:draw()
     
-    love.graphics.setColor(winXpRect.color)
-    love.graphics.rectangle("line", winXpRect.x, winXpRect.y, winXpRect.width, winXpRect.height)
-    love.graphics.rectangle("fill", winXpRect.x, winXpRect.y, winXpRect.fillWidth, winXpRect.height)
+    love.graphics.setColor(rect.color)
+    love.graphics.rectangle("line", rect.x, rect.y, rect.width, rect.height)
+    love.graphics.rectangle("fill", rect.x, rect.y, rect.fillWidth, rect.height)
    
     love.graphics.setColor(200, 200, 200)
     local fontHeight = (love.graphics.getFont():getHeight())/2
-    love.graphics.printf("XP: +"..winResultXp, winXpRect.x + 5, winXpRect.y + winXpRect.height/2 - fontHeight, winXpRect.width, "left")
+    love.graphics.printf("XP: +"..winResultXp, rect.x + 5, rect.y + rect.height/2 - fontHeight, rect.width, "left")
     
     if leveledUp then
-        love.graphics.printf("Level up!", winXpRect.x, winXpRect.y - winXpRect.height/2 - fontHeight, winXpRect.width, "left")
+        love.graphics.printf("Level up!", rect.x, rect.y - rect.height/2 - fontHeight, rect.width, "left")
     end
     
     love.graphics.setFont(gameFont[22])
-    love.graphics.printf("You've gained "..tostring(winMoneyAmnt).."G !", 0, winXpRect.y+50, the.screen.width, "center")
+    love.graphics.printf("You've gained "..tostring(winMoneyAmnt).."G !", 0, rect.y+50, the.screen.width, "center")
     love.graphics.setFont(gameFont[16])
         
     love.graphics.setColor(255,255,255)
