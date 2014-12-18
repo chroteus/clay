@@ -1,7 +1,12 @@
 FIX: Mid-battle peace doesn't give money.
 FIX: AI cannot attack over sea
 FIX: No tutorial for region upgrades.
- 
+
+These two bugs may be connected to each other.
+FIX: Balls teleporting to enemy ball on 2nd battle.
+FIX: Fighters are unable to attack some countries.
+
+
 ADD: Intro telling that the world is in chaos and no country trusts another.
 
 ################### [Coherent gameplay] ################################
@@ -14,6 +19,7 @@ ADD: Intro telling that the world is in chaos and no country trusts another.
     and countries' stats will rise (something like Oblivion), but with
     a limit, to counter a problem: bandits with Daedric armor, but with Clay.
     
+    Add more skills, items, fighter types.
 #======================================================================#
 
 

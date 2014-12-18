@@ -1,5 +1,12 @@
 game = {}
 
+function game.loadStatusbarText()
+    game.statusbarTexts = {Player.country,
+                           " Level: "..Player.level,
+                           " XP: "..Player.xp.."/"..Player.xpToUp,
+                           " Money: "..Player.money.."G"
+                          }
+end
 function game:init()
     initMap()
     infoBox:init()
@@ -10,12 +17,9 @@ function game:init()
                           .."Toggle regions map: F1, "
 						  .."LMB: Place a point RMB: Undo, "
 						  .."LShift + RMB: Delete a region"
-                          
-    game.statusbarTexts = {Player.country,
-                           " Level: "..Player.level,
-                           " XP: "..Player.xp.."/"..Player.xpToUp,
-                           " Money: "..Player.money.."G"
-                          }
+    
+    game.loadStatusbarText()
+    
     
     function game.endTutorial()
         prefs.firstPlay = false
@@ -64,13 +68,7 @@ function game:enter()
     end
 
     
-    -- update text
-    game.statusbarTexts = {
-       Player.country,
-       " Level: "..Player.level,
-       " XP: "..Player.xp.."/"..Player.xpToUp,
-       " Money: "..Player.money.."G"
-    }
+    game.loadStatusbarText()
 end
 
 function game:update(dt)

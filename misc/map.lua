@@ -28,8 +28,8 @@ function initMap()
         country = "Ukraine", -- Selected country. Paints this country on map.
         buttons = {},
         
-        currPoint = {x = -10,y = -10},
-        firstPoint = {x = -20,y = -20,},
+        currPoint =  {x = -10,y = -10},
+        firstPoint = {x = -20,y = -20},
         
         fpActive = false, -- first point
 		radius = 4,

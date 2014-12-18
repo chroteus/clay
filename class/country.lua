@@ -234,7 +234,8 @@ function Country:peace(country)
 							function()
 								peace(country)
 								country:addMoney(moneyAmnt)
-								
+								game.loadStatusbarText()
+                                
 								if Gamestate.current == battle then
 									Gamestate.switch(game)
 								end

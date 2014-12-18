@@ -15,28 +15,9 @@ function battle.start(player, enemy) -- Sets opponents, and switches to battle g
 	
 	battle.player.hp = battle.player.maxHP
 	battle.enemy.hp = battle.enemy.maxHP
-    
-    battle.arena = Arena{x = 0, y = 0, width = the.screen.width, height = the.screen.height}
-    
-    local playerGroup = FighterGroup(battle.player.fighters)
-    playerGroup:addEnemy(battle.enemy)
-    battle.arena:add(playerGroup):to("allies")
-    playerGroup:setPos(padding*2 + barWidth, the.screen.height/2)
-    playerGroup:lookAt(the.screen.width - barWidth - padding*2,
-                      the.screen.height/2, {still = true})
-    
-    local enemyGroup = FighterGroup(battle.enemy.fighters)
-    enemyGroup:addEnemy(battle.player)
-    battle.arena:add(enemyGroup):to("enemies")
-    enemyGroup:setPos(0,0) -- without setting group's pos, width cannot be taken
-    enemyGroup:setPos(the.screen.width - barWidth - padding*2 - enemyGroup:getWidth() - 100 ,
-                      the.screen.height/2)
-    enemyGroup:lookAt(padding*2 + barWidth, the.screen.height/2, {still = true})
-
-    
-    battle.arena:start()
 	
     Gamestate.switch(battle)
+    battle.arena:start()
 end
 
 -- backwards compatiblity
@@ -78,86 +59,49 @@ function battle.load()
 	local i = 0
 	for k,skill in pairs(battle.player.skills) do
 		i = i + 1
-		table.insert(battle.btn, SkillBtn(battle.player.x + playerImg:getWidth()/2 - SkillBtn.width/2, battle.player.y + fixedHeight + (i * 50), skill))
+		table.insert(battle.btn, 
+            SkillBtn(battle.player.x + playerImg:getWidth()/2 - SkillBtn.width/2, 
+                     battle.player.y + fixedHeight + (i * 50), skill)
+        )
 	end
     
-	--[[
-	local lastBtn = battle.btn[#battle.btn]
-	battle.endTurnBtn = Button(
-		lastBtn.x-10,lastBtn.y+lastBtn.height+80,
-		lastBtn.width+20, lastBtn.height+20, 
-		"End Turn", 
-		function() battle.turnEnd(battle.player) end
-	)]]
+    
+    -- fighter balls
+    battle.arena = Arena{x = -200, y = 200, 
+                         width = the.screen.width+400, 
+                         height = the.screen.height+400}
+    
+    local playerGroup = FighterGroup(battle.player.fighters)
+    playerGroup:addEnemy(battle.enemy)
+    battle.arena:add(playerGroup):to("allies")
+    playerGroup:setPos(padding*2 + barWidth, the.screen.height/2)
+    playerGroup:lookAt(the.screen.width - barWidth - padding*2,
+                      the.screen.height/2, {still = true})
+    
+    local enemyGroup = FighterGroup(battle.enemy.fighters)
+    enemyGroup:addEnemy(battle.player)
+    battle.arena:add(enemyGroup):to("enemies")
+    enemyGroup:setPos(0,0) -- without setting group's pos, width cannot be taken
+    enemyGroup:setPos(the.screen.width - barWidth - padding*2 - enemyGroup:getWidth() - 100 ,
+                      the.screen.height/2)
+    enemyGroup:lookAt(padding*2 + barWidth, the.screen.height/2, {still = true})
 end
 
 function battle.flash(fighter, color)
 	if fighter.dmgColor then
-		battle.timer:tween(0.1, fighter.dmgColor, {[1] = color[1]})
-		battle.timer:tween(0.1, fighter.dmgColor, {[2] = color[2]})
-		battle.timer:tween(0.1, fighter.dmgColor, {[3] = color[3]})
+        for i=1,3 do
+            battle.timer:tween(0.1, fighter.dmgColor, {[i] = color[i]})
+        end
 		
 		battle.timer:add(0.11,
 			function()
-				battle.timer:tween(0.2, fighter.dmgColor, {[1] = 255})
-				battle.timer:tween(0.2, fighter.dmgColor, {[2] = 255})
-				battle.timer:tween(0.2, fighter.dmgColor, {[3] = 255})
+                for i=1,3 do
+                    battle.timer:tween(0.2, fighter.dmgColor, {[i] = 255})
+                end
 			end
 		)
 	end
 end
-
---[[
-
-function battle.turnEnd(prevFighter)
-	-- prevFighter: Fighter whose turn ends
-	-- nextFighter: Fighter whose turn begins.
-
-	local nextFighter
-	
-	if prevFighter == battle.player then
-		nextFighter = battle.enemy
-	else
-		nextFighter = battle.player
-	end
-
-	-- called everytime a turn ends
-	prevFighter.turnFinished = true
-	nextFighter.turnFinished = false
-
-	if nextFighter == battle.enemy then
-		battle.timer:add(1, function() battle.ai() end)
-	end
-
-	prevFighter.energy = prevFighter.maxEnergy
-	
-	-- progress 5-10 days
-	for i=1,math.random(5,10) do
-		worldTime:start(0)
-		
-		-- progress everything according to days passed
-		game:update(worldTime.dayLength)
-	end
-	worldTime:stop()
-
-	-- apply all buffs
-	for _,fighter in pairs(battle.fighters) do
-		for k,buff in pairs(fighter.buffs) do
-			if buff.duration <= 1 then
-				table.remove(fighter.buffs, k)
-			else
-				buff:exec(fighter)
-			end
-		end
-	end
-    
-    for _,fighter in pairs(battle.fighters) do
-        for _,country_fighter in pairs(fighter.fighters) do
-            country_fighter:ai()
-        end
-    end
-end
-]]
 
 function battle.ai()
 	local enemy = battle.enemy

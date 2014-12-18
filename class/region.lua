@@ -61,7 +61,10 @@ function Region:mousereleased(x,y,button)
                 if not editMode.enabled then
                     for _,mapNeighbour in pairs(game.neighbours) do
                         if self.name == mapNeighbour then
-                            local battleFunc = function() startBattle(Player.country, self.country.name); battle.attackedRegion = self.name end
+                            local battleFunc = function() 
+                                startBattle(Player.country, self.country.name)
+                                battle.attackedRegion = self.name 
+                            end
                             
                             if not Player:returnCountry():isFoe(self.country.name) then
                                 local dbox = DialogBoxes:new(
