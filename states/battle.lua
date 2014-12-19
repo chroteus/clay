@@ -236,7 +236,6 @@ end
 
 function battle:mousereleased(x,y,button)
 	for _,btn in pairs(battle.btn) do btn:mousereleased(x,y,button) end
-	if not battle.player.turnFinished then battle.endTurnBtn:mousereleased(x,y,button) end
 end
 
 function battle:keypressed(key)

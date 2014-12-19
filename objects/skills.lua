@@ -1,18 +1,12 @@
 require "class.skill"
 
 -- Skills which can be given to balls.
-local knockback_inProgress = false
 function knockback(target, speed, distance)
-    if not knockback_inProgress then
-        knockback_inProgress = true
-        
-        local origX = target.x
-        local knockbackDist = distance or 300
-        if target.x > the.screen.width/2 then knockbackDist = -knockbackDist end -- Reverse knockback if the target is on left.
-        Timer.tween(0.6/speed, target, {x = target.x - knockbackDist}, "out-expo")
-        Timer.tween(0.4/speed, target, {x = target.x + knockbackDist}, "out-quad",
-            function() knockback_inProgress = false end)
-    end
+    local origX = target.x
+    local knockbackDist = distance or 300
+    if target.x > the.screen.width/2 then knockbackDist = -knockbackDist end -- Reverse knockback if the target is on left.
+    Timer.tween(0.6/speed, target, {x = target.x - knockbackDist}, "out-expo")
+    Timer.tween(0.4/speed, target, {x = target.x + knockbackDist}, "out-quad")
 end
 
 skills = {

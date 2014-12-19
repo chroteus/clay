@@ -141,11 +141,7 @@ function Fighter:moveTo(x,y, arg)
     
     if arg then
         if arg.onArrival then self.funcOnArrival = arg.onArrival end
-        if arg.attacking then 
-            self.attacking = true
-        else
-            self.attacking = false
-        end
+        self.attacking = arg.attacking
     end
     
     return self
@@ -173,7 +169,7 @@ end
     
 
 function Fighter:_attackAnim()
-    if not self.attack_anim_played then
+    if not self.attack_anim_played and self:inAttackZone() then
         local enemy = self.enemy_to_attack
 
         -- time it will take for attack animation to finish
@@ -189,12 +185,12 @@ function Fighter:_attackAnim()
         if enemy:isInstanceOf(Fighter) then
             enemyX, enemyY = enemy.x, enemy.y
         else -- a country
-            enemyY = enemy.y + enemy.height - self.height
+            enemyY = enemy.y + enemy.height - self.height*1.2
             
             if enemy.x < the.screen.width/2 then
-                enemyX = enemy.x + enemy.width - self.width
+                enemyX = enemy.x + enemy.width - self.width*1.2
             else
-                enemyX = enemy.x + self.width
+                enemyX = enemy.x + self.width*1.2
             end
         end
         
@@ -203,17 +199,18 @@ function Fighter:_attackAnim()
         if enemy:isInstanceOf(Fighter) then
             angle = math.atan2(enemyY - self.y, enemyX - self.x)
         else -- country
-            angle = math.atan2(enemy.y+enemy.height/2 - self.y,
+            angle = math.atan2(enemy.y+enemy.height/1.5 - self.y,
                                enemy.x+enemy.width/2  - self.x)
         end
 
-        self.timer:tween(total_time/3, self, {x = self.x - self.width/3  * math.cos(angle)}, "in-quint")
-        self.timer:tween(total_time/3, self, {y = self.y - self.height/3 * math.sin(angle)}, "in-quint",
+        self.timer:tween(total_time/3, self, {x = self.x - (self.width/1.5  * math.cos(angle))}, "in-quint")
+        self.timer:tween(total_time/3, self, {y = self.y - (self.height/1.5 * math.sin(angle))}, "in-quint",
             function()
                 self.timer:tween(total_time/1.5, self, {x = enemyX + math.random(-3,3)}, "out-quint")
                 self.timer:tween(total_time/1.5, self, {y = enemyY + math.random(-3, 3)}, "out-quint",
                     function() 
                         self.attack_anim_played = false
+                        self.attacking = false
                     end)
             end
         )
@@ -270,12 +267,16 @@ function Fighter:_onAttack(enemy)
     end
 
 
-    --self:lookAt(enemy.x, enemy.y, {still = true})
+    --[[self:lookAt(enemy.x, enemy.y, {still = true})
     if enemy:isInstanceOf(Fighter) then
         self:lookAt(enemy.x, enemy.y, {still = true})
     else -- if country
-        self:lookAt(enemy.x+enemy.width/2, enemy.y+enemy.height/2)
-    end
+        if enemy.x > the.screen.width/2 then
+            self:lookAt(enemy.x+enemy.width*2, enemy.y+enemy.height)
+        else
+            self:lookAt(enemy.x-enemy.width, enemy.y+enemy.height)
+        end
+    end]]
 end
 ------------------------------------------------------------------------    
 
@@ -293,14 +294,14 @@ function Fighter:_move(dt)
         goal_y = goal.y + goal.height - self.height
         
         if goal.x < the.screen.width/2 then
-            goal_x = goal.x + goal.width - self.width
+            goal_x = goal.x + goal.width - self.width*2
         else
-            goal_x = goal.x
+            goal_x = goal.x + self.width*2
         end
     end
 
-
     self:lookAt(goal_x, goal_y)
+    
     
     local angle = math.atan2(goal_y - self.y, goal_x - self.x)
     self.x = self.x + (self.speed * math.cos(angle)) * dt
@@ -312,9 +313,6 @@ function Fighter:_move(dt)
     end
     
     if self:inAttackZone() then
-        self.x = self.x - (self.speed * math.cos(angle)) * dt
-        self.y = self.y - (self.speed * math.sin(angle)) * dt
-    
         if self.attacking then
             self:_attackAnim()
         end

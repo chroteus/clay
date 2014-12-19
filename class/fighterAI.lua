@@ -7,10 +7,8 @@ end
 function FighterAI:attack(fighter)
     if not fighter.dead then
         self.enemy_to_attack = fighter
-
-        if self:inAttackZone() then
-            self:_attackAnim()
-        else
+        
+        if not self.attacking then
             self:moveTo(fighter, {attacking = true})
         end
     end
