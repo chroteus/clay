@@ -272,6 +272,16 @@ function Region:changeOwner(owner)
 	end
 end
 
+function Region:hasSeaBorder()
+    for _,n in pairs(self.neighbours) do
+        if n:match("sea") then
+            return true
+        else
+            return false
+        end
+    end
+end
+
 Regions = {} -- Table to hold functions which affect all regions.
 
 function Regions.generateNeighbours()

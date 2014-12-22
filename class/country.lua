@@ -81,7 +81,7 @@ function Country:invade(dt)
 
     if not self.isDead and not self.inBattle 
     and self.name ~= Player.country and self.name ~= "Sea" then
-		-- Used for AI invasions
+    
 		self.invadeTimer = self.invadeTimer - dt
 		
 		if self.invadeTimer <= 0 then
@@ -90,14 +90,32 @@ function Country:invade(dt)
 			
 			for _,foe in pairs(self.foes) do
 				local possible_regions = {}
+                
+                -- add neighbour regions
 				for _,region in pairs(map) do
-						
-					if region.country.name == foe.name
-					and self:isNeighbour(region.name) then
-						table.insert(possible_regions, region)
-					end
-					
+					if region.country.name == foe.name then
+                        if self:isNeighbour(region.name) then
+                            table.insert(possible_regions, region)
+                        end
+                    end
+                end
+                
+                -- add sea bordering enemy regions if no land regions
+                -- were found
+                for _,region in pairs(map) do
+                    if region.country.name == foe.name 
+                    and #possible_regions == 0
+                    and region:hasSeaBorder() then
+                        table.insert(possible_regions, region)
+                    end
+                end
+                            
+                        
+                
+                -- conquer region
+                for _,region in pairs(map) do
 					if #possible_regions > 0 then
+                        math.randomseed(math.random(os.time()))
 						local r = math.random(#possible_regions)
 						local region = possible_regions[r]
 						
