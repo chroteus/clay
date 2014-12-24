@@ -1,6 +1,7 @@
 FIX: Mid-battle peace doesn't give money.
-FIX: AI cannot attack over sea
 FIX: No tutorial for region upgrades.
+FIX: No time progress in battles.
+FIX: Wonky over-the-sea AI conquest.
 
 These two bugs may be connected to each other.
 FIX: Balls teleporting to enemy ball on 2nd battle.

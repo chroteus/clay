@@ -9,6 +9,10 @@ function game.loadStatusbarText()
 end
 function game:init()
     initMap()
+    for _,country in pairs(countries) do
+        country.midpoint = country:_midpoint()
+    end
+    
     infoBox:init()
     
     game.mapDrawn = true
@@ -95,6 +99,13 @@ function game:draw()
         love.graphics.setColor(255,255,255)
         love.graphics.pop()
     end
+    
+        for _,country in pairs(countries) do
+        love.graphics.setColor(country.color)
+        love.graphics.rectangle("fill", country.midpoint.x, country.midpoint.y,
+                                5,5)
+        love.graphics.setColor(255,255,255)
+    end
     mapCam:detach()
 
     -- GUI
@@ -139,7 +150,6 @@ function game:draw()
     if not prefs.firstPlay then
 		worldTime:draw()
 	end
-
 end
 
 function game:mousepressed(x, y, button)

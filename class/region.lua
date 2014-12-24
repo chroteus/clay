@@ -25,18 +25,42 @@ function Region:initialize(id, color, name, ...)
     
     if not love.math.isConvex(self.unpairedVertices) then
         self.convex = false
-        
-        if #self.vertices >= 3 then
-            self.triangles = love.math.triangulate(self.unpairedVertices)
-        end
+    end
+    
+    if #self.vertices >= 3 then
+        self.triangles = love.math.triangulate(self.unpairedVertices)
+    else
+        error("Region cannot be a line. It must have atleast 3 corners.")
     end
     
     self.vertRadius = 10
     
     self.border = {} -- filled after all regions are initialized
     self.neighbours = {} -- filled after all regions are initialized
+    
+    self.midpoint = self:_midpoint()
 end
 
+function Region:_midpoint()
+    local trianglesXCenterSum = 0
+    local trianglesYCenterSum = 0
+    
+    -- triangles triangulated by love2d have the following format:
+    -- {x1, y1, x2, y2, x3, y3}
+    for _,triangle in pairs(self.triangles) do
+        local xCenter = (triangle[1] + triangle[3] + triangle[5]) / 3
+        local yCenter = (triangle[2] + triangle[4] + triangle[6]) / 3
+        
+        trianglesXCenterSum = trianglesXCenterSum + xCenter
+        trianglesYCenterSum = trianglesYCenterSum + yCenter
+    end
+    
+    return {x = trianglesXCenterSum / #self.triangles, 
+            y = trianglesYCenterSum / #self.triangles}
+end 
+        
+        
+        
 function Region:mousereleased(x,y,button)
     if button == "l" then
         if PointWithinShape(self.vertices, mapMouse.x, mapMouse.y) then
@@ -258,8 +282,10 @@ end
 
 function Region:changeOwner(owner)
 	local owner = owner
-	
     if type(owner) == "string" then owner = nameToCountry(owner) end
+    
+    owner.midpoint = owner:_midpoint()
+    self.country.midpoint = self.country:_midpoint() -- old country
     
 	self.id = owner.id
 	self.color = owner.color

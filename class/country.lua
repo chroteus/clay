@@ -52,9 +52,27 @@ function Country:initialize(name, color, attack, defense, hp, fighters)
     
     self.invadeTimer = math.random(10,20)
     self.numOfInv = 0
+    
+    self.midpoint = nil -- generated at game:init after placing regions
+    
     Base.initialize(self)
 end
 
+function Country:_midpoint()
+    local xmidpointSum = 0
+    local ymidpointSum = 0
+    local regionsNum = 0
+    
+    for _,region in pairs(map) do
+        if region.id == self.id then
+            regionsNum = regionsNum + 1
+            xmidpointSum = xmidpointSum + region.midpoint.x
+            ymidpointSum = ymidpointSum + region.midpoint.y
+        end
+    end
+    
+    return {x = xmidpointSum / regionsNum, y = ymidpointSum / regionsNum}
+end
 
 local function strongEnough(self, foe)
     local winChance = (self.attack/(foe.defense*5))*100
@@ -116,8 +134,21 @@ function Country:invade(dt)
                 for _,region in pairs(map) do
 					if #possible_regions > 0 then
                         math.randomseed(math.random(os.time()))
-						local r = math.random(#possible_regions)
-						local region = possible_regions[r]
+                        
+                        -- pick closest to country's center region
+                        table.sort(possible_regions, 
+                            function(a,b)
+                                local a_d = {x = math.abs(a.midpoint.x - self.midpoint.x),
+                                             y = math.abs(a.midpoint.y - self.midpoint.y)}
+                                             
+                                local b_d = {x = math.abs(b.midpoint.x - self.midpoint.x),
+                                             y = math.abs(b.midpoint.y - self.midpoint.y)}
+                            
+                                return (a_d.x < b_d.x) or (a_d.y < b_d.y)
+                            end
+                        )
+
+						local region = possible_regions[1]
 						
 						if self.numOfInv == 0 
 						and strongEnough(self, region.country) then
