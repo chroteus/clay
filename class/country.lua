@@ -105,10 +105,9 @@ function Country:invade(dt)
 		if self.invadeTimer <= 0 then
 			self.invadeTimer = math.random(20*worldTime.dayLength,40*worldTime.dayLength)
 			
-			
+			local possible_regions = {}
+            
 			for _,foe in pairs(self.foes) do
-				local possible_regions = {}
-                
                 -- add neighbour regions
 				for _,region in pairs(map) do
 					if region.country.name == foe.name then
@@ -118,11 +117,9 @@ function Country:invade(dt)
                     end
                 end
                 
-                -- add sea bordering enemy regions if no land regions
-                -- were found
+                -- add sea bordering enemy regions
                 for _,region in pairs(map) do
                     if region.country.name == foe.name 
-                    and #possible_regions == 0
                     and region:hasSeaBorder() then
                         table.insert(possible_regions, region)
                     end
@@ -131,38 +128,36 @@ function Country:invade(dt)
                         
                 
                 -- conquer region
-                for _,region in pairs(map) do
-					if #possible_regions > 0 then
+                if #possible_regions > 0 then
+                    for _,region in pairs(map) do
                         math.randomseed(math.random(os.time()))
                         
                         -- pick closest to country's center region
                         table.sort(possible_regions, 
                             function(a,b)
-                                local a_d = {x = math.abs(a.midpoint.x - self.midpoint.x),
-                                             y = math.abs(a.midpoint.y - self.midpoint.y)}
-                                             
-                                local b_d = {x = math.abs(b.midpoint.x - self.midpoint.x),
-                                             y = math.abs(b.midpoint.y - self.midpoint.y)}
-                            
-                                return (a_d.x < b_d.x) or (a_d.y < b_d.y)
+                                local a_d = math.dist(a.midpoint.x,a.midpoint.y,
+                                                      self.midpoint.x,self.midpoint.y)
+                                local b_d = math.dist(b.midpoint.x,b.midpoint.y,
+                                                      self.midpoint.x,self.midpoint.y)
+                                return a_d < b_d
                             end
                         )
 
-						local region = possible_regions[1]
-						
-						if self.numOfInv == 0 
-						and strongEnough(self, region.country) then
-						
-							self.numOfInv = self.numOfInv + 1
-							
-							if region.country.name == Player.country then
-								msgBox:add(self.name.." took your clay!")
-							end
-							
-							region:changeOwner(self)
-						end
-					end
-				end
+                        local region = possible_regions[1]
+                        
+                        if self.numOfInv == 0 
+                        and strongEnough(self, region.country) then
+                        
+                            self.numOfInv = self.numOfInv + 1
+                            
+                            if region.country.name == Player.country then
+                                msgBox:add(self.name.." took your clay!")
+                            end
+                            
+                            region:changeOwner(self)
+                        end
+                    end
+                end
 			end
 			
 			self.numOfInv = 0
@@ -325,9 +320,18 @@ function Country:addSkill(argSkill, order)
 end
 
 function Country:isNeighbour(regionName)
+    local i = 0
+    
     for _,region in pairs(map) do
         if region.country.id == self.id then
-            return table_count(region.neighbours, regionName) > 0
+            for _,n in pairs(region.neighbours) do
+                if n == regionName then
+                    i = i + 1
+                end
+            end
+            
         end
     end
+    
+    return i > 0
 end
