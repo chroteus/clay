@@ -169,17 +169,11 @@ end
     
 
 function Fighter:_attackAnim()
-    if not self.attack_anim_played and self:inAttackZone() then
+    if not self.attack_anim_played then
         local enemy = self.enemy_to_attack
 
         -- time it will take for attack animation to finish
         local total_time = 0.6
-        
-        self.timer:add(total_time/3, 
-            function()
-                self:_onArrival()
-                self:_onAttack(enemy)
-            end)
         
         local enemyX,enemyY
         if enemy:isInstanceOf(Fighter) then
@@ -206,6 +200,9 @@ function Fighter:_attackAnim()
         self.timer:tween(total_time/3, self, {x = self.x - (self.width/1.5  * math.cos(angle))}, "in-quint")
         self.timer:tween(total_time/3, self, {y = self.y - (self.height/1.5 * math.sin(angle))}, "in-quint",
             function()
+                self:_onArrival()
+                self:_onAttack(enemy)
+                
                 self.timer:tween(total_time/1.5, self, {x = enemyX + math.random(-3,3)}, "out-quint")
                 self.timer:tween(total_time/1.5, self, {y = enemyY + math.random(-3, 3)}, "out-quint",
                     function() 
@@ -280,7 +277,6 @@ function Fighter:_onAttack(enemy)
 end
 ------------------------------------------------------------------------    
 
--- Internal function, thus prefixed with an underscore.
 function Fighter:_move(dt)
     if type(self.goal_x) == "table" then self.goal_x = nil end
     if type(self.goal_y) == "table" then self.goal_y = nil end

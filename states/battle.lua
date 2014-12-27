@@ -72,6 +72,7 @@ function battle.load()
                          height = the.screen.height+400}
     
     local playerGroup = FighterGroup(battle.player.fighters)
+    for _,fighter in pairs(playerGroup.fighters) do fighter.enemies = {} end
     playerGroup:addEnemy(battle.enemy)
     battle.arena:add(playerGroup):to("allies")
     playerGroup:setPos(padding*2 + barWidth, the.screen.height/2)
@@ -79,6 +80,7 @@ function battle.load()
                       the.screen.height/2, {still = true})
     
     local enemyGroup = FighterGroup(battle.enemy.fighters)
+    for _,fighter in pairs(enemyGroup.fighters) do fighter.enemies = {} end
     enemyGroup:addEnemy(battle.player)
     battle.arena:add(enemyGroup):to("enemies")
     enemyGroup:setPos(0,0) -- without setting group's pos, width cannot be taken
