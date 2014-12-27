@@ -3,7 +3,14 @@
 FighterGroup = class "FighterGroup"
 
 function FighterGroup:initialize(fighters)
-    self.fighters = fighters or {}
+    local fighters = fighters or {}
+    self.fighters = {}
+    
+    for k,fighter in pairs(fighters) do
+        table.insert(self.fighters, FighterAI(fighter))
+    end
+    
+    fighters = nil
 end
 
 function FighterGroup:setPos(x,y)

@@ -11,9 +11,12 @@ function Fighter:initialize(arg)
 
     -- "attack_stat" is not "attack" to prevent conflict 
     -- with method named "attack"
-	self.attack_stat = arg.attack or 5
+    local attack = arg.attack_stat or arg.attack
+	self.attack_stat = attack or 5
 	self.attack_stat = math.ceil(self.attack_stat)
 
+
+    
     self.defense = arg.defense or 5
 	self.defense = math.ceil(self.defense)
     
@@ -380,7 +383,7 @@ function Fighter:draw(x,y, noHP)
         drawItems()
     end
 
-    if not noHP then
+    if (not noHP and self.hp ~= self.max_hp) then
         love.graphics.setColor(160,40,40, self.alpha)
         love.graphics.rectangle("line", self.x, self.y-10, self.width, 12)
         love.graphics.rectangle("fill", self.x, self.y-10, (self.width/self.max_hp)*self.hp, 12)

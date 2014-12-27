@@ -71,21 +71,26 @@ function battle.load()
                          width = the.screen.width+400, 
                          height = the.screen.height+400}
     
-    local playerGroup = FighterGroup(battle.player.fighters)
-    for _,fighter in pairs(playerGroup.fighters) do fighter.enemies = {} end
+    
+    if battle.playerGroup then battle.playerGroup.fighters = nil end
+    battle.playerGroup = FighterGroup(battle.player.fighters)
+    local playerGroup = battle.playerGroup
     playerGroup:addEnemy(battle.enemy)
     battle.arena:add(playerGroup):to("allies")
     playerGroup:setPos(padding*2 + barWidth, the.screen.height/2)
     playerGroup:lookAt(the.screen.width - barWidth - padding*2,
                       the.screen.height/2, {still = true})
     
-    local enemyGroup = FighterGroup(battle.enemy.fighters)
+    if battle.enemyGroup then battle.enemyGroup.fighters = nil end
+    battle.enemyGroup = FighterGroup(battle.enemy.fighters)
+    local enemyGroup = battle.enemyGroup
     for _,fighter in pairs(enemyGroup.fighters) do fighter.enemies = {} end
     enemyGroup:addEnemy(battle.player)
     battle.arena:add(enemyGroup):to("enemies")
     enemyGroup:setPos(0,0) -- without setting group's pos, width cannot be taken
     enemyGroup:setPos(the.screen.width - barWidth - padding*2 - enemyGroup:getWidth() - 100 ,
                       the.screen.height/2)
+    
     enemyGroup:lookAt(padding*2 + barWidth, the.screen.height/2, {still = true})
 end
 
@@ -271,6 +276,14 @@ function battle:leave()
 		fighter.energy = fighter.maxEnergy
 		fighter.inBattle = false
 	end
+    
+    for k,fighter in pairs(battle.enemyGroup.fighters) do
+        table.remove(battle.enemyGroup.fighters, k)
+    end
+    
+    for k,fighter in pairs(battle.playerGroup.fighters) do
+        table.remove(battle.playerGroup.fighters, k)
+    end
     
     
 	battle.timer:clear()
