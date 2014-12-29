@@ -131,6 +131,7 @@ function battle:init()
 end
 
 function battle:enter()
+    worldTime:start()
 	battle.load()
 	
     for _,fighter in pairs(battle.fighters) do
@@ -288,4 +289,6 @@ function battle:leave()
     
 	battle.timer:clear()
     startedBattle = false
+    
+    worldTime:stop()
 end
