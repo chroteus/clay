@@ -19,7 +19,7 @@ end
 
 function Arena:add(fighter)
     assert(self.temp_fighter == nil, 
-        "Call Arena:to before calling Arena:add.")
+        "Call Arena:add before calling Arena:to.")
         
     self.temp_fighter = fighter
     return self
